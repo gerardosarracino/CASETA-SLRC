@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+	<t t-extend="OrderWidget">
+		<t t-jquery=".order-empty" t-operation="replace">
+			<div class="order-empty">
+				<h3>No se ha seleccionado tarifa</h3>
+			</div>
+		</t>
+	</t>
+</templates>

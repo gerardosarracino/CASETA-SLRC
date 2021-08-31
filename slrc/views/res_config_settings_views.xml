@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="openacademy_settings_view2" model="ir.ui.view">
+        <field name="name">Openacademy Configuration</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside" >
+                <h2>Divisas</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box" title="Divisa del DOlar">
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Dolar" for="dolar"/>
+                                    <div class="text-muted">
+                                        Agregar Divisa del Dolar
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="default_dolar" colspan="4" nolabel="1" force_save="1"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

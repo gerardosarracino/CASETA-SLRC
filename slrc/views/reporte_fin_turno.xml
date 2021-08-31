@@ -1,0 +1,74 @@
+<odoo>
+  <data>
+
+      <report
+        id="fin_turno_report_button"
+        model="pos.reportes_turno.wizard"
+        string="Reporte Fin de Turno"
+        report_type="qweb-pdf"
+        name="slrc.report_fin_turno"
+    />
+
+    <record id="view_slrc_reportes_turno_wizard" model="ir.ui.view">
+      <field name="name">slrc_pos.reportes_turno.wizard.form</field>
+      <field name="model">pos.reportes_turno.wizard</field>
+      <field name="arch" type="xml">
+            <form string="Reporte fin turno">
+                <!--group string="Datos del Informe">
+                    <field name="cajero"/>
+                    <field name="jefe_operaciones"/>
+                    <field name="administrador"/>
+                </group-->
+                <group>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="total_dolares_matutino"/>
+                </group>
+                <group>
+                    <field name="pos_config_srlc_ids"/>
+                </group>
+                <group>
+                     <button name="%(fin_turno_report_button)d" string="Imprimir Reporte" type="action" icon="fa-copy"/>
+                </group>
+
+                <!--group string="Boletos Emergentes">
+                    <field name="boleto_emergente" widget="boolean"/>
+
+                    <field name="tabla_cuotas" widget='one2many' mode="tree" nolabel="1" attrs="{'invisible':[('boleto_emergente','=',False)]}">
+                        <tree editable="bottom" delete="1" >
+                            <field name="id_boleto_emergente" readonly="1" invisible="1"/>
+                            <field name="cuota" required="1"/>
+                            <field name="cantidad" required="1"/>
+                            <field name="costo_cuota" readonly="1" required="1"/>
+                            <field name="total" readonly="1" required="1" force_save="1"/>
+                        </tree>
+                    </field>
+                </group-->
+
+                <!--group string="Carril">
+                    <field name="pos_config_srlc_ids" mode="tree" colspan="4" nolabel="1" string="Cuotas">
+                      <tree>
+                        <field name="name" string="Carriles"/>
+                      </tree>
+                    </field>
+                </group-->
+                <footer>
+                    <button name="generate_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+      </field>
+    </record>
+
+    <record id="reporte_fin_turno_action" model="ir.actions.act_window">
+        <field name="name">reporte_fin_turno_action</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pos.reportes_turno.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_reporte_fin_turno" name="Reporte Fin de Turno" action="reporte_fin_turno_action" parent="point_of_sale.menu_point_rep" sequence="4"/>
+
+  </data>
+</odoo>

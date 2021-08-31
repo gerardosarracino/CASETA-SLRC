@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fin_turno_report_buttonx" model="ir.actions.report">
+        <field name="name">Reporte Fin de Turno</field>
+        <field name="model">pos.reportes_turno.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">slrc.report_fin_turno</field>
+    </record>
+</odoo>

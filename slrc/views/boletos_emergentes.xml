@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="srlc_boletos_emergentes_tree" model="ir.ui.view">
+            <field name="name">Boletos Emergentes Tree</field>
+            <field name="model">pos.boletos_emergentes</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="sesion"/>
+                    <field name="cajero"/>
+                    <field name="fecha_del"/>
+                    <field name="fecha_al"/>
+                    <field name="tabla_cuotas"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="srlc_boletos_emergentes_form" model="ir.ui.view">
+            <field name="name">Boletos Emergentes Form</field>
+            <field name="model">pos.boletos_emergentes</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group string="Datos del Informe">
+                            <field name="sesion"/>
+                            <field name="cajero"/>
+                            <field name="fecha_del"/>
+                            <field name="fecha_al"/>
+                            <field name="jefe_operaciones"/>
+                        </group>
+                        <group string="Boletos Emergentes">
+                            <field name="tabla_cuotas" widget='one2many' context="{'default_id_boleto_emergente': active_id,}" nolabel="1">
+                                <tree editable="bottom" >
+                                    <field name="id_boleto_emergente" readonly="1" required="1"/>
+                                    <field name="cuota" required="1"/>
+                                    <field name="cantidad" required="1"/>
+                                    <field name="costo_cuota" readonly="1" required="1"/>
+                                    <field name="total" readonly="1" required="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="srlc_boletos_emergentes_action" model="ir.actions.act_window">
+            <field name="name">Boletos Emergentes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pos.boletos_emergentes</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+              </p><p>
+                <!-- More details about what a user can do with this object will be OK -->
+              </p>
+            </field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="srlc_boletos_emergentes_menuaction" name="Boletos Emergentes" parent="point_of_sale.menu_point_of_sale" action="srlc_boletos_emergentes_action" sequence="2"/>
+
+    </data>
+</odoo>

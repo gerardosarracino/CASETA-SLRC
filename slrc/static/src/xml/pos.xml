@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-extend="OrderReceipt">
+        <t t-jquery=".pos-receipt-logo" t-operation="replace"></t>
+    </t>
+
+    <t t-extend="ActionpadWidget">
+        <t t-jquery=".actionpad" t-operation="replace">
+            <div class="actionpad">
+                <button t-attf-class='button controller_ventas'>
+                    <div>
+                        <i class='fa fa-user' role="img" aria-label="Residente" title="Residente"/>
+                    </div>
+                    Residente
+                </button>
+                <button class='button pay'>
+                    <div class='pay-circle'>
+                        <i class='fa fa-chevron-right' role="img" aria-label="Pay" title="Pay"/>
+                    </div>
+                    Payment
+                </button>
+            </div>
+        </t>
+    </t>
+
+    <t t-extend="OrderReceipt">
+        <t t-jquery=".pos-receipt" t-operation="replace">
+            <div style="font-size: 12px;">
+               <div>
+                    <div >
+                        <div> FIDEICOMISO PUENTE COLORADO BANAMEX 116548-6</div>
+                        <t t-if='receipt.company.vat'>
+                            <div> R. F. C. <t t-esc='receipt.company.vat' /></div>
+
+                        </t>
+
+                        <div> CASETA DE COBRO SAN LUIS RIO COLORADO</div>
+
+                        <t t-if='receipt.header_html'>
+                            <t t-raw='receipt.header_html' />
+                        </t>
+                        <t t-if='!receipt.header_html and receipt.header'>
+                            <div><t t-esc='receipt.header' /></div>
+                        </t>
+
+                    </div>
+                   <br />
+
+                   <div>
+                        <div><t t-esc='receipt.date.localestring' /> &#160; &#160; &#160; Folio: <t t-esc='receipt.name' /></div>
+                   </div>
+                   <br />
+                   <div>
+                        <t t-if='receipt.cashier'>
+                            <div class='cashier'>
+                                <div>Carril: <t t-esc='receipt.carril'/>
+
+                                </div>
+                                <div>
+                                    Cajero: <t t-esc='widget.pos.config.carril' class="pos-receipt-right-align"/>
+                                </div>
+                            </div>
+                        </t>
+                   </div>
+
+                    <!-- Orderlines -->
+                    <div>Tipo de Auto:
+                        <t t-foreach='receipt.orderlines' t-as='line'>
+                        <t t-esc='line.product_name_wrapped[0]' /></t></div>
+
+
+                    <!-- Subtotal -->
+
+                    <t t-set='taxincluded' t-value='Math.abs(receipt.subtotal - receipt.total_with_tax) &lt;= 0.000001' />
+
+
+                    <!-- Total -->
+                    <div>
+                        Importe:
+                        <span t-esc='widget.format_currency(receipt.subtotal)' class="pos-receipt-right-align"/>
+                    </div>
+
+                   <t t-foreach='receipt.tax_details' t-as='tax'>
+                        <div>
+                            <t t-esc='tax.name' />:
+                            <span t-esc='widget.format_currency_no_symbol(tax.amount)' class="pos-receipt-right-align"/>
+                        </div>
+                    </t>
+
+                   <div>
+                        Total:
+                        <span t-esc='widget.format_currency(receipt.total_with_tax)' class="pos-receipt-right-align"/>
+                    </div>
+
+                    <br/><br/>
+
+                   <div>
+                       SI USTED DESEA CFDI FAVOR DE ACUDIR A LA OFICINA DE LA CASETA DE COBRO LAS 24 HRS. DEL DIA.
+                   </div>
+                    <br/>
+                   <div class="pos-receipt-contact">
+                        <div> Domicilio de Facturacion: </div>
+                        <div> Carretera a Mexicali Km. 2.5 Col. Del Rio </div>
+                        <div> C.P. 83400 San luis Rio Colorado, Sonora </div>
+                        <div> Tel (s). (653)534-96-94 </div>
+                    </div>
+                    <!-- Payment Lines
+
+                    <t t-foreach='paymentlines' t-as='line'>
+                        <div>
+                            <t t-esc='line.name' />
+                            <span t-esc='widget.format_currency_no_symbol(line.get_amount())' class="pos-receipt-right-align"/>
+                        </div>
+                    </t>
+                    <br/>
+                    -->
+                    <!--div class="pos-receipt-amount receipt-change">
+                        CHANGE
+                        <span t-esc='widget.format_currency(receipt.change)' class="pos-receipt-right-align"/>
+                    </div-->
+
+
+                    <!-- Extra Payment Info
+
+                    <t t-if='receipt.total_discount'>
+                        <div>
+                            Discounts
+                            <span t-esc='widget.format_currency(receipt.total_discount)' class="pos-receipt-right-align"/>
+                        </div>
+                    </t>
+                    <t t-if='taxincluded'>
+                        <t t-foreach='receipt.tax_details' t-as='tax'>
+                            <div>
+                                <t t-esc='tax.name' />
+                                <span t-esc='widget.format_currency_no_symbol(tax.amount)' class="pos-receipt-right-align"/>
+                            </div>
+                        </t>
+                        <div>
+                            Total Taxes
+                            <span t-esc='widget.format_currency(receipt.total_tax)' class="pos-receipt-right-align"/>
+                        </div>
+                    </t>-->
+
+                    <!--<div class='before-footer' />
+
+                     Footer
+                    <div t-if='receipt.footer_html'  class="pos-receipt-center-align">
+                        <t t-raw='receipt.footer_html'/>
+                    </div>
+
+                    <div t-if='!receipt.footer_html and receipt.footer'  class="pos-receipt-center-align" style="white-space:pre-line">
+                        <t t-esc='receipt.footer'/>
+                    </div>
+                    <br/>
+
+                    <div class='after-footer'>
+                        <t t-foreach='paymentlines' t-as='line'>
+                            <t t-if='line.ticket'>
+                                <br />
+                                <div class="pos-payment-terminal-receipt">
+                                    <t t-raw='line.ticket'/>
+                                </div>
+                            </t>
+                        </t>
+                    </div>-->
+
+
+
+                    <!--br/>
+                    <div class="pos-receipt-order-data">
+                        <div><t t-esc='receipt.name' /></div>
+                        <div><t t-esc='receipt.date.localestring' /></div>
+                    </div>
+                    <br/>
+                    <div class="pos-receipt-contact">
+                        <div> Domicilio de Facturacion: </div>
+                        <div> Carretera a Mexicali Km. 2.5 Col. Del Rio </div>
+                        <div> C.P. 83400 San luis Rio Colorado, Sonora </div>
+                        <div> Tel (s). (653)534-96-94 </div>
+                    </div-->
+
+                </div>
+            </div>
+        </t>
+    </t>
+
+
+    <record id="openacademy_settings_view2" model="ir.ui.view">
+        <field name="name">Openacademy Configuration</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside" >
+                <div class="app_settings_block" data-string="Open Academy Data-String" string="Parametros" data-key="openacademy">
+                <h2>Datos de Reporte</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box" title="Este es el folio para cada venta">
+                            <div class="o_setting_right_pane">
+                                <div>
+                                    <label string="Cajero" for="cajero"/>
+                                    <div class="text-muted">
+                                        Cajero
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="default_cajero" colspan="4" nolabel="1" force_save="1"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label string="Jefe de Operaciones" for="jefe_operaciones"/>
+                                    <div class="text-muted">
+                                        Jefe de Operaciones
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="default_jefe_operaciones" colspan="4" nolabel="1" force_save="1" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label string="Administrador" for="administrador"/>
+                                    <div class="text-muted">
+                                        Administrador
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="default_administrador" colspan="4" nolabel="1" force_save="1" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+    <t t-extend="report_saledetails">
+        <t t-jquery=".page" t-operation="replace">
+            <div class="page">
+                <div class="text-center">
+                    <h2>Detalles de Cuotas</h2>
+
+                    <strong><t t-esc="date_start" t-options="{'widget': 'datetime'}"/> - <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong>
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <template id="report_saledetails" inherit_id="point_of_sale.report_saledetails" primary="True">
+       <xpath expr="//t[@t-esc='name']"  position="replace">
+            <h2>Detalles de Cuotas</h2>
+
+       </xpath>
+    </template>
+
+
+
+</templates>

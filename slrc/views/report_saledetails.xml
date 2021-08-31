@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+    <template id="external_layout_inherited" inherit_id="web.internal_layout">
+    <xpath expr="//div[hasclass('header')]" position="replace">
+
+        <div class="header">
+            <style>
+                #header {
+                    text-align: center;
+                    border-bottom: 1px solid #666;
+                    padding-bottom: 2px;
+                    font-size: 11px;
+                }
+                h3,
+                h4,
+                h5 {
+                    text-align: center;
+                    margin: 0;
+                    line-height: 20px;
+                }
+                #opciones a {
+                    border-right: 1px solid #ccc;
+                    padding-right: 5px;
+                    color: #fff;
+                    text-decoration: none;
+                }
+
+                #opciones a:last-child {
+                    border: none;
+                }
+
+                #opciones a:before {
+                    content: " ";
+                }
+                table,
+                td,
+                th {
+                    border-color: #eee;
+                    font-size: 11px;
+                }
+            </style>
+            <div id="header" style="position:relative;">
+                <table width="100%" border="0" cellpadding="3" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <img t-att-src="'http://fideicomiso.galartec.com/slrc/static/src/img/logo_fideicomiso_png.png'" title="logoEnte" alt="logo" width="215" height="100" />
+                            </th>
+                            <th>
+                                <h3 style="background-color: #000000;color: white; right:220;" >FIDEICOMISO PUENTE COLORADO</h3> <!-- class="text-center" right:300;-->
+                                <h4>
+                                    CASETA DE COBRO, SAN LUIS R.C, SONORA
+                                </h4>
+                                <h5>Tel/Fax: (653) 534-96-94</h5>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+    </xpath>
+    </template>
+
+     <template id="report_saledetails_srlc" inherit_id="point_of_sale.report_saledetails">
+            <xpath expr="//div[@class='page']" position="replace">
+                <style>
+                    body {
+                        font-size: 13px;
+                        font-family: Arial, Helvetica, sans-serif;
+                    }
+
+                    #header {
+                        text-align: center;
+                        border-bottom: 1px solid #666;
+                        padding-bottom: 2px;
+                    }
+
+                    h3,
+                    h4,
+                    h5 {
+                        text-align: center;
+                        margin: 0;
+                        line-height: 20px;
+                    }
+
+                    table,
+                    td,
+                    th {
+                        border-color: #eee;
+                        font-size: 13px;
+                    }
+
+                    caption {
+                        font-weight: 700;
+                        margin-bottom: 20px;
+                        margin-top: 10px;
+                    }
+
+                    #footer h5 {
+                        text-align: center;
+                        border-bottom: 1px solid #eee;
+                    }
+
+                    #opciones {
+                        position: fixed;
+                        top: 0;
+                        background-color: #999;
+                        padding: 5px;
+                        right: 0;
+                        z-index: 99999;
+                        margin-right: 8px;
+                        display: inline-block;
+                        -moz-box-shadow: 0 0 3px #999;
+                        -webkit-box-shadow: 0 0 3px #999;
+                        box-shadow: 0 0 3px #999;
+                    }
+                    #tabla-contendio tbody {
+                            overflow: auto;
+                            position: relative;
+                        }
+                    #opciones a {
+                        border-right: 1px solid #ccc;
+                        padding-right: 5px;
+                        color: #fff;
+                        text-decoration: none;
+                    }
+
+                    #opciones a:last-child {
+                        border: none;
+                    }
+
+                    #opciones a:before {
+                        content: " ";
+                    }
+                </style>
+                <body>
+                <div class="page">
+                    <div>
+                            <img t-att-src="'http://fideicomiso.galartec.com/slrc/static/src/img/puente_colorado.png'"
+                                 title="logoEnte" alt="logo" width="130" height="60" style="position:absolute; right:20px; top:-20px;"/>
+                        <table width="100%" border="0" cellpadding="3" cellspacing="0" > <!-- class="table table-sm" -->
+                            <thead>
+                                <tr>
+                                    <th>Folio</th>
+                                    <th>&#160;</th>
+                                    <th>Carril</th>
+                                    <th><t t-esc="carril" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Cajero</th>
+                                    <th><t t-esc="nombre_cajero" /></th>
+                                    <th>Turno</th>
+                                    <th><t t-esc="fecha_apertura" /></th>
+                                </tr>
+                                <tr>
+                                    <th>Operador</th>
+                                    <th><t t-esc="nombre_jefe" /></th>
+                                    <th>&#160;</th>
+                                    <th><t t-esc="turno" /></th>
+                                </tr>
+                                <tr>
+                                    <th>Folios</th>
+                                    <th><t t-esc="folio_1" /></th>
+                                    <th>al</th>
+                                    <th><t t-esc="folio_2" /></th>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+
+                    <br/>
+
+                    <div class="text-center">
+                        <h4>Reporte de Carriles y Concentrado</h4>
+                        <strong><t t-esc="date_start" t-options="{'widget': 'datetime'}"/> - <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong>
+                    </div>
+                    <br/>
+                    <!-- Orderlines -->
+                    <h5>Tarifas</h5>
+                    <table class="table table-sm" cellpadding="3" cellspacing="0">
+                        <thead class="thead-dark"><tr>
+                            <th>Tarifa</th>
+                            <th>Efectivos</th>
+                            <th>Costo</th>
+                            <th>Cancelados</th>
+                            <th>Total</th>
+                        </tr></thead>
+                        <tbody>
+                        <tr t-foreach='products' t-as='line'>
+                            <t t-set="internal_reference" t-value="line['code'] and '[%s] ' % line['code'] or ''" />
+                            <td><t t-esc="internal_reference" /><t t-esc="line['product_name']" /></td>
+                            <td>
+                                <t t-esc="line['quantity']" />
+                            </td>
+                            <td>
+                                <strong><t t-esc='line["price_unit"]' /></strong>
+                            <t t-if='line["discount"] != 0'>
+                                Disc: <t t-esc='line["discount"]' />%
+                            </t>
+                            </td>
+                            <td>
+                                <t t-esc="line['cancelado']" />
+                            </td>
+                            <td>
+                               <strong>  <t t-esc="line['total']"  /> </strong>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <table  class="table table-sm">
+                        <thead><tr>
+                            <th>Pago</th>
+                            <th>Total</th>
+                        </tr></thead>
+                        <tbody>
+                        <tr t-foreach='payments' t-as='payment'>
+                            <td><t t-esc="payment['name']" /></td>
+                            <td><t t-esc="payment['total']" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-right">
+                        Total: <strong><t t-esc='total_paid' t-options="{'widget': 'float', 'precision': currency_precision}"/></strong>
+                    </div>
+
+
+                    <br/>
+                    <div style="margin-top:15px;"> <!-- EMERGENTES -->
+                        <!-- Orderlines -->
+                        <h5>Boletos Emergentes</h5>
+                        <table class="table table-sm">
+                            <thead class="thead-dark"><tr>
+                                <th>Tarifa</th>
+                                <!--th>Del</th>
+                                <th>Al</th-->
+                                <th>Efectivos</th>
+                                <th>Costo</th>
+                                <th>Subtotal</th>
+                            </tr></thead>
+                            <tbody>
+                            <tr t-foreach='boletos_emergentes' t-as='line'>
+                                <td><t t-esc="line['cuota']" /></td>
+                                <!--td>
+                                    <p>Fecha del</p>
+                                </td>
+                                <td>
+                                   <p>Fecha al</p>
+                                </td-->
+                                <td>
+                                    <t t-esc='line["cantidad"]' />
+                                </td>
+                                <td>
+                                    <strong><t t-esc='line["costo_cuota"]'/></strong>
+                                </td>
+                                <td>
+                                   <strong><t t-esc='line["total_cuota"]' /></strong>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-right">
+                            <p>Total Boletos Emergentes: <strong><t t-esc='total_boletos_emergentes'/></strong> </p>
+                        </div>
+
+                    </div>
+
+                    <br/>
+
+
+
+                    <div class="text-right" style="font-size: 13px;">
+                        <p>Subtotal Emergentes: $ <strong> <t t-esc='total_boletos_emergentes'/> </strong> </p>
+
+                        <p>Total de Efectivo en reporte de Carril: $ <strong> <t t-set="suma" t-value="0"/>
+                                <t t-set="suma" t-value="suma + total_paid + total_boletos_emergentes" />
+                                <t t-esc="suma" t-options='{"widget": "float", "precision": 2}' /> </strong>
+
+                        </p>
+                        <p>Total de Efectivo Entregado por el Cajero(a): $ <strong> <t t-esc='total_efectivo'/> </strong> </p>
+                        <p>Diferencia con el Corte Final: $ <strong> <t t-set="resta" t-value="0"/>
+                                <t t-set="resta" t-value="resta + suma - total_efectivo" />
+                                <t t-esc="resta" t-options='{"widget": "float", "precision": 2}' /> </strong></p>
+                        <strong>TOTAL A DEPOSITAR: $ <strong>  <t t-esc='total_efectivo'/> </strong> </strong>
+                    </div>
+                    <br/>
+                    <div style="font-size: 13px;">
+                        Dólares: _________________________ (x)_________________________ En pesos:_________________________
+                    </div>
+                    <div style="font-size: 13px;">
+                        Boletos dejados por usuario(s) y reportados(s) por cajero(a):_________________________
+                    </div>
+                </div>
+
+                <br/>
+                <br/>
+                <br/>
+
+               <div>
+                    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td align="center">
+                                    ____________________________
+                                </td>
+                                <td align="center">
+                                    ____________________________
+                                </td>
+                                <td align="center">
+                                    ____________________________
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <t t-esc="nombre_cajero" />
+                                </td>
+                                <td align="center">
+                                    <t t-esc="nombre_jefe" />
+                                </td>
+                                <td align="center">
+                                    <t t-esc="nombre_administrador" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    Cajero
+                                </td>
+                                <td align="center">
+                                    Jefe de Operaciones
+                                </td>
+                                <td align="center">
+                                    Administrador
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                </body>
+                <p style="page-break-before:always;"> </p>
+            </xpath>
+        </template>
+
+
+
+
+</data>
+</odoo>

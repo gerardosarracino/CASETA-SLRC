@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_informe_excel_wizard,access.informe.excel.wizard,model_informe_excel_wizard,,1,1,1,0
+access_pos_boletos_emergentes,access.pos.boletos_emergentes,model_pos_boletos_emergentes,,1,1,1,0
+access_pos_tabla_emergentes,access.pos.tabla_emergentes,model_pos_tabla_emergentes,,1,1,1,0
