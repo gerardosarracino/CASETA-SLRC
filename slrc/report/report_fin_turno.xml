@@ -476,27 +476,51 @@
                                     <tr>
                                         <td>CUOTA</td>
                                         <td>--------------------------</td>
-                                        <td>$ 111111</td>
+                                        <td>$
+                                            <t t-set="subtotal_cuotas" t-value="0"/>
+                                            <t t-set="subtotal_cuotas" t-value="subtotal_cuotas +
+                                                cuota_total_motocicleta_siva + cuota_total_auto_siva + cuota_total_auto1eje_siva +
+                                                cuota_total_auto2eje_siva + cuota_total_autobus_siva + cuota_total_camion2eje_siva
+                                                + cuota_total_camion3eje_siva + cuota_total_camion4eje_siva"
+                                               t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="subtotal_cuotas" t-options='{"widget": "float", "precision": 2}' />
+
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>IVA</td>
                                         <td>--------------------------</td>
-                                        <td>1111</td>
+                                        <td>
+                                            <t t-set="subtotal_cuotas_iva" t-value="0"/>
+                                            <t t-set="subtotal_cuotas_iva" t-value="subtotal_cuotas_iva +
+                                                cuota_total_motocicleta_civa + cuota_total_auto_civa + cuota_total_auto1eje_civa +
+                                                cuota_total_auto2eje_civa + cuota_total_autobus_civa + cuota_total_camion2eje_civa
+                                                + cuota_total_camion3eje_civa + cuota_total_camion4eje_civa"
+                                               t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="subtotal_cuotas_iva" t-options='{"widget": "float", "precision": 2}' />
+
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>SUB TOTAL</td>
                                         <td>--------------------------</td>
-                                        <td>1111</td>
+                                        <td>
+                                            <t t-set="subtotal_cuotas_civa" t-value="0"/>
+                                            <t t-set="subtotal_cuotas_civa" t-value="subtotal_cuotas_civa +
+                                                subtotal_cuotas + subtotal_cuotas_iva "
+                                               t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="subtotal_cuotas_civa" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>SOBRANTE</td>
                                         <td>--------------------------</td>
-                                        <td>1111</td>
+                                        <td> PENDIENTE </td>
                                     </tr>
                                     <tr>
                                         <td>TOTAL</td>
                                         <td>--------------------------</td>
-                                        <td>$ 111111</td>
+                                        <td>$ PENDIENTE </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -509,15 +533,22 @@
                                     <tr>
                                         <td>RECAUDACION DEL DIA</td>
                                         <td>..............................</td>
-                                        <td>$ 11111111</td>
+                                        <td>$ PENDIENTE </td>
                                     </tr>
                                     <tr>
-                                        <td>RECAUDACION ACUMULADA DEL 01 DE ENERO AL 31 DE ENERO DEL 2021</td>
+                                        <td><strong>RECAUDACION ACUMULADA DEL
+                                            <t t-esc="date_start" t-options="{'widget': 'datetime'}"/> AL
+                                            <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong></td>
                                         <td>----------------------</td>
-                                        <td>$ 1111111</td>
+                                        <td>$ <span t-esc="recaudado_acum_mes" t-options='{"widget": "float", "precision": 2}'/></td>
                                     </tr>
                                     <tr>
-                                        <td>RECAUDACION ACUMULADA DEL 01 DE ENERO AL 31 DE ENERO DEL 2021</td>
+                                        <td>
+                                            <strong>
+                                            RECAUDACION ACUMULADA DEL 01 DE ENERO AL
+                                            <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/>
+                                            </strong>
+                                        </td>
                                         <td>----------------------</td>
                                         <td>$ 11111111</td>
                                     </tr>
@@ -538,9 +569,11 @@
                             <table class="table table-sm" cellpadding="3" cellspacing="0">
                                 <tbody>
                                     <tr>
-                                        <td>_________________</td>
+                                        <td>
+                                            <span t-esc="jefe_operaciones"/>
+                                        </td>
                                         <td>-x-</td>
-                                        <td>____________________</td>
+                                        <td> <span t-esc="administrador"/></td>
                                     </tr>
                                     <tr>
                                         <td>JEFE DE OPERACIONES</td>

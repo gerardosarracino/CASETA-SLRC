@@ -94,15 +94,26 @@ class PosReportesTurnoSrlc(models.TransientModel):
         fecha_hoy = fields.Datetime.now()
         hora = fecha_hoy.strftime("%H:%M:%S")
 
-        fecha_dma2 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
-        print(fecha_dma2, ' fecha local ')
+
         '''dt = datetime.strptime(str(fecha_dma2), '%d-%m-%Y %H:%M:%S')
         old_tz = pytz.timezone('UTC')
         new_tz = pytz.timezone('MST')
         fecha_dma2 = old_tz.localize(dt).astimezone(new_tz)
         fecha_dma2 = datetime.strftime(fecha_dma2, '%d/%m/%Y')'''
 
+        # FECHA UTC
+        fecha_dma2 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        print(fecha_dma2, ' fecha local UTC')
         fecha_dma2 = datetime.strftime(fecha_hoy, '%d/%m/%Y')
+
+        # FECHA MST HERMOSILLO
+        fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        dt = datetime.strptime(str(fecha_dma3), '%d-%m-%Y %H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+        fecha_dma3 = datetime.strftime(fecha_dma3, '%d/%m/%Y')
+        print(fecha_dma3, ' fecha local MST ')
 
         fecha_hora = time.strftime(hora, time.localtime())
         dt = datetime.strptime(str(fecha_hora), '%H:%M:%S')
@@ -196,13 +207,7 @@ class PosReportesTurnoSrlc(models.TransientModel):
         if hora >= '16:00:00' and hora <= '23:59:59':
             turno = 'Nocturno'
 
-            fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
-            dt = datetime.strptime(str(fecha_dma3), '%d-%m-%Y %H:%M:%S')
-            old_tz = pytz.timezone('UTC')
-            new_tz = pytz.timezone('MST')
-            fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
-            fecha_dma3 = datetime.strftime(fecha_dma3, '%d/%m/%Y')
-            print(fecha_dma3, ' fff 333 ')
+
 
             buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma3) + ' 00:00:00'),
                                                            ('date_order', '<=', str(fecha_dma2) + ' 23:59:59')])
@@ -509,10 +514,41 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
         print(turno, ' TURNO!', acum_pago_vesp)
 
+        # FECHA DE RECAUDACION DE INICIO DEL MES ACTUAL AL DIA ACTUAL
+        fecha_recaudacion_convert = datetime.strptime(fecha_dma3, '%d/%m/%Y')
+        fecha_recaudacion_iniciomes = datetime.strptime(str(fecha_recaudacion_convert.replace(day=1)), "%Y-%m-%d %H:%M:%S")
+        self.env.cr.execute(
+            "SELECT COALESCE(SUM(amount),0) FROM pos_payment WHERE payment_date >= '" +
+            str(fecha_recaudacion_iniciomes) + "' AND payment_date <= '" +
+         str(fecha_dma2) + "00:00:00" +"'")
+
+        recaudado_acum_mes = 0
+        res_total = self.env.cr.fetchall()
+        for tt in res_total:
+            recaudado_acum_mes = tt[0]
+        print(recaudado_acum_mes, fecha_recaudacion_iniciomes, ' ---------  recaudado')
+        # buscar_pagos = self.env["pos.payment"].search([])
+
+        # FECHA DE RECAUDACION DE TODOS LOS TIEMPOS
+        '''self.env.cr.execute(
+            "SELECT COALESCE(SUM(sancion),0) FROM control_estimaciones WHERE obra = '" +
+            str(self.obra.id) + "' AND sancion != '0'")
+        sancion_acum = 0
+        res_total = self.env.cr.fetchall()
+        for tt in res_total:
+            sancion_acum = tt[0]'''
+
+        jefe_operaciones = self.env.user.name
+        administrador = ""
+        b_administrador = self.env["res.users"].search([('partner_id.function', '=', 'ADMINISTRADOR')])
+        for i in b_administrador:
+            administrador = i.name
+
         data = {'date_start': self.start_date,
                 'date_stop': self.end_date,
                 'config_ids': self.pos_config_srlc_ids.ids,
-
+                'jefe_operaciones': jefe_operaciones,
+                'administrador': administrador,
                 # ACUMULADO DE CUOTAS
                 'cuota_mn_mat': acum_pago_mat,
                 'cuota_mn_vesp': acum_pago_vesp,
@@ -584,6 +620,10 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'residente1eje_folios_vendidos': residente1eje_folios_vendidos,
                 'residente2eje_folios_vendidos': residente2eje_folios_vendidos,
 
+                # RECAUDACION INICIO DEL MES A FECHA ACTUAL DEL MES
+                'recaudado_acum_mes': recaudado_acum_mes,
+
+                # RECAUDACION DE TODOS LOS TIEMPOS
 
                 }
         return self.env.ref('slrc.fin_turno_report_buttonx').report_action([], data=data)
