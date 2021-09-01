@@ -111,7 +111,7 @@
                                         <td>TOTAL RECAUDACION DIA</td>
                                     </tr>
                                     <tr>
-                                        <td>6</td>
+                                        <td><span t-esc="motocicleta_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td>0</td>
                                         <td>0</td>
                                         <td>0</td>
@@ -126,7 +126,7 @@
                                         <td>0</td>
                                     </tr>
                                     <tr>
-                                        <td>13</td>
+                                        <td><span t-esc="auto_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -141,7 +141,7 @@
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td>20</td>
+                                        <td><span t-esc="auto_1eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -156,7 +156,7 @@
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td>27</td>
+                                        <td><span t-esc="auto_2eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -171,7 +171,7 @@
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td>25</td>
+                                        <td><span t-esc="autobus_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -186,7 +186,7 @@
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td>25</td>
+                                        <td><span t-esc="camion2eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -201,7 +201,7 @@
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td>58</td>
+                                        <td><span t-esc="camion3eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -216,7 +216,7 @@
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td>90</td>
+                                        <td><span t-esc="camion4eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
