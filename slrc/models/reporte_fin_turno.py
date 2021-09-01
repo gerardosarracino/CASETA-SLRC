@@ -96,11 +96,13 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
         fecha_dma2 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
         print(fecha_dma2, ' fecha local ')
-        dt = datetime.strptime(str(fecha_dma2), '%d-%m-%Y %H:%M:%S')
+        '''dt = datetime.strptime(str(fecha_dma2), '%d-%m-%Y %H:%M:%S')
         old_tz = pytz.timezone('UTC')
         new_tz = pytz.timezone('MST')
         fecha_dma2 = old_tz.localize(dt).astimezone(new_tz)
-        fecha_dma2 = datetime.strftime(fecha_dma2, '%d/%m/%Y')
+        fecha_dma2 = datetime.strftime(fecha_dma2, '%d/%m/%Y')'''
+
+        fecha_dma2 = datetime.strftime(fecha_hoy, '%d/%m/%Y')
 
         fecha_hora = time.strftime(hora, time.localtime())
         dt = datetime.strptime(str(fecha_hora), '%H:%M:%S')
@@ -113,15 +115,31 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
         print(fecha_dma2, hora, ' hora  ---------- ')
         buscar_ordenes = []
-
+        turno = ""
         if hora >= '00:00:00' and hora <= '07:59:59':
             turno = 'Matutino'
 
+            buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma2) + ' 07:00:00'),
+                                                           ('date_order', '<=', str(fecha_dma2) + ' 13:59:59')])
+
             # BUSCAR LAS SESIONES QUE CORRESPONDAN A ESTE TURNO!
 
-            buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
-                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')])
-            print(buscar_sesiones_mat)
+            '''buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
+                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')])'''
+
+            buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 07:00:00'),
+                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 13:59:59')])
+
+            acum_pago_mat = 0
+            cum_pagoiva_matutino = 0
+            for mat in buscar_sesiones_mat:
+                buscar_pagos = self.env["pos.payment"].search([('session_id', '=', mat.id)])
+
+                for pagos in buscar_pagos:
+                    cum_pagoiva_matutino += pagos.pos_order_id.amount_tax
+                    acum_pago_mat += pagos.amount - pagos.pos_order_id.amount_tax
+
+            print(buscar_sesiones_mat, ' si entro matutino ')
 
         if hora >= '08:00:00' and hora <= '16:59:59':
             turno = 'Vespertino'
@@ -178,18 +196,41 @@ class PosReportesTurnoSrlc(models.TransientModel):
         if hora >= '16:00:00' and hora <= '23:59:59':
             turno = 'Nocturno'
 
-            buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma2) + ' 00:00:00'),
+            fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+            dt = datetime.strptime(str(fecha_dma3), '%d-%m-%Y %H:%M:%S')
+            old_tz = pytz.timezone('UTC')
+            new_tz = pytz.timezone('MST')
+            fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+            fecha_dma3 = datetime.strftime(fecha_dma3, '%d/%m/%Y')
+            print(fecha_dma3, ' fff 333 ')
+
+            buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma3) + ' 00:00:00'),
                                                            ('date_order', '<=', str(fecha_dma2) + ' 23:59:59')])
             print(buscar_ordenes)
 
             # BUSCAR TODAS LAS SESIONES POR SER EL ULTIMO TURNO
-            buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
-                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')])
-            buscar_sesiones_vesp = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 08:00:00'),
-                                                                   ('stop_at', '<=', str(fecha_dma2) + ' 16:59:59')])
-            buscar_sesiones_noc = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 16:00:00'),
-                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 23:59:59')])
+            '''buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
+                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')])'''
+            buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma3) + ' 07:00:00'),
+                                                                  ('stop_at', '<=', str(fecha_dma3) + ' 14:59:59')])
 
+            '''buscar_sesiones_vesp = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 08:00:00'),
+                                                                   ('stop_at', '<=', str(fecha_dma2) + ' 16:59:59')])'''
+
+            buscar_sesiones_vesp = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma3) + ' 15:00:00'),
+                                                                   ('stop_at', '<=', str(fecha_dma3) + ' 23:59:59')])
+
+
+
+            '''buscar_sesiones_noc = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 16:00:00'),
+                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 23:59:59')])'''
+            print(fecha_dma2, ' fffffffffffff ')
+            buscar_sesiones_noc = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
+                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 06:59:59')])
+
+            '''buscar_sesiones_vespxx = self.env["pos.session"].search([])
+            for svp in buscar_sesiones_vespxx:
+                print(svp.start_at, svp.stop_at, ' sssssssssss')'''
 
             print('Matutino ' , buscar_sesiones_mat, '--- Vespertino ' , buscar_sesiones_vesp, '-- Nocturno: ', buscar_sesiones_noc)
 
@@ -221,6 +262,7 @@ class PosReportesTurnoSrlc(models.TransientModel):
                     acum_pago_nocturno += pagos.amount - pagos.pos_order_id.amount_tax
 
 
+        print(turno, ' ESTE ES EL TURNO ACTUAL ')
 
         # BUSCAR COSTOS DE PEAJES
         motocicleta_cuota = ''
@@ -228,12 +270,15 @@ class PosReportesTurnoSrlc(models.TransientModel):
         auto_1eje_cuota = ''
         auto_2eje_cuota = ''
         autobus_cuota = ''
-        camion2je_cuota = ''
+        camion2eje_cuota = ''
         camion3eje_cuota = ''
         camion4eje_cuota = ''
         camion5eje_cuota = ''
         camion6eje_cuota = ''
         camion7eje_cuota = ''
+        residente_cuota = ''
+        residente1eje_cuota = ''
+        residente2eje_cuota = ''
         motocicleta_folios_vendidos = ''
         auto_folios_vendidos = ''
         auto1eje_folios_vendidos = ''
@@ -245,6 +290,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
         camion5eje_folios_vendidos = ''
         camion6eje_folios_vendidos = ''
         camion7eje_folios_vendidos = ''
+        residente_folios_vendidos = ''
+        residente1eje_folios_vendidos = ''
+        residente2eje_folios_vendidos = ''
         motocicleta_tarifa_siva = ''
         motocicleta_tarifa_iva = ''
         auto_tarifa_siva = ''
@@ -255,8 +303,8 @@ class PosReportesTurnoSrlc(models.TransientModel):
         auto_2eje_tarifa_iva = ''
         autobus_tarifa_siva = ''
         autobus_tarifa_iva = ''
-        camion2je_tarifa_siva = ''
-        camion2je_tarifa_iva = ''
+        camion2eje_tarifa_siva = ''
+        camion2eje_tarifa_iva = ''
         camion3eje_tarifa_siva = ''
         camion3eje_tarifa_iva = ''
         camion4eje_tarifa_siva = ''
@@ -267,6 +315,12 @@ class PosReportesTurnoSrlc(models.TransientModel):
         camion6eje_tarifa_iva = ''
         camion7eje_tarifa_siva = ''
         camion7eje_tarifa_iva = ''
+        residente_tarifa_iva = ''
+        residente_tarifa_siva = ''
+        residente1eje_tarifa_iva = ''
+        residente1eje_tarifa_siva = ''
+        residente2eje_tarifa_iva = ''
+        residente2eje_tarifa_siva = ''
         buscar_peajes = self.env["product.template"].search([])
         for bp in buscar_peajes:
 
@@ -341,9 +395,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 autobus_folios_vendidos = acum_folios
 
             elif bp.name == 'CAMION 2 EJES':
-                camion2je_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                camion2je_tarifa_siva = float(bp.list_price)
-                camion2je_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                camion2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                camion2eje_tarifa_siva = float(bp.list_price)
+                camion2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
 
                 acum_folios = 0
                 for ordenes in buscar_ordenes:
@@ -413,6 +467,46 @@ class PosReportesTurnoSrlc(models.TransientModel):
                     acum_folios += buscar_folios
                 camion7eje_folios_vendidos = acum_folios
 
+            elif bp.name == 'RESIDENTE':
+                residente_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                residente_tarifa_siva = float(bp.list_price)
+                residente_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+                print('RESIDENTE, ', bp.name, residente_cuota)
+
+                acum_folios = 0
+                for ordenes in buscar_ordenes:
+                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
+                                                                          ('product_id.id', '=', bp.id)])
+                    # print('buscar_folios', buscar_folios)
+                    acum_folios += buscar_folios
+                print(acum_folios, ' folios')
+                residente_folios_vendidos = acum_folios
+
+            elif bp.name == 'RESIDENTE + 1 EJE':
+                residente1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                residente1eje_tarifa_siva = float(bp.list_price)
+                residente1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+                acum_folios = 0
+                for ordenes in buscar_ordenes:
+                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
+                                                                             ('product_id.id', '=', bp.id)])
+                    acum_folios += buscar_folios
+                residente1eje_folios_vendidos = acum_folios
+
+            elif bp.name == 'RESIDENTE + 2 EJES':
+                residente2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                residente2eje_tarifa_siva = float(bp.list_price)
+                residente2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+                acum_folios = 0
+                for ordenes in buscar_ordenes:
+                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
+                                                                             ('product_id.id', '=', bp.id)])
+                    acum_folios += buscar_folios
+                residente2eje_folios_vendidos = acum_folios
+
         print(turno, ' TURNO!', acum_pago_vesp)
 
         data = {'date_start': self.start_date,
@@ -433,24 +527,30 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'auto_1eje_cuota': auto_1eje_cuota,
                 'auto_2eje_cuota': auto_2eje_cuota,
                 'autobus_cuota': autobus_cuota,
-                'camion2je_cuota': camion2je_cuota,
+                'camion2eje_cuota': camion2eje_cuota,
                 'camion3eje_cuota': camion3eje_cuota,
                 'camion4eje_cuota': camion4eje_cuota,
                 'camion5eje_cuota': camion5eje_cuota,
                 'camion6eje_cuota': camion6eje_cuota,
                 'camion7eje_cuota': camion7eje_cuota,
+                'residente_cuota': residente_cuota,
+                'residente1eje_cuota': residente1eje_cuota,
+                'residente2eje_cuota': residente2eje_cuota,
                 # TARIFAS SIN IVA
                 'motocicleta_tarifa_siva': motocicleta_tarifa_siva,
                 'auto_tarifa_siva': auto_tarifa_siva,
                 'auto_1eje_tarifa_siva': auto_1eje_tarifa_siva,
                 'auto_2eje_tarifa_siva': auto_2eje_tarifa_siva,
                 'autobus_tarifa_siva': autobus_tarifa_siva,
-                'camion2je_tarifa_siva': camion2je_tarifa_siva,
+                'camion2eje_tarifa_siva': camion2eje_tarifa_siva,
                 'camion3eje_tarifa_siva': camion3eje_tarifa_siva,
                 'camion4eje_tarifa_siva': camion4eje_tarifa_siva,
                 'camion5eje_tarifa_siva': camion5eje_tarifa_siva,
                 'camion6eje_tarifa_siva': camion6eje_tarifa_siva,
                 'camion7eje_tarifa_siva': camion7eje_tarifa_siva,
+                'residente_tarifa_siva': camion7eje_tarifa_siva,
+                'residente1eje_tarifa_siva': camion7eje_tarifa_siva,
+                'residente2eje_tarifa_siva': camion7eje_tarifa_siva,
 
                 # TARIFAS IVA
                 'motocicleta_tarifa_iva': motocicleta_tarifa_iva,
@@ -458,12 +558,15 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'auto_1eje_tarifa_iva': auto_1eje_tarifa_iva,
                 'auto_2eje_tarifa_iva': auto_2eje_tarifa_iva,
                 'autobus_tarifa_iva': autobus_tarifa_iva,
-                'camion2je_tarifa_iva': camion2je_tarifa_iva,
+                'camion2eje_tarifa_iva': camion2eje_tarifa_iva,
                 'camion3eje_tarifa_iva': camion3eje_tarifa_iva,
                 'camion4eje_tarifa_iva': camion4eje_tarifa_iva,
                 'camion5eje_tarifa_iva': camion5eje_tarifa_iva,
                 'camion6eje_tarifa_iva': camion6eje_tarifa_iva,
                 'camion7eje_tarifa_iva': camion7eje_tarifa_iva,
+                'residente_tarifa_iva': camion7eje_tarifa_iva,
+                'residente1eje_tarifa_iva': camion7eje_tarifa_iva,
+                'residente2eje_tarifa_iva': camion7eje_tarifa_iva,
 
                 # FOLIOS VENDIDOS
                 'motocicleta_folios_vendidos': motocicleta_folios_vendidos,
@@ -477,6 +580,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'camion5eje_folios_vendidos': camion5eje_folios_vendidos,
                 'camion6eje_folios_vendidos': camion6eje_folios_vendidos,
                 'camion7eje_folios_vendidos': camion7eje_folios_vendidos,
+                'residente_folios_vendidos': residente_folios_vendidos,
+                'residente1eje_folios_vendidos': residente1eje_folios_vendidos,
+                'residente2eje_folios_vendidos': residente2eje_folios_vendidos,
 
 
                 }
