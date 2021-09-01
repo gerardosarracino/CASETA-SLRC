@@ -7,6 +7,7 @@
                 model="pos.reportes_turno.wizard"
                 string="Reporte Fin de Turno"
                 report_type="qweb-pdf"
+                paperformat="slrc.paperformat"
                 name="slrc.report_fin_turno"
                 menu="False"
         />
@@ -537,25 +538,27 @@
                                     </tr>
                                     <tr>
                                         <td><strong>RECAUDACION ACUMULADA DEL
-                                            <t t-esc="date_start" t-options="{'widget': 'datetime'}"/> AL
-                                            <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong></td>
+
+
+                                            <t t-esc="fecha_recaudacion_iniciomes" t-options="{'widget': 'date'}" /> AL <!-- .strftime('%d de %B de %Y') -->
+                                            <t t-esc="date_stop" t-options="{'widget': 'date'}"/></strong></td>
                                         <td>----------------------</td>
                                         <td>$ <span t-esc="recaudado_acum_mes" t-options='{"widget": "float", "precision": 2}'/></td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <strong>
-                                            RECAUDACION ACUMULADA DEL 01 DE ENERO AL
-                                            <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/>
+                                            RECAUDACION ACUMULADA DEL <t t-esc="fecha_inicioyear_convert"  t-options="{'widget': 'date'}"/> AL
+                                            <t t-esc="date_stop" t-options="{'widget': 'date'}" />
                                             </strong>
                                         </td>
-                                        <td>----------------------</td>
-                                        <td>$ 11111111</td>
+                                        <td> ---------------------- </td>
+                                        <td>$ <span t-esc="recaudado_acum_year" t-options='{"widget": "float", "precision": 2}'/> </td>
                                     </tr>
                                     <tr>
-                                        <td>TOTAL</td>
+                                        <td>RECAUDACION TOTAL DEL 01-SEPT.-2021 AL <t t-esc="date_stop" t-options="{'widget': 'date'}" /></td>
                                         <td>-----------------------</td>
-                                        <td>$ 1111111</td>
+                                        <td>$ <span t-esc="recaudado_todos_tiempos" t-options='{"widget": "float", "precision": 2}'/></td>
                                     </tr>
                                 </tbody>
                             </table>

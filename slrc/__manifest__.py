@@ -27,8 +27,10 @@
         'views/pos_informe_pdf.xml',
         'views/informe_excel.xml',
         'views/report_saledetails.xml',
+        'data/paperformat.xml',
         'views/reporte_fin_turno.xml',
         'report/report_fin_turno.xml',
+        'report/report_matutino.xml',
         'views/fin_turno_report.xml',
         'views/res_config_settings_views.xml',
 

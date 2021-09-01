@@ -14,6 +14,7 @@ from odoo.http import request
 from odoo.osv.expression import AND
 import base64
 from datetime import datetime
+
 _logger = logging.getLogger(__name__)
 
 
@@ -85,6 +86,14 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 for s in sesion:
                     print(s.name, s.config_id.carril)
         self.total_dolares_matutino = 1
+
+    def generate_report_turnomat(self):
+        print(' GENERAR REPORTE DEL TURNO MAT')
+        data = {'date_start': self.start_date,
+                'date_stop': self.end_date,
+                'config_ids': self.pos_config_srlc_ids.ids,
+                }
+        return self.env.ref('slrc.matutino_report_button').report_action([], data=data)
 
     def generate_report(self):
 
@@ -520,23 +529,39 @@ class PosReportesTurnoSrlc(models.TransientModel):
         self.env.cr.execute(
             "SELECT COALESCE(SUM(amount),0) FROM pos_payment WHERE payment_date >= '" +
             str(fecha_recaudacion_iniciomes) + "' AND payment_date <= '" +
-         str(fecha_dma2) + "00:00:00" +"'")
+            str(fecha_dma2) + "00:00:00" + "'")
 
+        '''fecha_recaudacion_iniciomes = datetime.strptime(str(fecha_recaudacion_iniciomes), '%Y-%m-%d %H:%M:%S')
+        print(fecha_recaudacion_iniciomes, ' fecha_recaudacion_iniciomes')'''
         recaudado_acum_mes = 0
         res_total = self.env.cr.fetchall()
         for tt in res_total:
             recaudado_acum_mes = tt[0]
-        print(recaudado_acum_mes, fecha_recaudacion_iniciomes, ' ---------  recaudado')
-        # buscar_pagos = self.env["pos.payment"].search([])
 
-        # FECHA DE RECAUDACION DE TODOS LOS TIEMPOS
-        '''self.env.cr.execute(
-            "SELECT COALESCE(SUM(sancion),0) FROM control_estimaciones WHERE obra = '" +
-            str(self.obra.id) + "' AND sancion != '0'")
-        sancion_acum = 0
+        # FECHA DE RECAUDACION DEL ANIO
+        epoch_year = datetime.today().year
+        year_start = datetime(epoch_year, 1, 1)
+        # year_end = datetime(epoch_year, 12, 31)
+        fecha_inicioyear_convert = datetime.strptime(str(year_start), '%Y-%m-%d %H:%M:%S')
+        self.env.cr.execute(
+            "SELECT COALESCE(SUM(amount),0) FROM pos_payment WHERE payment_date >= '" +
+            str(fecha_inicioyear_convert) + "' AND payment_date <= '" +
+            str(fecha_dma2) + "00:00:00" + "'")
+        print(fecha_dma2, ' fecha_dma2')
+        recaudado_acum_year = 0
         res_total = self.env.cr.fetchall()
         for tt in res_total:
-            sancion_acum = tt[0]'''
+            recaudado_acum_year = tt[0]
+
+        # FECHA DE RECAUDACION DE TODOS LOS TIEMPOS
+        self.env.cr.execute(
+             "SELECT COALESCE(SUM(amount),0) FROM pos_payment WHERE payment_date >= '" +
+            "01/01/1990 00:00:00" + "' AND payment_date <= '" +
+            str(fecha_dma2) + "'")
+        recaudado_todos_tiempos = 0
+        res_total = self.env.cr.fetchall()
+        for tt in res_total:
+            recaudado_todos_tiempos = tt[0]
 
         jefe_operaciones = self.env.user.name
         administrador = ""
@@ -622,9 +647,14 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
                 # RECAUDACION INICIO DEL MES A FECHA ACTUAL DEL MES
                 'recaudado_acum_mes': recaudado_acum_mes,
-
+                # FECHA DE INICIO DEL MES ACTUAL DE RECAUDACION
+                'fecha_recaudacion_iniciomes': fecha_recaudacion_iniciomes,
+                # RECAUDACION DEL ANIO
+                'recaudado_acum_year': recaudado_acum_year,
+                # ANIO DE INICIO acutal
+                'fecha_inicioyear_convert': fecha_inicioyear_convert,
                 # RECAUDACION DE TODOS LOS TIEMPOS
-
+                'recaudado_todos_tiempos': recaudado_todos_tiempos,
                 }
         return self.env.ref('slrc.fin_turno_report_buttonx').report_action([], data=data)
 

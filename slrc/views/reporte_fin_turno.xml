@@ -28,7 +28,9 @@
                     <field name="pos_config_srlc_ids"/>
                 </group>
                 <group>
-                     <button name="%(fin_turno_report_button)d" string="Imprimir Reporte" type="action" icon="fa-copy"/>
+                     <button name="%(fin_turno_report_button)d" string="Imprimir Reporte Fin de turno" type="action" icon="fa-copy"/>
+
+                        <button name="generate_report_turnomat" string="Imprimir Reporte Turno Matutino" type="object" class="btn-primary"/>
                 </group>
 
                 <!--group string="Boletos Emergentes">

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report
+                id="matutino_report_button"
+                model="pos.reportes_turno.wizard"
+                string="Reporte Matutino"
+                report_type="qweb-pdf"
+                paperformat="slrc.paperformat"
+                name="slrc.report_matutino"
+                menu="False"
+        />
+
+        <template id="report_matutino">
+            <t t-call="web.html_container">
+                <t t-call="web.internal_layout">
+                    <div class="page">
+                        <style>
+                            body {
+                            font-size: 12px;
+                            font-family: Arial, Helvetica, sans-serif;
+                            }
+
+                            #header {
+                            text-align: center;
+                            border-bottom: 1px solid #666;
+                            padding-bottom: 2px;
+                            }
+
+                            h3,
+                            h4,
+                            h5 {
+                            text-align: center;
+                            margin: 0;
+                            line-height: 20px;
+                            }
+
+                            table,
+                            td,
+                            th {
+                            border-color: #eee;
+                            font-size: 11px;
+                            }
+
+                            caption {
+                            font-weight: 700;
+                            margin-bottom: 20px;
+                            margin-top: 10px;
+                            }
+
+                            #footer h5 {
+                            text-align: center;
+                            border-bottom: 1px solid #eee;
+                            }
+
+                            #opciones {
+                            position: fixed;
+                            top: 0;
+                            background-color: #999;
+                            padding: 5px;
+                            right: 0;
+                            z-index: 99999;
+                            margin-right: 8px;
+                            display: inline-block;
+                            -moz-box-shadow: 0 0 3px #999;
+                            -webkit-box-shadow: 0 0 3px #999;
+                            box-shadow: 0 0 3px #999;
+                            }
+                            #tabla-contendio tbody {
+                            overflow: auto;
+                            position: relative;
+                            }
+                            #opciones a {
+                            border-right: 1px solid #ccc;
+                            padding-right: 5px;
+                            color: #fff;
+                            text-decoration: none;
+                            }
+
+                            #opciones a:last-child {
+                            border: none;
+                            }
+
+                            #opciones a:before {
+                            content: " ";
+                            }
+                        </style>
+
+                        <div class="text-left">
+                            <h5>RECAUDACION CORRESPONDIENTE AL <strong><t t-esc="date_start" t-options="{'widget': 'datetime'}"/> -
+                                <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong></h5>
+                        </div>
+
+                        <div>
+                            <table class="table table-sm" cellpadding="3" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td>TARIFA</td>
+                                        <td>CARRIL A</td>
+                                        <td>CARRIL B</td>
+                                        <td>CARRIL C</td>
+                                        <td>CARRIL D</td>
+                                        <td>CARRIL E</td>
+                                        <td>CARRIL F</td>
+                                        <td>AFORO POR TURNO</td>
+                                        <td>TOTAL DE CUOTA</td>
+                                        <td>TOTAL DE IVA</td>
+                                        <td>RECAUDACION OBTENIDA TURNO</td>
+                                        <td>TOTAL AFORO DIA</td>
+                                        <td>TOTAL RECAUDACION DIA</td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>13</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>20</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>27</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>25</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>25</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>58</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>90</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>RESID.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>[ 000 ]</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>[ 000 ]</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>EXC.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>SOBR.</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>[ 000 ]</td>
+                                    </tr>
+                                    <tr>
+                                        <td>DLLS</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>[ 000 ]</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>TOTAL</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>$ 00000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+
+
+
+        </template>
+
+
+    </data>
+</openerp>

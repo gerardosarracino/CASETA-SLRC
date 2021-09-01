@@ -6,4 +6,11 @@
         <field name="report_type">qweb-html</field>
         <field name="report_name">slrc.report_fin_turno</field>
     </record>
+
+    <record id="matutino_report_button" model="ir.actions.report">
+        <field name="name">Reporte Turno Matutino</field>
+        <field name="model">pos.reportes_turno.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">slrc.report_matutino</field>
+    </record>
 </odoo>
