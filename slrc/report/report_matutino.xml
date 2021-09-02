@@ -107,142 +107,331 @@
                                         <td>TOTAL DE CUOTA</td>
                                         <td>TOTAL DE IVA</td>
                                         <td>RECAUDACION OBTENIDA TURNO</td>
-                                        <td>TOTAL AFORO DIA</td>
-                                        <td>TOTAL RECAUDACION DIA</td>
                                     </tr>
                                     <tr>
                                         <td><span t-esc="motocicleta_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td><span t-esc="folio_carril1_motocicleta" /></td>
+                                        <td><span t-esc="folio_carril2_motocicleta" /></td>
+                                        <td><span t-esc="folio_carril3_motocicleta" /></td>
+                                        <td><span t-esc="folio_carril4_motocicleta" /></td>
+                                        <td><span t-esc="folio_carril5_motocicleta" /></td>
+                                        <td><span t-esc="folio_carril6_motocicleta" /></td>
+                                        <td>          <!--  ###############################   AFORO POR TURNO   -->
+                                            <t t-set="aforo_turno_motocicleta" t-value="0"/>
+                                            <t t-set="aforo_turno_motocicleta" t-value="aforo_turno_motocicleta +
+                                            folio_carril1_motocicleta + folio_carril2_motocicleta +
+                                            folio_carril3_motocicleta + folio_carril4_motocicleta +
+                                             folio_carril5_motocicleta + folio_carril6_motocicleta"/>
+                                            <t t-esc="aforo_turno_motocicleta"  />
+                                        </td>
+                                        <td>                <!--  ###############################   TOTAL DE CUOTA   -->
+                                            <t t-set="total_cuota_motocicleta" t-value="0"/>
+                                            <t t-set="total_cuota_motocicleta" t-value="total_cuota_motocicleta +
+                                            aforo_turno_motocicleta * motocicleta_tarifa_siva"/>
+                                            <t t-esc="total_cuota_motocicleta" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   TOTAL DE IVA   -->
+                                            <t t-set="total_iva_motocicleta" t-value="0"/>
+                                            <t t-set="total_iva_motocicleta" t-value="total_iva_motocicleta +
+                                            aforo_turno_motocicleta * motocicleta_tarifa_iva"/>
+                                            <t t-esc="total_iva_motocicleta" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   RECAUDACION OBTENIDA TURNO   -->
+                                            <t t-set="recaudacion_obtenida_motocicleta" t-value="0"/>
+                                            <t t-set="recaudacion_obtenida_motocicleta" t-value="recaudacion_obtenida_motocicleta +
+                                            total_cuota_motocicleta + total_iva_motocicleta"/>
+                                            <t t-esc="recaudacion_obtenida_motocicleta" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><span t-esc="auto_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td><span t-esc="folio_carril1_auto" /></td>
+                                        <td><span t-esc="folio_carril2_auto" /></td>
+                                        <td><span t-esc="folio_carril3_auto" /></td>
+                                        <td><span t-esc="folio_carril4_auto" /></td>
+                                        <td><span t-esc="folio_carril5_auto" /></td>
+                                        <td><span t-esc="folio_carril6_auto" /></td>
+                                        <td>
+                                            <t t-set="aforo_turno_auto" t-value="0"/>
+                                            <t t-set="aforo_turno_auto" t-value="aforo_turno_auto +
+                                            folio_carril1_auto + folio_carril2_auto +
+                                            folio_carril3_auto + folio_carril4_auto +
+                                             folio_carril5_auto + folio_carril6_auto"/>
+                                            <t t-esc="aforo_turno_auto"  />
+                                        </td>
+                                        <td>                <!--  ###############################   TOTAL DE CUOTA   -->
+                                            <t t-set="total_cuota_auto" t-value="0"/>
+                                            <t t-set="total_cuota_auto" t-value="total_cuota_auto +
+                                            aforo_turno_auto * auto_tarifa_siva"/>
+                                            <t t-esc="total_cuota_auto" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   TOTAL DE IVA   -->
+                                            <t t-set="total_iva_auto" t-value="0"/>
+                                            <t t-set="total_iva_auto" t-value="total_iva_auto +
+                                            aforo_turno_auto * auto_tarifa_iva"/>
+                                            <t t-esc="total_iva_auto" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   RECAUDACION OBTENIDA TURNO   -->
+                                            <t t-set="recaudacion_obtenida_auto" t-value="0"/>
+                                            <t t-set="recaudacion_obtenida_auto" t-value="recaudacion_obtenida_auto +
+                                            total_cuota_auto + total_iva_auto"/>
+                                            <t t-esc="recaudacion_obtenida_auto" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><span t-esc="auto_1eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td><span t-esc="folio_carril1_auto1eje" /></td>
+                                        <td><span t-esc="folio_carril2_auto1eje" /></td>
+                                        <td><span t-esc="folio_carril3_auto1eje" /></td>
+                                        <td><span t-esc="folio_carril4_auto1eje" /></td>
+                                        <td><span t-esc="folio_carril5_auto1eje" /></td>
+                                        <td><span t-esc="folio_carril6_auto1eje" /></td>
+                                        <td>
+                                            <t t-set="aforo_turno_auto1eje" t-value="0"/>
+                                            <t t-set="aforo_turno_auto1eje" t-value="aforo_turno_auto1eje +
+                                            folio_carril1_auto1eje + folio_carril2_auto1eje +
+                                            folio_carril3_auto1eje + folio_carril4_auto1eje +
+                                             folio_carril5_auto1eje + folio_carril6_auto1eje"/>
+                                            <t t-esc="aforo_turno_auto1eje"  />
+                                        </td>
+
+                                        <td>                <!--  ###############################   TOTAL DE CUOTA   -->
+                                            <t t-set="total_cuota_auto1eje" t-value="0"/>
+                                            <t t-set="total_cuota_auto1eje" t-value="total_cuota_auto1eje +
+                                            aforo_turno_auto1eje * auto_1eje_tarifa_siva"/>
+                                            <t t-esc="total_cuota_auto1eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   TOTAL DE IVA   -->
+                                            <t t-set="total_iva_auto1eje" t-value="0"/>
+                                            <t t-set="total_iva_auto1eje" t-value="total_iva_auto1eje +
+                                            aforo_turno_auto1eje * auto_1eje_tarifa_iva"/>
+                                            <t t-esc="total_iva_auto1eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   RECAUDACION OBTENIDA TURNO   -->
+                                            <t t-set="recaudacion_obtenida_auto1eje" t-value="0"/>
+                                            <t t-set="recaudacion_obtenida_auto1eje" t-value="recaudacion_obtenida_auto1eje +
+                                            total_cuota_auto1eje + total_iva_auto1eje"/>
+                                            <t t-esc="recaudacion_obtenida_auto1eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+
                                     </tr>
                                     <tr>
                                         <td><span t-esc="auto_2eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td><span t-esc="folio_carril1_auto2eje" /></td>
+                                        <td><span t-esc="folio_carril2_auto2eje" /></td>
+                                        <td><span t-esc="folio_carril3_auto2eje" /></td>
+                                        <td><span t-esc="folio_carril4_auto2eje" /></td>
+                                        <td><span t-esc="folio_carril5_auto2eje" /></td>
+                                        <td><span t-esc="folio_carril6_auto2eje" /></td>
+                                        <td>
+                                            <t t-set="aforo_turno_auto2eje" t-value="0"/>
+                                            <t t-set="aforo_turno_auto2eje" t-value="aforo_turno_auto2eje +
+                                            folio_carril1_auto2eje + folio_carril2_auto2eje +
+                                            folio_carril3_auto2eje + folio_carril4_auto2eje +
+                                             folio_carril5_auto2eje + folio_carril6_auto2eje"/>
+                                            <t t-esc="aforo_turno_auto2eje"  />
+                                        </td>
+                                        <td>                <!--  ###############################   TOTAL DE CUOTA   -->
+                                            <t t-set="total_cuota_auto2eje" t-value="0"/>
+                                            <t t-set="total_cuota_auto2eje" t-value="total_cuota_auto2eje +
+                                            aforo_turno_auto2eje * residente2eje_tarifa_siva"/>
+                                            <t t-esc="total_cuota_auto2eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   TOTAL DE IVA   -->
+                                            <t t-set="total_iva_auto2eje" t-value="0"/>
+                                            <t t-set="total_iva_auto2eje" t-value="total_iva_auto2eje +
+                                            aforo_turno_auto2eje * residente2eje_tarifa_iva"/>
+                                            <t t-esc="total_iva_auto2eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   RECAUDACION OBTENIDA TURNO   -->
+                                            <t t-set="recaudacion_obtenida_auto2eje" t-value="0"/>
+                                            <t t-set="recaudacion_obtenida_auto2eje" t-value="recaudacion_obtenida_auto2eje +
+                                            total_cuota_auto2eje + total_iva_auto2eje"/>
+                                            <t t-esc="recaudacion_obtenida_auto2eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><span t-esc="autobus_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td><span t-esc="folio_carril1_autobus" /></td>
+                                        <td><span t-esc="folio_carril2_autobus" /></td>
+                                        <td><span t-esc="folio_carril3_autobus" /></td>
+                                        <td><span t-esc="folio_carril4_autobus" /></td>
+                                        <td><span t-esc="folio_carril5_autobus" /></td>
+                                        <td><span t-esc="folio_carril6_autobus" /></td>
+                                        <td>
+                                            <t t-set="aforo_turno_autobus" t-value="0"/>
+                                            <t t-set="aforo_turno_autobus" t-value="aforo_turno_autobus +
+                                            folio_carril1_autobus + folio_carril2_autobus +
+                                            folio_carril3_autobus + folio_carril4_autobus +
+                                             folio_carril5_autobus + folio_carril6_autobus"/>
+                                            <t t-esc="aforo_turno_autobus"  />
+                                        </td>
+                                        <td>                <!--  ###############################   TOTAL DE CUOTA   -->
+                                            <t t-set="total_cuota_autobus" t-value="0"/>
+                                            <t t-set="total_cuota_autobus" t-value="total_cuota_autobus +
+                                            aforo_turno_autobus * autobus_tarifa_siva"/>
+                                            <t t-esc="total_cuota_autobus" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   TOTAL DE IVA   -->
+                                            <t t-set="total_iva_autobus" t-value="0"/>
+                                            <t t-set="total_iva_autobus" t-value="total_iva_autobus +
+                                            aforo_turno_autobus * autobus_tarifa_iva"/>
+                                            <t t-esc="total_iva_autobus" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   RECAUDACION OBTENIDA TURNO   -->
+                                            <t t-set="recaudacion_obtenida_autobus" t-value="0"/>
+                                            <t t-set="recaudacion_obtenida_autobus" t-value="recaudacion_obtenida_autobus +
+                                            total_cuota_autobus + total_iva_autobus"/>
+                                            <t t-esc="recaudacion_obtenida_autobus" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><span t-esc="camion2eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td><span t-esc="folio_carril1_camion2eje" /></td>
+                                        <td><span t-esc="folio_carril2_camion2eje" /></td>
+                                        <td><span t-esc="folio_carril3_camion2eje" /></td>
+                                        <td><span t-esc="folio_carril4_camion2eje" /></td>
+                                        <td><span t-esc="folio_carril5_camion2eje" /></td>
+                                        <td><span t-esc="folio_carril6_camion2eje" /></td>
+                                        <td>
+                                            <t t-set="aforo_turno_camion2eje" t-value="0"/>
+                                            <t t-set="aforo_turno_camion2eje" t-value="aforo_turno_camion2eje +
+                                            folio_carril1_camion2eje + folio_carril2_camion2eje +
+                                            folio_carril3_camion2eje + folio_carril4_camion2eje +
+                                             folio_carril5_camion2eje + folio_carril6_camion2eje"/>
+                                            <t t-esc="aforo_turno_camion2eje"  />
+                                        </td>
+                                        <td>                <!--  ###############################   TOTAL DE CUOTA   -->
+                                            <t t-set="total_cuota_camion2eje" t-value="0"/>
+                                            <t t-set="total_cuota_camion2eje" t-value="total_cuota_camion2eje +
+                                            aforo_turno_camion2eje * camion2eje_tarifa_siva"/>
+                                            <t t-esc="total_cuota_camion2eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   TOTAL DE IVA   -->
+                                            <t t-set="total_iva_camion2eje" t-value="0"/>
+                                            <t t-set="total_iva_camion2eje" t-value="total_iva_camion2eje +
+                                            aforo_turno_camion2eje * camion2eje_tarifa_iva"/>
+                                            <t t-esc="total_iva_camion2eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   RECAUDACION OBTENIDA TURNO   -->
+                                            <t t-set="recaudacion_obtenida_camion2eje" t-value="0"/>
+                                            <t t-set="recaudacion_obtenida_camion2eje" t-value="recaudacion_obtenida_camion2eje +
+                                            total_cuota_camion2eje + total_iva_camion2eje"/>
+                                            <t t-esc="recaudacion_obtenida_camion2eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><span t-esc="camion3eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td><span t-esc="folio_carril1_camion3eje" /></td>
+                                        <td><span t-esc="folio_carril2_camion3eje" /></td>
+                                        <td><span t-esc="folio_carril3_camion3eje" /></td>
+                                        <td><span t-esc="folio_carril4_camion3eje" /></td>
+                                        <td><span t-esc="folio_carril5_camion3eje" /></td>
+                                        <td><span t-esc="folio_carril6_camion3eje" /></td>
+                                        <td>
+                                            <t t-set="aforo_turno_camion3eje" t-value="0"/>
+                                            <t t-set="aforo_turno_camion3eje" t-value="aforo_turno_camion3eje +
+                                            folio_carril1_camion3eje + folio_carril2_camion3eje +
+                                            folio_carril3_camion3eje + folio_carril4_camion3eje +
+                                             folio_carril5_camion3eje + folio_carril6_camion3eje"/>
+                                            <t t-esc="aforo_turno_camion3eje"  />
+                                        </td>
+                                        <td>                <!--  ###############################   TOTAL DE CUOTA   -->
+                                            <t t-set="total_cuota_camion3eje" t-value="0"/>
+                                            <t t-set="total_cuota_camion3eje" t-value="total_cuota_camion3eje +
+                                            aforo_turno_camion3eje * camion3eje_tarifa_siva"/>
+                                            <t t-esc="total_cuota_camion3eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   TOTAL DE IVA   -->
+                                            <t t-set="total_iva_camion3eje" t-value="0"/>
+                                            <t t-set="total_iva_camion3eje" t-value="total_iva_camion3eje +
+                                            aforo_turno_camion3eje * camion3eje_tarifa_iva"/>
+                                            <t t-esc="total_iva_camion3eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   RECAUDACION OBTENIDA TURNO   -->
+                                            <t t-set="recaudacion_obtenida_camion3eje" t-value="0"/>
+                                            <t t-set="recaudacion_obtenida_camion3eje" t-value="recaudacion_obtenida_camion3eje +
+                                            total_cuota_camion3eje + total_iva_camion3eje"/>
+                                            <t t-esc="recaudacion_obtenida_camion3eje" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><span t-esc="camion4eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                            <t t-set="folio_carril1_camion4ejeplus" t-value="0"/>
+                                            <t t-set="folio_carril1_camion4ejeplus" t-value="folio_carril1_camion4ejeplus + folio_carril1_camion4eje
+                                             + folio_carril1_camion5eje + folio_carril1_camion6eje + folio_carril1_camion7eje "/>
+                                            <t t-esc="folio_carril1_camion4ejeplus"  />
+                                        </td>
+                                        <td><t t-set="folio_carril2_camion4ejeplus" t-value="0"/>
+                                            <t t-set="folio_carril2_camion4ejeplus" t-value="folio_carril2_camion4ejeplus + folio_carril2_camion4eje
+                                             + folio_carril2_camion5eje + folio_carril2_camion6eje + folio_carril2_camion7eje "/>
+                                            <t t-esc="folio_carril2_camion4ejeplus" /></td>
+                                        <td>
+                                            <t t-set="folio_carril3_camion4ejeplus" t-value="0"/>
+                                            <t t-set="folio_carril3_camion4ejeplus" t-value="folio_carril3_camion4ejeplus + folio_carril3_camion4eje
+                                             + folio_carril3_camion5eje + folio_carril3_camion6eje + folio_carril3_camion7eje "/>
+                                            <t t-esc="folio_carril3_camion4ejeplus"  />
+                                        </td>
+                                        <td><t t-set="folio_carril4_camion4ejeplus" t-value="0"/>
+                                            <t t-set="folio_carril4_camion4ejeplus" t-value="folio_carril4_camion4ejeplus + folio_carril4_camion4eje
+                                             + folio_carril4_camion5eje + folio_carril4_camion6eje + folio_carril4_camion7eje "/>
+                                            <t t-esc="folio_carril4_camion4ejeplus" /></td>
+                                        <td>
+                                            <t t-set="folio_carril5_camion4ejeplus" t-value="0"/>
+                                            <t t-set="folio_carril5_camion4ejeplus" t-value="folio_carril5_camion4ejeplus + folio_carril5_camion4eje
+                                             + folio_carril5_camion5eje + folio_carril5_camion6eje + folio_carril5_camion7eje "/>
+                                            <t t-esc="folio_carril5_camion4ejeplus"  /></td>
+
+                                        <td> <!--  CARRIL F -->
+                                            <t t-set="folio_carril6_camion4ejeplus" t-value="0"/>
+                                            <t t-set="folio_carril6_camion4ejeplus" t-value="folio_carril6_camion4ejeplus + folio_carril6_camion4eje
+                                             + folio_carril6_camion5eje + folio_carril6_camion6eje + folio_carril6_camion7eje "/>
+                                            <t t-esc="folio_carril6_camion4ejeplus"  />
+                                        </td>
+                                        <td>   <!--  AFORO POR TURNO  -->
+                                            <t t-set="aforo_turno_camion4ejeplus" t-value="0"/>
+                                            <t t-set="aforo_turno_camion4ejeplus" t-value="aforo_turno_camion4ejeplus +
+                                            folio_carril1_camion4ejeplus + folio_carril2_camion4ejeplus +
+                                            folio_carril3_camion4ejeplus + folio_carril4_camion4ejeplus +
+                                             folio_carril5_camion4ejeplus + folio_carril6_camion4ejeplus"/>
+                                            <t t-esc="aforo_turno_camion4ejeplus"  />
+                                        </td>
+                                        <td>                <!--  ###############################   TOTAL DE CUOTA   -->
+                                            <t t-set="total_cuota_camion4ejeplus" t-value="0"/>
+                                            <t t-set="total_cuota_camion4ejeplus" t-value="total_cuota_camion4ejeplus +
+                                            aforo_turno_camion4ejeplus * camion4eje_tarifa_siva"/>
+                                            <t t-esc="total_cuota_camion4ejeplus" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   TOTAL DE IVA   -->
+                                            <t t-set="total_iva_4ejeplus" t-value="0"/>
+                                            <t t-set="total_iva_4ejeplus" t-value="total_iva_4ejeplus +
+                                            aforo_turno_camion4ejeplus * camion4eje_tarifa_iva"/>
+                                            <t t-esc="total_iva_4ejeplus" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td> <!--  ###############################   RECAUDACION OBTENIDA TURNO   -->
+                                            <t t-set="recaudacion_obtenida_4ejeplus" t-value="0"/>
+                                            <t t-set="recaudacion_obtenida_4ejeplus" t-value="recaudacion_obtenida_4ejeplus +
+                                            total_cuota_camion4ejeplus + total_iva_4ejeplus"/>
+                                            <t t-esc="recaudacion_obtenida_4ejeplus" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>RESID.</td>
+                                        <td><span t-esc="folio_carril1_residente" /></td>
+                                        <td><span t-esc="folio_carril2_residente" /></td>
+                                        <td><span t-esc="folio_carril3_residente" /></td>
+                                        <td><span t-esc="folio_carril4_residente" /></td>
+                                        <td><span t-esc="folio_carril5_residente" /></td>
+                                        <td><span t-esc="folio_carril6_residente" /></td>
+                                        <td>[ <t t-set="aforo_turno_residentes" t-value="0"/>
+                                            <t t-set="aforo_turno_residentes" t-value="aforo_turno_residentes +
+                                            folio_carril1_residente + folio_carril2_residente +
+                                            folio_carril3_residente + folio_carril4_residente + folio_carril5_residente
+                                            + folio_carril6_residente"/>
+                                            <t t-esc="aforo_turno_residentes"  /> ]</td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>[ 000 ]</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>[ 000 ]</td>
                                         <td></td>
                                     </tr>
                                     <tr>
@@ -257,53 +446,94 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td>SOBR.</td>
+                                        <td>PENDIENTE</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>-</td>
                                         <td></td>
+                                        <td>PENDIENTE</td>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>[ 000 ]</td>
+                                        <td>PENDIENTE</td>
                                     </tr>
                                     <tr>
                                         <td>DLLS</td>
+                                        <td>PENDIENTE</td>
+                                        <td>PENDIENTE</td>
+                                        <td>PENDIENTE</td>
+                                        <td>PENDIENTE</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>PENDIENTE</td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>[ 000 ]</td>
                                         <td></td>
                                     </tr>
                                     <tr>
                                         <td>TOTAL</td>
+                                        <td>
+                                            <t t-set="total_carril_1" t-value="0"/>
+                                            <t t-set="total_carril_1" t-value="total_carril_1 +
+                                            folio_carril1_motocicleta + folio_carril1_auto +
+                                            folio_carril1_auto1eje + folio_carril1_auto2eje + folio_carril1_autobus
+                                            + folio_carril1_camion2eje + folio_carril1_camion3eje + folio_carril1_camion4ejeplus"/>
+                                            <t t-esc="total_carril_1"  />
+                                        </td>
+                                        <td>
+                                            <t t-set="total_carril_2" t-value="0"/>
+                                            <t t-set="total_carril_2" t-value="total_carril_2 +
+                                            folio_carril2_motocicleta + folio_carril2_auto +
+                                            folio_carril2_auto1eje + folio_carril2_auto2eje + folio_carril2_autobus
+                                            + folio_carril2_camion2eje + folio_carril2_camion3eje + folio_carril2_camion4ejeplus"/>
+                                            <t t-esc="total_carril_2"  />
+                                        </td>
+                                        <td>
+                                            <t t-set="total_carril_3" t-value="0"/>
+                                            <t t-set="total_carril_3" t-value="total_carril_3 +
+                                            folio_carril3_motocicleta + folio_carril3_auto +
+                                            folio_carril3_auto1eje + folio_carril3_auto2eje + folio_carril3_autobus
+                                            + folio_carril3_camion2eje + folio_carril3_camion3eje + folio_carril3_camion4ejeplus"/>
+                                            <t t-esc="total_carril_3"  />
+                                        </td>
+                                        <td>
+                                            <t t-set="total_carril_4" t-value="0"/>
+                                            <t t-set="total_carril_4" t-value="total_carril_4 +
+                                            folio_carril4_motocicleta + folio_carril4_auto +
+                                            folio_carril4_auto1eje + folio_carril4_auto2eje + folio_carril4_autobus
+                                            + folio_carril4_camion2eje + folio_carril4_camion3eje + folio_carril4_camion4ejeplus"/>
+                                            <t t-esc="total_carril_4"  />
+                                        </td>
+                                        <td>
+                                            <t t-set="total_carril_5" t-value="0"/>
+                                            <t t-set="total_carril_5" t-value="total_carril_5 +
+                                            folio_carril5_motocicleta + folio_carril5_auto +
+                                            folio_carril5_auto1eje + folio_carril5_auto2eje + folio_carril5_autobus
+                                            + folio_carril5_camion2eje + folio_carril5_camion3eje + folio_carril5_camion4ejeplus"/>
+                                            <t t-esc="total_carril_5"  />
+                                        </td>
+                                        <td>
+                                            <t t-set="total_carril_6" t-value="0"/>
+                                            <t t-set="total_carril_6" t-value="total_carril_6 +
+                                            folio_carril6_motocicleta + folio_carril6_auto +
+                                            folio_carril6_auto1eje + folio_carril6_auto2eje + folio_carril6_autobus
+                                            + folio_carril6_camion2eje + folio_carril6_camion3eje + folio_carril6_camion4ejeplus"/>
+                                            <t t-esc="total_carril_6"  />
+                                        </td>
+                                        <td> <!-- AFORO POR TURNO -->
+                                            <t t-set="total_aforo_turno" t-value="0"/>
+                                            <t t-set="total_aforo_turno" t-value="total_aforo_turno +
+                                            aforo_turno_motocicleta + aforo_turno_auto +
+                                            aforo_turno_auto1eje + aforo_turno_auto2eje + aforo_turno_autobus
+                                            + aforo_turno_camion2eje + aforo_turno_camion3eje + aforo_turno_camion4ejeplus"/>
+                                            <t t-esc="total_aforo_turno"  />
+                                        </td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>$ 00000</td>
+                                        <td>$ xxx</td>
                                     </tr>
                                 </tbody>
                             </table>

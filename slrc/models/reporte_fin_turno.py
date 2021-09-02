@@ -149,7 +149,142 @@ class PosReportesTurnoSrlc(models.TransientModel):
         folio_carril4_motocicleta = 0
         folio_carril5_motocicleta = 0
         folio_carril6_motocicleta = 0
+        # AUTO
         folio_carril1_auto = 0
+        folio_carril2_auto = 0
+        folio_carril3_auto = 0
+        folio_carril4_auto = 0
+        folio_carril5_auto = 0
+        folio_carril6_auto = 0
+        # AUTO 1 EJE
+        folio_carril1_auto1eje = 0
+        folio_carril2_auto1eje = 0
+        folio_carril3_auto1eje = 0
+        folio_carril4_auto1eje = 0
+        folio_carril5_auto1eje = 0
+        folio_carril6_auto1eje = 0
+        # AUTO 2 EJE
+        folio_carril1_auto2eje = 0
+        folio_carril2_auto2eje = 0
+        folio_carril3_auto2eje = 0
+        folio_carril4_auto2eje = 0
+        folio_carril5_auto2eje = 0
+        folio_carril6_auto2eje = 0
+        # AUTOBUS
+        folio_carril1_autobus = 0
+        folio_carril2_autobus = 0
+        folio_carril3_autobus = 0
+        folio_carril4_autobus = 0
+        folio_carril5_autobus = 0
+        folio_carril6_autobus = 0
+        # CAMION 2 ejes
+        folio_carril1_camion2eje = 0
+        folio_carril2_camion2eje = 0
+        folio_carril3_camion2eje = 0
+        folio_carril4_camion2eje = 0
+        folio_carril5_camion2eje = 0
+        folio_carril6_camion2eje = 0
+        # CAMION 3 EJES
+        folio_carril1_camion3eje = 0
+        folio_carril2_camion3eje = 0
+        folio_carril3_camion3eje = 0
+        folio_carril4_camion3eje = 0
+        folio_carril5_camion3eje = 0
+        folio_carril6_camion3eje = 0
+        # CAMION 4 EJES
+        folio_carril1_camion4eje = 0
+        folio_carril2_camion4eje = 0
+        folio_carril3_camion4eje = 0
+        folio_carril4_camion4eje = 0
+        folio_carril5_camion4eje = 0
+        folio_carril6_camion4eje = 0
+        # CAMION 5 EJES
+        folio_carril1_camion5eje = 0
+        folio_carril2_camion5eje = 0
+        folio_carril3_camion5eje = 0
+        folio_carril4_camion5eje = 0
+        folio_carril5_camion5eje = 0
+        folio_carril6_camion5eje = 0
+        # CAMION 6 EJES
+        folio_carril1_camion6eje = 0
+        folio_carril2_camion6eje = 0
+        folio_carril3_camion6eje = 0
+        folio_carril4_camion6eje = 0
+        folio_carril5_camion6eje = 0
+        folio_carril6_camion6eje = 0
+        # CAMION 7 EJES
+        folio_carril1_camion7eje = 0
+        folio_carril2_camion7eje = 0
+        folio_carril3_camion7eje = 0
+        folio_carril4_camion7eje = 0
+        folio_carril5_camion7eje = 0
+        folio_carril6_camion7eje = 0
+        # RESIDENTE
+        folio_carril1_residente = 0
+        folio_carril2_residente = 0
+        folio_carril3_residente = 0
+        folio_carril4_residente = 0
+        folio_carril5_residente = 0
+        folio_carril6_residente = 0
+        # RESIDENTE 1 EJE
+        folio_carril1_residente1eje = 0
+        folio_carril2_residente1eje = 0
+        folio_carril3_residente1eje = 0
+        folio_carril4_residente1eje = 0
+        folio_carril5_residente1eje = 0
+        folio_carril6_residente1eje = 0
+        # RESIDENTE 2 EJES
+        folio_carril1_residente2eje = 0
+        folio_carril2_residente2eje = 0
+        folio_carril3_residente2eje = 0
+        folio_carril4_residente2eje = 0
+        folio_carril5_residente2eje = 0
+        folio_carril6_residente2eje = 0
+
+        # TARIFAS
+        motocicleta_cuota = 0
+        auto_cuota = 0
+        auto_1eje_cuota = 0
+        auto_2eje_cuota = 0
+        autobus_cuota = 0
+        camion2eje_cuota = 0
+        camion3eje_cuota = 0
+        camion4eje_cuota = 0
+        camion5eje_cuota = 0
+        camion6eje_cuota = 0
+        camion7eje_cuota = 0
+        residente_cuota = 0
+        residente1eje_cuota = 0
+        residente2eje_cuota = 0
+        motocicleta_tarifa_siva = 0
+        motocicleta_tarifa_iva = 0
+        auto_tarifa_siva = 0
+        auto_tarifa_iva = 0
+        auto_1eje_tarifa_siva = 0
+        auto_1eje_tarifa_iva = 0
+        auto_2eje_tarifa_siva = 0
+        auto_2eje_tarifa_iva = 0
+        autobus_tarifa_siva = 0
+        autobus_tarifa_iva = 0
+        camion2eje_tarifa_siva = 0
+        camion2eje_tarifa_iva = 0
+        camion3eje_tarifa_siva = 0
+        camion3eje_tarifa_iva = 0
+        camion4eje_tarifa_siva = 0
+        camion4eje_tarifa_iva = 0
+        camion5eje_tarifa_siva = 0
+        camion5eje_tarifa_iva = 0
+        camion6eje_tarifa_siva = 0
+        camion6eje_tarifa_iva = 0
+        camion7eje_tarifa_siva = 0
+        camion7eje_tarifa_iva = 0
+        residente_tarifa_iva = 0
+        residente_tarifa_siva = 0
+        residente1eje_tarifa_iva = 0
+        residente1eje_tarifa_siva = 0
+        residente2eje_tarifa_iva = 0
+        residente2eje_tarifa_siva = 0
+
 
         for mat in buscar_sesiones_mat:
             # buscar_pagos = self.env["pos.payment"].search([('session_id', '=', mat.id)])
@@ -175,6 +310,15 @@ class PosReportesTurnoSrlc(models.TransientModel):
             for bof in buscar_ordenes_folios:
                 # print(bof.name, ' bof ')
                 for bp in buscar_peajes_motocicleta:                                                   # MOTOCICLETA
+
+                    motocicleta_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    # TARIFA SIN IVA
+                    motocicleta_tarifa_siva = bp.list_price
+                    # TARIFA IVA
+                    motocicleta_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
@@ -190,6 +334,10 @@ class PosReportesTurnoSrlc(models.TransientModel):
                         folio_carril6_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_auto:                                                   # AUTO
+                    auto_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_tarifa_siva = float(bp.list_price)
+                    auto_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
@@ -205,6 +353,10 @@ class PosReportesTurnoSrlc(models.TransientModel):
                         folio_carril6_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_auto1eje:                                                   # AUTO 1 EJE
+                    auto_1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_1eje_tarifa_siva = float(bp.list_price)
+                    auto_1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_auto1eje = self.env["pos.order.line"].search_count(
@@ -226,6 +378,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_auto2eje:                                                   # AUTO 2 EJES
+                    auto_2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_2eje_tarifa_siva = float(bp.list_price)
+                    auto_2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_auto2eje = self.env["pos.order.line"].search_count(
@@ -247,6 +402,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_autobus:                                                   # AUTOBBUS
+                    autobus_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    autobus_tarifa_siva = float(bp.list_price)
+                    autobus_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_autobus = self.env["pos.order.line"].search_count(
@@ -268,6 +426,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_camion2eje:                                                   # CAMION 2 EJE
+                    camion2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion2eje_tarifa_siva = float(bp.list_price)
+                    camion2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_camion2eje = self.env["pos.order.line"].search_count(
@@ -289,6 +450,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_camion3eje:                                                   # CAMION 3 EJES
+                    camion3eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion3eje_tarifa_siva = float(bp.list_price)
+                    camion3eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_camion3eje = self.env["pos.order.line"].search_count(
@@ -310,6 +474,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_camion4eje:                                                   # CAMION 4 EJES
+                    camion4eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion4eje_tarifa_siva = float(bp.list_price)
+                    camion4eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_camion4eje = self.env["pos.order.line"].search_count(
@@ -331,6 +498,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_camion5eje:                                                   # CAMION 5 EJES
+                    camion5eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion5eje_tarifa_siva = float(bp.list_price)
+                    camion5eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_camion5eje = self.env["pos.order.line"].search_count(
@@ -352,6 +522,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_camion6eje:                                                   # CAMION 6 EJES
+                    camion6eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion6eje_tarifa_siva = float(bp.list_price)
+                    camion6eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_camion6eje = self.env["pos.order.line"].search_count(
@@ -373,6 +546,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_camion7eje:                                                   # CAMION 7 EJES
+                    camion7eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion7eje_tarifa_siva = float(bp.list_price)
+                    camion7eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_camion7eje = self.env["pos.order.line"].search_count(
@@ -394,6 +570,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_residente:                                                   # RESIDENTE
+                    residente_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    residente_tarifa_siva = float(bp.list_price)
+                    residente_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_residente = self.env["pos.order.line"].search_count(
@@ -415,6 +594,10 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_residente1eje:                                                   # RESIDENTE 1 EJE
+                    residente1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    residente1eje_tarifa_siva = float(bp.list_price)
+                    residente1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_residente1eje = self.env["pos.order.line"].search_count(
@@ -436,6 +619,10 @@ class PosReportesTurnoSrlc(models.TransientModel):
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
                 for bp in buscar_peajes_residente2eje:                                                   # RESIDENTE 2 EJE
+                    residente2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    residente2eje_tarifa_siva = float(bp.list_price)
+                    residente2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
                     # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
                     if mat.config_id.name == 1:
                         folio_carril1_residente2eje = self.env["pos.order.line"].search_count(
@@ -463,245 +650,6 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
         print(buscar_sesiones_mat, ' si entro matutino ')
 
-        # BUSCAR COSTOS DE PEAJES
-        motocicleta_cuota = ''
-        auto_cuota = ''
-        auto_1eje_cuota = ''
-        auto_2eje_cuota = ''
-        autobus_cuota = ''
-        camion2eje_cuota = ''
-        camion3eje_cuota = ''
-        camion4eje_cuota = ''
-        camion5eje_cuota = ''
-        camion6eje_cuota = ''
-        camion7eje_cuota = ''
-        residente_cuota = ''
-        residente1eje_cuota = ''
-        residente2eje_cuota = ''
-        motocicleta_folios_vendidos = ''
-        auto_folios_vendidos = ''
-        auto1eje_folios_vendidos = ''
-        auto2eje_folios_vendidos = ''
-        autobus_folios_vendidos = ''
-        camion2eje_folios_vendidos = ''
-        camion3eje_folios_vendidos = ''
-        camion4eje_folios_vendidos = ''
-        camion5eje_folios_vendidos = ''
-        camion6eje_folios_vendidos = ''
-        camion7eje_folios_vendidos = ''
-        residente_folios_vendidos = ''
-        residente1eje_folios_vendidos = ''
-        residente2eje_folios_vendidos = ''
-        motocicleta_tarifa_siva = ''
-        motocicleta_tarifa_iva = ''
-        auto_tarifa_siva = ''
-        auto_tarifa_iva = ''
-        auto_1eje_tarifa_siva = ''
-        auto_1eje_tarifa_iva = ''
-        auto_2eje_tarifa_siva = ''
-        auto_2eje_tarifa_iva = ''
-        autobus_tarifa_siva = ''
-        autobus_tarifa_iva = ''
-        camion2eje_tarifa_siva = ''
-        camion2eje_tarifa_iva = ''
-        camion3eje_tarifa_siva = ''
-        camion3eje_tarifa_iva = ''
-        camion4eje_tarifa_siva = ''
-        camion4eje_tarifa_iva = ''
-        camion5eje_tarifa_siva = ''
-        camion5eje_tarifa_iva = ''
-        camion6eje_tarifa_siva = ''
-        camion6eje_tarifa_iva = ''
-        camion7eje_tarifa_siva = ''
-        camion7eje_tarifa_iva = ''
-        residente_tarifa_iva = ''
-        residente_tarifa_siva = ''
-        residente1eje_tarifa_iva = ''
-        residente1eje_tarifa_siva = ''
-        residente2eje_tarifa_iva = ''
-        residente2eje_tarifa_siva = ''
-        buscar_peajes = self.env["product.template"].search([])
-        for bp in buscar_peajes:
-            buscar_folios = 0
-            # BUSCAR LAS CUOTAS DE CADA PRODUCTO PARA EL REPORTE DE FIN DE TURNO
-            if bp.name == 'MOTOCICLETA':
-                # CUOTA
-                motocicleta_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                # TARIFA SIN IVA
-                motocicleta_tarifa_siva = bp.list_price
-                # TARIFA IVA
-                motocicleta_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                # ////////// BUSCAMOS EL NUMERO DE FOLIOS VENDIDOS DE MOTOCICLETA
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                motocicleta_folios_vendidos = acum_folios
-
-                # ////////////////////////////////////////////////////////
-
-            elif bp.name == 'AUTO':
-                auto_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                auto_tarifa_siva = float(bp.list_price)
-                auto_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                auto_folios_vendidos = acum_folios
-
-            elif bp.name == 'AUTO + 1 EJE':
-                auto_1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                auto_1eje_tarifa_siva = float(bp.list_price)
-                auto_1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                auto1eje_folios_vendidos = acum_folios
-
-            elif bp.name == 'AUTO + 2 EJE':
-                auto_2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                auto_2eje_tarifa_siva = float(bp.list_price)
-                auto_2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                auto2eje_folios_vendidos = acum_folios
-
-            elif bp.name == 'AUTOBUS':
-                autobus_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                autobus_tarifa_siva = float(bp.list_price)
-                autobus_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                autobus_folios_vendidos = acum_folios
-
-            elif bp.name == 'CAMION 2 EJES':
-                camion2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                camion2eje_tarifa_siva = float(bp.list_price)
-                camion2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                camion2eje_folios_vendidos = acum_folios
-
-            elif bp.name == 'CAMION 3 EJES':
-                camion3eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                camion3eje_tarifa_siva = float(bp.list_price)
-                camion3eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                camion3eje_folios_vendidos = acum_folios
-
-
-            elif bp.name == 'CAMION 4 EJES':
-                camion4eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                camion4eje_tarifa_siva = float(bp.list_price)
-                camion4eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                camion4eje_folios_vendidos = acum_folios
-
-            elif bp.name == 'CAMION 5 EJES':
-                camion5eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                camion5eje_tarifa_siva = float(bp.list_price)
-                camion5eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                camion5eje_folios_vendidos = acum_folios
-
-            elif bp.name == 'CAMION 6 EJES':
-                camion6eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                camion6eje_tarifa_siva = float(bp.list_price)
-                camion6eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                camion6eje_folios_vendidos = acum_folios
-
-            elif bp.name == 'CAMION + 7 EJES':
-                camion7eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                camion7eje_tarifa_siva = float(bp.list_price)
-                camion7eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                camion7eje_folios_vendidos = acum_folios
-
-            elif bp.name == 'RESIDENTE':
-                residente_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                residente_tarifa_siva = float(bp.list_price)
-                residente_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                print('RESIDENTE, ', bp.name, residente_cuota)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    # print('buscar_folios', buscar_folios)
-                    acum_folios += buscar_folios
-                print(acum_folios, ' folios')
-                residente_folios_vendidos = acum_folios
-
-            elif bp.name == 'RESIDENTE + 1 EJE':
-                residente1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                residente1eje_tarifa_siva = float(bp.list_price)
-                residente1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                residente1eje_folios_vendidos = acum_folios
-
-            elif bp.name == 'RESIDENTE + 2 EJES':
-                residente2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
-                residente2eje_tarifa_siva = float(bp.list_price)
-                residente2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
-
-                acum_folios = 0
-                for ordenes in buscar_ordenes:
-                    buscar_folios = self.env["pos.order.line"].search_count([('order_id.id', '=', ordenes.id),
-                                                                             ('product_id.id', '=', bp.id)])
-                    acum_folios += buscar_folios
-                residente2eje_folios_vendidos = acum_folios
 
         data = {'date_start': self.start_date,
                 'date_stop': self.end_date,
@@ -710,7 +658,7 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 # PEAJES
                 'motocicleta_cuota': motocicleta_cuota,
                 'auto_cuota': auto_cuota,
-                'auto_1eje_cuota': auto_1eje_cuota,
+                'auto_1eje_cuota': float(auto_1eje_cuota),
                 'auto_2eje_cuota': auto_2eje_cuota,
                 'autobus_cuota': autobus_cuota,
                 'camion2eje_cuota': camion2eje_cuota,
@@ -737,8 +685,8 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'folio_carril1_camion6eje': folio_carril1_camion6eje,
                 'folio_carril1_camion7eje': folio_carril1_camion7eje,
                 'folio_carril1_residente': folio_carril1_residente,
-                'folio_carril1_camion1eje': folio_carril1_camion1eje,
-                'folio_carril1_camion2eje': folio_carril1_camion2eje,
+                'folio_carril1_residente1eje': folio_carril1_residente1eje,
+                'folio_carril1_residente2eje': folio_carril1_residente2eje,
                 # CARRIL 2
                 'folio_carril2_motocicleta': folio_carril2_motocicleta,
                 'folio_carril2_auto': folio_carril2_auto,
@@ -752,8 +700,8 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'folio_carril2_camion6eje': folio_carril2_camion6eje,
                 'folio_carril2_camion7eje': folio_carril2_camion7eje,
                 'folio_carril2_residente': folio_carril2_residente,
-                'folio_carril2_camion1eje': folio_carril2_camion1eje,
-                'folio_carril2_camion2eje': folio_carril2_camion2eje,
+                'folio_carril2_residente1eje': folio_carril2_residente1eje,
+                'folio_carril2_residente2eje': folio_carril2_residente2eje,
                 # CARRIL 3
                 'folio_carril3_motocicleta': folio_carril3_motocicleta,
                 'folio_carril3_auto': folio_carril3_auto,
@@ -767,9 +715,24 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'folio_carril3_camion6eje': folio_carril3_camion6eje,
                 'folio_carril3_camion7eje': folio_carril3_camion7eje,
                 'folio_carril3_residente': folio_carril3_residente,
-                'folio_carril3_camion1eje': folio_carril3_camion1eje,
-                'folio_carril3_camion2eje': folio_carril3_camion2eje,
+                'folio_carril3_residente1eje': folio_carril3_residente1eje,
+                'folio_carril3_residente2eje': folio_carril3_residente2eje,
                 # CARRIL 4
+                'folio_carril4_motocicleta': folio_carril4_motocicleta,
+                'folio_carril4_auto': folio_carril4_auto,
+                'folio_carril4_auto1eje': folio_carril4_auto1eje,
+                'folio_carril4_auto2eje': folio_carril4_auto2eje,
+                'folio_carril4_autobus': folio_carril4_autobus,
+                'folio_carril4_camion2eje': folio_carril4_camion2eje,
+                'folio_carril4_camion3eje': folio_carril4_camion3eje,
+                'folio_carril4_camion4eje': folio_carril4_camion4eje,
+                'folio_carril4_camion5eje': folio_carril4_camion5eje,
+                'folio_carril4_camion6eje': folio_carril4_camion6eje,
+                'folio_carril4_camion7eje': folio_carril4_camion7eje,
+                'folio_carril4_residente': folio_carril4_residente,
+                'folio_carril4_residente1eje': folio_carril4_residente1eje,
+                'folio_carril4_residente2eje': folio_carril4_residente2eje,
+                # CARRIL 5
                 'folio_carril5_motocicleta': folio_carril5_motocicleta,
                 'folio_carril5_auto': folio_carril5_auto,
                 'folio_carril5_auto1eje': folio_carril5_auto1eje,
@@ -782,8 +745,8 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'folio_carril5_camion6eje': folio_carril5_camion6eje,
                 'folio_carril5_camion7eje': folio_carril5_camion7eje,
                 'folio_carril5_residente': folio_carril5_residente,
-                'folio_carril5_camion1eje': folio_carril5_camion1eje,
-                'folio_carril5_camion2eje': folio_carril5_camion2eje,
+                'folio_carril5_residente1eje': folio_carril5_residente1eje,
+                'folio_carril5_residente2eje': folio_carril5_residente2eje,
                 # CARRIL 6
                 'folio_carril6_motocicleta': folio_carril6_motocicleta,
                 'folio_carril6_auto': folio_carril6_auto,
@@ -797,8 +760,41 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'folio_carril6_camion6eje': folio_carril6_camion6eje,
                 'folio_carril6_camion7eje': folio_carril6_camion7eje,
                 'folio_carril6_residente': folio_carril6_residente,
-                'folio_carril6_camion1eje': folio_carril6_camion1eje,
-                'folio_carril6_camion2eje': folio_carril6_camion2eje,
+                'folio_carril6_residente1eje': folio_carril6_residente1eje,
+                'folio_carril6_residente2eje': folio_carril6_residente2eje,
+
+                # TARIFAS
+                # TARIFAS SIN IVA
+                'motocicleta_tarifa_siva': motocicleta_tarifa_siva,
+                'auto_tarifa_siva': auto_tarifa_siva,
+                'auto_1eje_tarifa_siva': auto_1eje_tarifa_siva,
+                'auto_2eje_tarifa_siva': auto_2eje_tarifa_siva,
+                'autobus_tarifa_siva': autobus_tarifa_siva,
+                'camion2eje_tarifa_siva': camion2eje_tarifa_siva,
+                'camion3eje_tarifa_siva': camion3eje_tarifa_siva,
+                'camion4eje_tarifa_siva': camion4eje_tarifa_siva,
+                'camion5eje_tarifa_siva': camion5eje_tarifa_siva,
+                'camion6eje_tarifa_siva': camion6eje_tarifa_siva,
+                'camion7eje_tarifa_siva': camion7eje_tarifa_siva,
+                'residente_tarifa_siva': camion7eje_tarifa_siva,
+                'residente1eje_tarifa_siva': camion7eje_tarifa_siva,
+                'residente2eje_tarifa_siva': camion7eje_tarifa_siva,
+
+                # TARIFAS IVA
+                'motocicleta_tarifa_iva': motocicleta_tarifa_iva,
+                'auto_tarifa_iva': auto_tarifa_iva,
+                'auto_1eje_tarifa_iva': auto_1eje_tarifa_iva,
+                'auto_2eje_tarifa_iva': auto_2eje_tarifa_iva,
+                'autobus_tarifa_iva': autobus_tarifa_iva,
+                'camion2eje_tarifa_iva': camion2eje_tarifa_iva,
+                'camion3eje_tarifa_iva': camion3eje_tarifa_iva,
+                'camion4eje_tarifa_iva': camion4eje_tarifa_iva,
+                'camion5eje_tarifa_iva': camion5eje_tarifa_iva,
+                'camion6eje_tarifa_iva': camion6eje_tarifa_iva,
+                'camion7eje_tarifa_iva': camion7eje_tarifa_iva,
+                'residente_tarifa_iva': camion7eje_tarifa_iva,
+                'residente1eje_tarifa_iva': camion7eje_tarifa_iva,
+                'residente2eje_tarifa_iva': camion7eje_tarifa_iva,
 
                 }
         return self.env.ref('slrc.matutino_report_button').report_action([], data=data)
@@ -987,62 +983,62 @@ class PosReportesTurnoSrlc(models.TransientModel):
         print(turno, ' ESTE ES EL TURNO ACTUAL ')
 
         # BUSCAR COSTOS DE PEAJES
-        motocicleta_cuota = ''
-        auto_cuota = ''
-        auto_1eje_cuota = ''
-        auto_2eje_cuota = ''
-        autobus_cuota = ''
-        camion2eje_cuota = ''
-        camion3eje_cuota = ''
-        camion4eje_cuota = ''
-        camion5eje_cuota = ''
-        camion6eje_cuota = ''
-        camion7eje_cuota = ''
-        residente_cuota = ''
-        residente1eje_cuota = ''
-        residente2eje_cuota = ''
-        motocicleta_folios_vendidos = ''
-        auto_folios_vendidos = ''
-        auto1eje_folios_vendidos = ''
-        auto2eje_folios_vendidos = ''
-        autobus_folios_vendidos = ''
-        camion2eje_folios_vendidos = ''
-        camion3eje_folios_vendidos = ''
-        camion4eje_folios_vendidos = ''
-        camion5eje_folios_vendidos = ''
-        camion6eje_folios_vendidos = ''
-        camion7eje_folios_vendidos = ''
-        residente_folios_vendidos = ''
-        residente1eje_folios_vendidos = ''
-        residente2eje_folios_vendidos = ''
-        motocicleta_tarifa_siva = ''
-        motocicleta_tarifa_iva = ''
-        auto_tarifa_siva = ''
-        auto_tarifa_iva = ''
-        auto_1eje_tarifa_siva = ''
-        auto_1eje_tarifa_iva = ''
-        auto_2eje_tarifa_siva = ''
-        auto_2eje_tarifa_iva = ''
-        autobus_tarifa_siva = ''
-        autobus_tarifa_iva = ''
-        camion2eje_tarifa_siva = ''
-        camion2eje_tarifa_iva = ''
-        camion3eje_tarifa_siva = ''
-        camion3eje_tarifa_iva = ''
-        camion4eje_tarifa_siva = ''
-        camion4eje_tarifa_iva = ''
-        camion5eje_tarifa_siva = ''
-        camion5eje_tarifa_iva = ''
-        camion6eje_tarifa_siva = ''
-        camion6eje_tarifa_iva = ''
-        camion7eje_tarifa_siva = ''
-        camion7eje_tarifa_iva = ''
-        residente_tarifa_iva = ''
-        residente_tarifa_siva = ''
-        residente1eje_tarifa_iva = ''
-        residente1eje_tarifa_siva = ''
-        residente2eje_tarifa_iva = ''
-        residente2eje_tarifa_siva = ''
+        motocicleta_cuota = 0
+        auto_cuota = 0
+        auto_1eje_cuota = 0
+        auto_2eje_cuota = 0
+        autobus_cuota = 0
+        camion2eje_cuota = 0
+        camion3eje_cuota = 0
+        camion4eje_cuota = 0
+        camion5eje_cuota = 0
+        camion6eje_cuota = 0
+        camion7eje_cuota = 0
+        residente_cuota = 0
+        residente1eje_cuota = 0
+        residente2eje_cuota = 0
+        motocicleta_folios_vendidos = 0
+        auto_folios_vendidos = 0
+        auto1eje_folios_vendidos = 0
+        auto2eje_folios_vendidos = 0
+        autobus_folios_vendidos = 0
+        camion2eje_folios_vendidos = 0
+        camion3eje_folios_vendidos = 0
+        camion4eje_folios_vendidos = 0
+        camion5eje_folios_vendidos = 0
+        camion6eje_folios_vendidos = 0
+        camion7eje_folios_vendidos = 0
+        residente_folios_vendidos = 0
+        residente1eje_folios_vendidos = 0
+        residente2eje_folios_vendidos = 0
+        motocicleta_tarifa_siva = 0
+        motocicleta_tarifa_iva = 0
+        auto_tarifa_siva = 0
+        auto_tarifa_iva = 0
+        auto_1eje_tarifa_siva = 0
+        auto_1eje_tarifa_iva = 0
+        auto_2eje_tarifa_siva = 0
+        auto_2eje_tarifa_iva = 0
+        autobus_tarifa_siva = 0
+        autobus_tarifa_iva = 0
+        camion2eje_tarifa_siva = 0
+        camion2eje_tarifa_iva = 0
+        camion3eje_tarifa_siva = 0
+        camion3eje_tarifa_iva = 0
+        camion4eje_tarifa_siva = 0
+        camion4eje_tarifa_iva = 0
+        camion5eje_tarifa_siva = 0
+        camion5eje_tarifa_iva = 0
+        camion6eje_tarifa_siva = 0
+        camion6eje_tarifa_iva = 0
+        camion7eje_tarifa_siva = 0
+        camion7eje_tarifa_iva = 0
+        residente_tarifa_iva = 0
+        residente_tarifa_siva = 0
+        residente1eje_tarifa_iva = 0
+        residente1eje_tarifa_siva = 0
+        residente2eje_tarifa_iva = 0
+        residente2eje_tarifa_siva = 0
         buscar_peajes = self.env["product.template"].search([])
         for bp in buscar_peajes:
 
