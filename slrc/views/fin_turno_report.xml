@@ -13,4 +13,18 @@
         <field name="report_type">qweb-html</field>
         <field name="report_name">slrc.report_matutino</field>
     </record>
+
+    <record id="vespertino_report_button" model="ir.actions.report">
+        <field name="name">Reporte Turno Vespertino</field>
+        <field name="model">pos.reportes_turno.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">slrc.report_vespertino</field>
+    </record>
+
+    <record id="nocturno_report_button" model="ir.actions.report">
+        <field name="name">Reporte Turno Nocturno</field>
+        <field name="model">pos.reportes_turno.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">slrc.report_nocturno</field>
+    </record>
 </odoo>

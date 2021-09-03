@@ -31,6 +31,8 @@
         'views/reporte_fin_turno.xml',
         'report/report_fin_turno.xml',
         'report/report_matutino.xml',
+        'report/report_vespertino.xml',
+        'report/report_nocturno.xml',
         'views/fin_turno_report.xml',
         'views/res_config_settings_views.xml',
 

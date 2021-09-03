@@ -88,129 +88,130 @@
                         </style>
 
                         <div class="text-left">
-                            <h5>RECAUDACION CORRESPONDIENTE AL <strong><t t-esc="date_start" t-options="{'widget': 'datetime'}"/> -
-                                <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong></h5>
+                            <h5>RECAUDACION CORRESPONDIENTE AL DIA <strong><span t-esc="fecha_hoy_letra"
+                                                                                 />
+                            </strong></h5>
                         </div>
 
                         <div>
-                            <table class="table table-sm" cellpadding="3" cellspacing="0">
+                            <table class="table table-sm table-bordered" style="border: 2px solid" cellpadding="3" cellspacing="0">
                                 <tbody>
-                                    <tr>
-                                        <td>TURNO:</td>
-                                        <td>DOLARES DEL TURNO</td>
-                                        <td>TIPO CAMBIO</td>
-                                        <td>IVA DLLS.</td>
-                                        <td>DLLS. X T.CAMBIO</td>
-                                        <td>IVA M.N.</td>
-                                        <td>CUOTA M.N.</td>
-                                        <td>RECAUDACION TOTAL MONEDA NACIONAL Y MONEDA AMERICANA:</td>
+                                    <tr style="border: 2px solid">
+                                        <th style="border: 2px solid" align="center" width="16%" >TURNO:</th>
+                                        <th align="center" width="12.5%">DOLARES DEL TURNO</th>
+                                        <th style="border: 2px solid" align="center" width="8%">TIPO CAMBIO</th>
+                                        <th align="center" width="10%">IVA DLLS.</th>
+                                        <th style="border: 2px solid" align="center" width="12.5%">DLLS. X T.CAMBIO</th>
+                                        <th align="center" width="12.5%">IVA M.N.</th>
+                                        <th style="border: 2px solid" align="center" width="10%"> CUOTA M.N.</th>
+                                        <th align="center" width="18.5%">RECAUDACION TOTAL MONEDA NACIONAL Y MONEDA AMERICANA:</th>
                                     </tr>
-                                    <tr>
-                                        <td>00:00 A 08:00 HRS.</td>
-                                        <td>$ 0</td>
-                                        <td>0</td>
-                                        <td>$ 0</td>
-                                        <td>$ 0</td>
-                                        <td>$ <span t-esc="cuotaiva_mn_matutino" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>$ <span t-esc="cuota_mn_mat" t-options='{"widget": "float", "precision": 2}'/> </td>
-                                        <td>$
+                                    <tr style="border: 2px solid">
+                                        <td> <strong>00:00 A 08:00 HRS.</strong>  </td>
+                                        <td style="border: 2px solid" align="right">$ 0 </td>
+                                        <td style="border: 2px solid" align="right">0</td>
+                                        <td style="border: 2px solid" align="right">$ 0</td>
+                                        <td style="border: 2px solid" align="right">$ 0</td>
+                                        <td style="border: 2px solid" align="right">$ <span t-esc="cuotaiva_mn_matutino" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">$ <span t-esc="cuota_mn_mat" t-options='{"widget": "float", "precision": 2}'/> </td>
+                                        <td style="border: 2px solid" align="right">$
                                             <t t-set="subtotal_rec_mat" t-value="0"/>
                                             <t t-set="subtotal_rec_mat" t-value="subtotal_rec_mat + cuotaiva_mn_matutino +
                                              cuota_mn_mat" t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_rec_mat" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>08:00 A 16:00 HRS.</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>$ 0</td>
-                                        <td><span t-esc="cuotaiva_mn_vespertino" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>$ <span t-esc="cuota_mn_vesp" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                    <tr align="right">
+                                        <td style="border: 2px solid" align="left"> <strong>08:00 A 16:00 HRS.</strong> </td>
+                                        <td style="border: 2px solid">0</td>
+                                        <td style="border: 2px solid">0</td>
+                                        <td style="border: 2px solid">0</td>
+                                        <td style="border: 2px solid">$ 0</td>
+                                        <td style="border: 2px solid"><span t-esc="cuotaiva_mn_vespertino" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid">$ <span t-esc="cuota_mn_vesp" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid">
                                             <t t-set="subtotal_rec_vesp" t-value="0"/>
                                             <t t-set="subtotal_rec_vesp" t-value="subtotal_rec_vesp + cuota_mn_vesp +
                                              cuotaiva_mn_vespertino" t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_rec_vesp" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>16:00 A 24:00 HRS.</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>$ 0</td>
-                                        <td> <span t-esc="cuotaiva_mn_nocturno" t-options='{"widget": "float", "precision": 2}'/> </td>
-                                        <td>$ <span t-esc="cuota_mn_nocturno" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                    <tr align="right">
+                                        <td style="border: 2px solid" align="left"> <strong>16:00 A 24:00 HRS.</strong> </td>
+                                        <td style="border: 2px solid">0</td>
+                                        <td style="border: 2px solid">0</td>
+                                        <td style="border: 2px solid">0</td>
+                                        <td style="border: 2px solid">$ 0</td>
+                                        <td style="border: 2px solid"> <span t-esc="cuotaiva_mn_nocturno" t-options='{"widget": "float", "precision": 2}'/> </td>
+                                        <td style="border: 2px solid">$ <span t-esc="cuota_mn_nocturno" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid">
                                             <t t-set="subtotal_rec_noc" t-value="0"/>
                                             <t t-set="subtotal_rec_noc" t-value="subtotal_rec_noc + cuotaiva_mn_nocturno +
                                              cuota_mn_nocturno" t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_rec_noc" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>T O T A L E S:</td>
-                                        <td>$ 0</td>
-                                        <td></td>
-                                        <td>$ 0</td>
-                                        <td>$ 0</td>
-                                        <td>$ 0</td>
-                                        <td>
+                                    <tr align="right">
+                                        <th style="border: 2px solid" align="left">  <strong> T O T A L E S: </strong> </th>
+                                        <th style="border: 2px solid" >$ 0</th>
+                                        <th style="border: 2px solid"></th>
+                                        <th style="border: 2px solid">$ 0</th>
+                                        <th style="border: 2px solid">$ 0</th>
+                                        <th style="border: 2px solid">$ 0</th>
+                                        <th style="border: 2px solid">
                                             <t t-set="totales_mn" t-value="0"/>
                                             <t t-set="totales_mn" t-value="totales_mn + cuota_mn_mat + cuota_mn_vesp
                                             + cuota_mn_nocturno " t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="totales_mn" t-options='{"widget": "float", "precision": 2}' />
 
-                                        </td>
-                                        <td>$
+                                        </th>
+                                        <th style="border: 2px solid">$
                                             <t t-set="totales_recaudado" t-value="0"/>
                                             <t t-set="totales_recaudado" t-value="totales_recaudado + subtotal_rec_mat + subtotal_rec_vesp
                                             + subtotal_rec_noc " t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="totales_recaudado" t-options='{"widget": "float", "precision": 2}' />
-                                        </td>
+                                        </th>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div>
-                            <table class="table table-sm" cellpadding="3" cellspacing="0">
+                            <table class="table table-sm table-bordered" cellpadding="3" cellspacing="0">
                                 <tbody>
-                                    <tr>
-                                        <td rowspan="2">TARIFAS:</td>
-                                        <td rowspan="2">FOLIOS VENDIDOS</td>
-                                        <td colspan="2">TARIFAS</td>
-                                        <td colspan="2">TOTALES</td>
-                                        <td>CLASIFICACION DE VEHICULOS DIARIO:</td>
+                                    <tr style="border: 2px solid">
+                                        <th style="border: 2px solid" align="center" width="20%"  rowspan="2">TARIFAS:</th>
+                                        <th style="border: 2px solid" align="center" width="15%"  rowspan="2">FOLIOS VENDIDOS</th>
+                                        <th style="border: 2px solid" align="center" width="15%"  colspan="2">TARIFAS</th>
+                                        <th style="border: 2px solid" align="center" width="20%"  colspan="2">TOTALES</th>
+                                        <th style="border: 2px solid" align="center" width="30%" >CLASIFICACION DE VEHICULOS DIARIO:</th>
                                     </tr>
-                                    <tr>
-                                        <td>CUOTA</td>
-                                        <td>IVA</td>
-                                        <td>CUOTA </td>
-                                        <td>IVA</td>
-                                        <td>AUTOS:</td>
+                                    <tr style="border: 2px solid">
+                                        <th style="border: 2px solid" align="center">CUOTA</th>
+                                        <th style="border: 2px solid" align="center">IVA</th>
+                                        <th style="border: 2px solid" align="center">CUOTA </th>
+                                        <th style="border: 2px solid" align="center">IVA</th>
+                                        <th style="border: 2px solid" align="center">AUTOS:</th>
                                     </tr>
-                                    <tr>
-                                        <td>$ <span t-esc="motocicleta_cuota" t-options='{"widget": "float", "precision": 2}'/> </td>
-                                        <td>  <span t-esc="motocicleta_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="motocicleta_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="motocicleta_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                    <tr style="border: 2px solid">
+                                        <td style="border: 2px solid" align="center">$ <span t-esc="motocicleta_cuota" t-options='{"widget": "float", "precision": 2}'/> </td>
+                                        <td style="border: 2px solid" align="center">  <span t-esc="motocicleta_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="motocicleta_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="motocicleta_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_motocicleta_siva" t-value="0"/>
                                             <t t-set="cuota_total_motocicleta_siva" t-value="cuota_total_motocicleta_siva +
                                                 (motocicleta_tarifa_siva * motocicleta_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_motocicleta_siva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_motocicleta_civa" t-value="0"/>
                                             <t t-set="cuota_total_motocicleta_civa" t-value="cuota_total_motocicleta_civa +
                                                 (motocicleta_tarifa_iva * motocicleta_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_motocicleta_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>AUTOS: .........
+                                        <td style="border: 2px solid" align="left">AUTOS: .........
                                         <t t-set="folios_acum_autos" t-value="0"/>
                                         <t t-set="folios_acum_autos" t-value="folios_acum_autos +
                                             motocicleta_folios_vendidos + auto_folios_vendidos + auto1eje_folios_vendidos
@@ -219,47 +220,47 @@
                                         <t t-esc="folios_acum_autos" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>$ <span t-esc="auto_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                    <tr style="border: 2px solid">
+                                        <td style="border: 2px solid" align="center">$ <span t-esc="auto_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="center"> <span t-esc="auto_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="auto_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="auto_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_auto_siva" t-value="0"/>
                                             <t t-set="cuota_total_auto_siva" t-value="cuota_total_auto_siva +
                                                 (auto_tarifa_siva * auto_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_auto_siva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_auto_civa" t-value="0"/>
                                             <t t-set="cuota_total_auto_civa" t-value="cuota_total_auto_civa +
                                                 (auto_tarifa_iva * auto_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_auto_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>AUTOBUS Y CAMION 2,3 Y 4 EJES:</td>
+                                        <td style="border: 2px solid" align="left">AUTOBUS Y CAMION 2,3 Y 4 EJES:</td>
                                     </tr>
                                     <tr>
-                                        <td>$ <span t-esc="auto_1eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto1eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto_1eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto_1eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                        <td style="border: 2px solid" align="center">$ <span t-esc="auto_1eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="center"> <span t-esc="auto1eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="auto_1eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="auto_1eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_auto1eje_siva" t-value="0"/>
                                             <t t-set="cuota_total_auto1eje_siva" t-value="cuota_total_auto1eje_siva +
                                                 (auto_1eje_tarifa_siva * auto1eje_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_auto1eje_siva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_auto1eje_civa" t-value="0"/>
                                             <t t-set="cuota_total_auto1eje_civa" t-value="cuota_total_auto1eje_civa +
                                                 (auto_1eje_tarifa_iva * auto1eje_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_auto1eje_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>[ BA Y CA ] .......
+                                        <td style="border: 2px solid" align="left">[ BA Y CA ] .......
                                             <t t-set="folios_acum_camion2_4ejes" t-value="0"/>
                                             <t t-set="folios_acum_camion2_4ejes" t-value="folios_acum_camion2_4ejes +
                                                  autobus_folios_vendidos + camion2eje_folios_vendidos
@@ -269,46 +270,46 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>$ <span t-esc="auto_2eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto2eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto_2eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="auto_2eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                        <td style="border: 2px solid" align="center">$ <span t-esc="auto_2eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="center"> <span t-esc="auto2eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="auto_2eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="auto_2eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_auto2eje_siva" t-value="0"/>
                                             <t t-set="cuota_total_auto2eje_siva" t-value="cuota_total_auto2eje_siva +
                                                 (auto_2eje_tarifa_siva * auto2eje_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_auto2eje_siva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_auto2eje_civa" t-value="0"/>
                                             <t t-set="cuota_total_auto2eje_civa" t-value="cuota_total_auto2eje_civa +
                                                 (auto_2eje_tarifa_iva * auto2eje_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_auto2eje_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>CAMION 5 Y 6 EJES:</td>
+                                        <td style="border: 2px solid" align="left">CAMION 5 Y 6 EJES:</td>
                                     </tr>
                                     <tr>
-                                        <td>$ <span t-esc="autobus_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="autobus_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="autobus_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="autobus_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                        <td style="border: 2px solid" align="center">$ <span t-esc="autobus_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="center"> <span t-esc="autobus_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="autobus_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="autobus_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_autobus_siva" t-value="0"/>
                                             <t t-set="cuota_total_autobus_siva" t-value="cuota_total_autobus_siva +
                                                 (autobus_tarifa_siva * autobus_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_autobus_siva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_autobus_civa" t-value="0"/>
                                             <t t-set="cuota_total_autobus_civa" t-value="cuota_total_autobus_civa +
                                                 (autobus_tarifa_iva * autobus_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_autobus_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>[CBA] .........
+                                        <td style="border: 2px solid" align="left">[CBA] .........
                                             <t t-set="folios_acum_camion5_6ejes" t-value="0"/>
                                             <t t-set="folios_acum_camion5_6ejes" t-value="folios_acum_camion5_6ejes +
 
@@ -319,47 +320,47 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>$ <span t-esc="camion2eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="camion2eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="camion2eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="camion2eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                        <td style="border: 2px solid" align="center">$ <span t-esc="camion2eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="center"> <span t-esc="camion2eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="camion2eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="camion2eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_camion2eje_siva" t-value="0"/>
                                             <t t-set="cuota_total_camion2eje_siva" t-value="cuota_total_camion2eje_siva +
                                                 (camion2eje_tarifa_siva * camion2eje_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_camion2eje_siva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_camion2eje_civa" t-value="0"/>
                                             <t t-set="cuota_total_camion2eje_civa" t-value="cuota_total_camion2eje_civa +
                                                 (camion2eje_tarifa_iva * camion2eje_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_camion2eje_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>CAMION 7,8 Y 9 EJES:
+                                        <td style="border: 2px solid" align="left">CAMION 7,8 Y 9 EJES:
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>$ <span t-esc="camion3eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="camion3eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="camion3eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="camion3eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                        <td style="border: 2px solid" align="center">$ <span t-esc="camion3eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="center"> <span t-esc="camion3eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="camion3eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="camion3eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_camion3eje_siva" t-value="0"/>
                                             <t t-set="cuota_total_camion3eje_siva" t-value="cuota_total_camion3eje_siva +
                                                 (camion3eje_tarifa_siva * camion3eje_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_camion3eje_siva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_camion3eje_civa" t-value="0"/>
                                             <t t-set="cuota_total_camion3eje_civa" t-value="cuota_total_camion3eje_civa +
                                                 (camion3eje_tarifa_iva * camion3eje_folios_vendidos)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_camion3eje_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>[CCA] .......
+                                        <td style="border: 2px solid" align="left">[CCA] .......
                                             <t t-set="folios_acum_camion7ejes" t-value="0"/>
                                             <t t-set="folios_acum_camion7ejes" t-value="folios_acum_camion7ejes +
 
@@ -369,8 +370,8 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>$ <span t-esc="camion4eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                        <td style="border: 2px solid" align="center">$ <span t-esc="camion4eje_cuota" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="center">
                                             <!--span t-esc="camion4eje_folios_vendidos" t-options='{"widget": "float", "precision": 2}'/-->
 
                                             <t t-set="totales_camionesplus4ejes" t-value="0"/>
@@ -379,27 +380,27 @@
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="totales_camionesplus4ejes" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td> <span t-esc="camion4eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td> <span t-esc="camion4eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="camion4eje_tarifa_siva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right"> <span t-esc="camion4eje_tarifa_iva" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_camion4eje_siva" t-value="0"/>
                                             <t t-set="cuota_total_camion4eje_siva" t-value="cuota_total_camion4eje_siva +
                                                 (camion4eje_tarifa_siva * totales_camionesplus4ejes)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_camion4eje_siva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="cuota_total_camion4eje_civa" t-value="0"/>
                                             <t t-set="cuota_total_camion4eje_civa" t-value="cuota_total_camion4eje_civa +
                                                 (camion4eje_tarifa_iva * totales_camionesplus4ejes)"
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="cuota_total_camion4eje_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>EXENTOS: ......... ______</td>
+                                        <td style="border: 2px solid" align="left">EXENTOS: ......... ______</td>
                                     </tr>
                                     <tr>
-                                        <td>RESIDENTES:</td>
-                                        <td>[
+                                        <td style="border: 2px solid" align="center">RESIDENTES:</td>
+                                        <td style="border: 2px solid" align="center">[
 
                                             <t t-set="residente_folios_vendidos" t-value="0"/>
                                             <t t-set="residente_folios_vendidos" t-value="residente_folios_vendidos +
@@ -409,9 +410,9 @@
 
                                             ]
                                         </td>
-                                        <td>SUB TOTALES </td>
-                                        <td>= </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">SUB TOTALES </td>
+                                        <td style="border: hidden; border-top: 2px solid; border-right: 2px solid" align="left"> = </td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="subtotal_cuotas" t-value="0"/>
                                             <t t-set="subtotal_cuotas" t-value="subtotal_cuotas +
                                                 cuota_total_motocicleta_siva + cuota_total_auto_siva + cuota_total_auto1eje_siva +
@@ -420,7 +421,7 @@
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_cuotas" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>
+                                        <td style="border: 2px solid" align="right">
                                             <t t-set="subtotal_cuotas_iva" t-value="0"/>
                                             <t t-set="subtotal_cuotas_iva" t-value="subtotal_cuotas_iva +
                                                 cuota_total_motocicleta_civa + cuota_total_auto_civa + cuota_total_auto1eje_civa +
@@ -429,7 +430,7 @@
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_cuotas_iva" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>TOTAL: .........
+                                        <td style="border: 2px solid" align="left">TOTAL: .........
                                             <t t-set="folios_acum_total" t-value="0"/>
                                             <t t-set="folios_acum_total" t-value="folios_acum_total +
                                                 motocicleta_folios_vendidos + auto_folios_vendidos + auto1eje_folios_vendidos
@@ -442,17 +443,17 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>EXENTOS:</td>
-                                        <td>0</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
+                                        <td style="border: 2px solid">EXENTOS:</td>
+                                        <td style="border: 2px solid" align="center">0</td>
+                                        <td style=" border:hidden; border-left: 2px; "></td>
+                                        <td style="border:hidden; border-top: 2px;"></td>
+                                        <td style="border:hidden; border-top: 2px;"></td>
+                                        <td style="border:hidden; border-top: 2px;"></td>
+                                        <td style="border:hidden; border-top: 2px;"></td>
                                     </tr>
                                     <tr>
-                                        <td>TOTAL:</td>
-                                        <td>
+                                        <td style="border: 2px solid">TOTAL:</td>
+                                        <td style="border: 2px solid" align="center">
                                             <t t-set="total_acum_folios" t-value="0"/>
                                             <t t-set="total_acum_folios" t-value="total_acum_folios +
                                                 motocicleta_folios_vendidos + auto_folios_vendidos + auto1eje_folios_vendidos
@@ -462,11 +463,11 @@
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="total_acum_folios" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
-                                        <td>--</td>
+                                        <td style=" border:hidden; border-left: 2px; "></td>
+                                        <td style="border:hidden;"></td>
+                                        <td style="border:hidden;"></td>
+                                        <td style="border:hidden;"></td>
+                                        <td style="border:hidden;"></td>
                                     </tr>
                                 </tbody>
                             </table>

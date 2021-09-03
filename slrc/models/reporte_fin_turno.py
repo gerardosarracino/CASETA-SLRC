@@ -799,6 +799,1433 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 }
         return self.env.ref('slrc.matutino_report_button').report_action([], data=data)
 
+    def generate_report_turnovesp(self):
+        print(' GENERAR REPORTE DEL TURNO MAT')
+
+        fecha_hoy = fields.Datetime.now()
+        hora = fecha_hoy.strftime("%H:%M:%S")
+
+        '''dt = datetime.strptime(str(fecha_dma2), '%d-%m-%Y %H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_dma2 = old_tz.localize(dt).astimezone(new_tz)
+        fecha_dma2 = datetime.strftime(fecha_dma2, '%d/%m/%Y')'''
+
+        # FECHA UTC
+        fecha_dma2 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        print(fecha_dma2, ' fecha local UTC')
+        fecha_dma2 = datetime.strftime(fecha_hoy, '%Y-%m-%d')
+
+        # FECHA MST HERMOSILLO
+        fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        dt = datetime.strptime(str(fecha_dma3), '%d-%m-%Y %H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+        fecha_dma3 = datetime.strftime(fecha_dma3, '%d/%m/%Y')
+        print(fecha_dma3, ' fecha local MST ')
+
+        fecha_hora = time.strftime(hora, time.localtime())
+        dt = datetime.strptime(str(fecha_hora), '%H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_hora = old_tz.localize(dt).astimezone(new_tz)
+        hora = datetime.strftime(fecha_hora, '%H:%M:%S')
+
+        buscar_ordenes = []
+        turno = ""
+        # if hora >= '00:00:00' and hora <= '07:59:59':
+        turno = 'Matutino'
+
+        buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma2) + ' 07:00:00'),
+                                                       ('date_order', '<=', str(fecha_dma2) + ' 13:59:59')])
+
+        # BUSCAR LAS SESIONES QUE CORRESPONDAN A ESTE TURNO!
+
+        '''buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
+                                                              ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')])'''
+
+        buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
+                                                              ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')], order='config_id asc')
+
+        '''buscar_sesiones_matx = self.env["pos.session"].search([])
+        for ici in buscar_sesiones_matx:
+            print(ici.start_at, ' fecha ', fecha_dma2 + ' 07:00:00')'''
+
+        acum_pago_mat = 0
+        cum_pagoiva_matutino = 0
+
+        folio_carril1_motocicleta = 0
+        folio_carril2_motocicleta = 0
+        folio_carril3_motocicleta = 0
+        folio_carril4_motocicleta = 0
+        folio_carril5_motocicleta = 0
+        folio_carril6_motocicleta = 0
+        # AUTO
+        folio_carril1_auto = 0
+        folio_carril2_auto = 0
+        folio_carril3_auto = 0
+        folio_carril4_auto = 0
+        folio_carril5_auto = 0
+        folio_carril6_auto = 0
+        # AUTO 1 EJE
+        folio_carril1_auto1eje = 0
+        folio_carril2_auto1eje = 0
+        folio_carril3_auto1eje = 0
+        folio_carril4_auto1eje = 0
+        folio_carril5_auto1eje = 0
+        folio_carril6_auto1eje = 0
+        # AUTO 2 EJE
+        folio_carril1_auto2eje = 0
+        folio_carril2_auto2eje = 0
+        folio_carril3_auto2eje = 0
+        folio_carril4_auto2eje = 0
+        folio_carril5_auto2eje = 0
+        folio_carril6_auto2eje = 0
+        # AUTOBUS
+        folio_carril1_autobus = 0
+        folio_carril2_autobus = 0
+        folio_carril3_autobus = 0
+        folio_carril4_autobus = 0
+        folio_carril5_autobus = 0
+        folio_carril6_autobus = 0
+        # CAMION 2 ejes
+        folio_carril1_camion2eje = 0
+        folio_carril2_camion2eje = 0
+        folio_carril3_camion2eje = 0
+        folio_carril4_camion2eje = 0
+        folio_carril5_camion2eje = 0
+        folio_carril6_camion2eje = 0
+        # CAMION 3 EJES
+        folio_carril1_camion3eje = 0
+        folio_carril2_camion3eje = 0
+        folio_carril3_camion3eje = 0
+        folio_carril4_camion3eje = 0
+        folio_carril5_camion3eje = 0
+        folio_carril6_camion3eje = 0
+        # CAMION 4 EJES
+        folio_carril1_camion4eje = 0
+        folio_carril2_camion4eje = 0
+        folio_carril3_camion4eje = 0
+        folio_carril4_camion4eje = 0
+        folio_carril5_camion4eje = 0
+        folio_carril6_camion4eje = 0
+        # CAMION 5 EJES
+        folio_carril1_camion5eje = 0
+        folio_carril2_camion5eje = 0
+        folio_carril3_camion5eje = 0
+        folio_carril4_camion5eje = 0
+        folio_carril5_camion5eje = 0
+        folio_carril6_camion5eje = 0
+        # CAMION 6 EJES
+        folio_carril1_camion6eje = 0
+        folio_carril2_camion6eje = 0
+        folio_carril3_camion6eje = 0
+        folio_carril4_camion6eje = 0
+        folio_carril5_camion6eje = 0
+        folio_carril6_camion6eje = 0
+        # CAMION 7 EJES
+        folio_carril1_camion7eje = 0
+        folio_carril2_camion7eje = 0
+        folio_carril3_camion7eje = 0
+        folio_carril4_camion7eje = 0
+        folio_carril5_camion7eje = 0
+        folio_carril6_camion7eje = 0
+        # RESIDENTE
+        folio_carril1_residente = 0
+        folio_carril2_residente = 0
+        folio_carril3_residente = 0
+        folio_carril4_residente = 0
+        folio_carril5_residente = 0
+        folio_carril6_residente = 0
+        # RESIDENTE 1 EJE
+        folio_carril1_residente1eje = 0
+        folio_carril2_residente1eje = 0
+        folio_carril3_residente1eje = 0
+        folio_carril4_residente1eje = 0
+        folio_carril5_residente1eje = 0
+        folio_carril6_residente1eje = 0
+        # RESIDENTE 2 EJES
+        folio_carril1_residente2eje = 0
+        folio_carril2_residente2eje = 0
+        folio_carril3_residente2eje = 0
+        folio_carril4_residente2eje = 0
+        folio_carril5_residente2eje = 0
+        folio_carril6_residente2eje = 0
+
+        # TARIFAS
+        motocicleta_cuota = 0
+        auto_cuota = 0
+        auto_1eje_cuota = 0
+        auto_2eje_cuota = 0
+        autobus_cuota = 0
+        camion2eje_cuota = 0
+        camion3eje_cuota = 0
+        camion4eje_cuota = 0
+        camion5eje_cuota = 0
+        camion6eje_cuota = 0
+        camion7eje_cuota = 0
+        residente_cuota = 0
+        residente1eje_cuota = 0
+        residente2eje_cuota = 0
+        motocicleta_tarifa_siva = 0
+        motocicleta_tarifa_iva = 0
+        auto_tarifa_siva = 0
+        auto_tarifa_iva = 0
+        auto_1eje_tarifa_siva = 0
+        auto_1eje_tarifa_iva = 0
+        auto_2eje_tarifa_siva = 0
+        auto_2eje_tarifa_iva = 0
+        autobus_tarifa_siva = 0
+        autobus_tarifa_iva = 0
+        camion2eje_tarifa_siva = 0
+        camion2eje_tarifa_iva = 0
+        camion3eje_tarifa_siva = 0
+        camion3eje_tarifa_iva = 0
+        camion4eje_tarifa_siva = 0
+        camion4eje_tarifa_iva = 0
+        camion5eje_tarifa_siva = 0
+        camion5eje_tarifa_iva = 0
+        camion6eje_tarifa_siva = 0
+        camion6eje_tarifa_iva = 0
+        camion7eje_tarifa_siva = 0
+        camion7eje_tarifa_iva = 0
+        residente_tarifa_iva = 0
+        residente_tarifa_siva = 0
+        residente1eje_tarifa_iva = 0
+        residente1eje_tarifa_siva = 0
+        residente2eje_tarifa_iva = 0
+        residente2eje_tarifa_siva = 0
+
+
+        for mat in buscar_sesiones_mat:
+            # buscar_pagos = self.env["pos.payment"].search([('session_id', '=', mat.id)])
+            # print(mat.name, mat.config_id.name)
+
+            buscar_peajes_motocicleta = self.env["product.template"].search([('name', '=', "MOTOCICLETA")])
+            buscar_peajes_auto = self.env["product.template"].search([('name', '=', "AUTO")])
+            buscar_peajes_auto1eje = self.env["product.template"].search([('name', '=', "AUTO 1 EJE")])
+            buscar_peajes_auto2eje = self.env["product.template"].search([('name', '=', "AUTO 2 EJE")])
+            buscar_peajes_autobus = self.env["product.template"].search([('name', '=', "AUTOBUS")])
+            buscar_peajes_camion2eje = self.env["product.template"].search([('name', '=', "CAMION 2 EJES")])
+            buscar_peajes_camion3eje = self.env["product.template"].search([('name', '=', "CAMION 3 EJES")])
+            buscar_peajes_camion4eje = self.env["product.template"].search([('name', '=', "CAMION 4 EJES")])
+            buscar_peajes_camion5eje = self.env["product.template"].search([('name', '=', "CAMION 5 EJES")])
+            buscar_peajes_camion6eje = self.env["product.template"].search([('name', '=', "CAMION 6 EJES")])
+            buscar_peajes_camion7eje = self.env["product.template"].search([('name', '=', "CAMION + 7 EJES")])
+            buscar_peajes_residente = self.env["product.template"].search([('name', '=', "RESIDENTE")])
+            buscar_peajes_residente1eje = self.env["product.template"].search([('name', '=', "RESIDENTE + 1 EJE")])
+            buscar_peajes_residente2eje = self.env["product.template"].search([('name', '=', "RESIDENTE + 2 EJES")])
+
+
+            buscar_ordenes_folios = self.env["pos.order"].search([('session_id', '=', mat.id)])
+            for bof in buscar_ordenes_folios:
+                # print(bof.name, ' bof ')
+                for bp in buscar_peajes_motocicleta:                                                   # MOTOCICLETA
+
+                    motocicleta_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    # TARIFA SIN IVA
+                    motocicleta_tarifa_siva = bp.list_price
+                    # TARIFA IVA
+                    motocicleta_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_auto:                                                   # AUTO
+                    auto_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_tarifa_siva = float(bp.list_price)
+                    auto_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_auto1eje:                                                   # AUTO 1 EJE
+                    auto_1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_1eje_tarifa_siva = float(bp.list_price)
+                    auto_1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_auto2eje:                                                   # AUTO 2 EJES
+                    auto_2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_2eje_tarifa_siva = float(bp.list_price)
+                    auto_2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_autobus:                                                   # AUTOBBUS
+                    autobus_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    autobus_tarifa_siva = float(bp.list_price)
+                    autobus_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion2eje:                                                   # CAMION 2 EJE
+                    camion2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion2eje_tarifa_siva = float(bp.list_price)
+                    camion2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion3eje:                                                   # CAMION 3 EJES
+                    camion3eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion3eje_tarifa_siva = float(bp.list_price)
+                    camion3eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion4eje:                                                   # CAMION 4 EJES
+                    camion4eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion4eje_tarifa_siva = float(bp.list_price)
+                    camion4eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion5eje:                                                   # CAMION 5 EJES
+                    camion5eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion5eje_tarifa_siva = float(bp.list_price)
+                    camion5eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion6eje:                                                   # CAMION 6 EJES
+                    camion6eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion6eje_tarifa_siva = float(bp.list_price)
+                    camion6eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion7eje:                                                   # CAMION 7 EJES
+                    camion7eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion7eje_tarifa_siva = float(bp.list_price)
+                    camion7eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_residente:                                                   # RESIDENTE
+                    residente_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    residente_tarifa_siva = float(bp.list_price)
+                    residente_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_residente1eje:                                                   # RESIDENTE 1 EJE
+                    residente1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    residente1eje_tarifa_siva = float(bp.list_price)
+                    residente1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_residente2eje:                                                   # RESIDENTE 2 EJE
+                    residente2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    residente2eje_tarifa_siva = float(bp.list_price)
+                    residente2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+
+            '''for pagos in buscar_pagos:
+                cum_pagoiva_matutino += pagos.pos_order_id.amount_tax
+                acum_pago_mat += pagos.amount - pagos.pos_order_id.amount_tax'''
+
+        print(buscar_sesiones_mat, ' si entro matutino ')
+
+
+        data = {'date_start': self.start_date,
+                'date_stop': self.end_date,
+                'config_ids': self.pos_config_srlc_ids.ids,
+
+                # PEAJES
+                'motocicleta_cuota': motocicleta_cuota,
+                'auto_cuota': auto_cuota,
+                'auto_1eje_cuota': float(auto_1eje_cuota),
+                'auto_2eje_cuota': auto_2eje_cuota,
+                'autobus_cuota': autobus_cuota,
+                'camion2eje_cuota': camion2eje_cuota,
+                'camion3eje_cuota': camion3eje_cuota,
+                'camion4eje_cuota': camion4eje_cuota,
+                'camion5eje_cuota': camion5eje_cuota,
+                'camion6eje_cuota': camion6eje_cuota,
+                'camion7eje_cuota': camion7eje_cuota,
+                'residente_cuota': residente_cuota,
+                'residente1eje_cuota': residente1eje_cuota,
+                'residente2eje_cuota': residente2eje_cuota,
+
+                # FOLIOS POR CARRIL
+                # CARRIL 1
+                'folio_carril1_motocicleta': folio_carril1_motocicleta,
+                'folio_carril1_auto': folio_carril1_auto,
+                'folio_carril1_auto1eje': folio_carril1_auto1eje,
+                'folio_carril1_auto2eje': folio_carril1_auto2eje,
+                'folio_carril1_autobus': folio_carril1_autobus,
+                'folio_carril1_camion2eje': folio_carril1_camion2eje,
+                'folio_carril1_camion3eje': folio_carril1_camion3eje,
+                'folio_carril1_camion4eje': folio_carril1_camion4eje,
+                'folio_carril1_camion5eje': folio_carril1_camion5eje,
+                'folio_carril1_camion6eje': folio_carril1_camion6eje,
+                'folio_carril1_camion7eje': folio_carril1_camion7eje,
+                'folio_carril1_residente': folio_carril1_residente,
+                'folio_carril1_residente1eje': folio_carril1_residente1eje,
+                'folio_carril1_residente2eje': folio_carril1_residente2eje,
+                # CARRIL 2
+                'folio_carril2_motocicleta': folio_carril2_motocicleta,
+                'folio_carril2_auto': folio_carril2_auto,
+                'folio_carril2_auto1eje': folio_carril2_auto1eje,
+                'folio_carril2_auto2eje': folio_carril2_auto2eje,
+                'folio_carril2_autobus': folio_carril2_autobus,
+                'folio_carril2_camion2eje': folio_carril2_camion2eje,
+                'folio_carril2_camion3eje': folio_carril2_camion3eje,
+                'folio_carril2_camion4eje': folio_carril2_camion4eje,
+                'folio_carril2_camion5eje': folio_carril2_camion5eje,
+                'folio_carril2_camion6eje': folio_carril2_camion6eje,
+                'folio_carril2_camion7eje': folio_carril2_camion7eje,
+                'folio_carril2_residente': folio_carril2_residente,
+                'folio_carril2_residente1eje': folio_carril2_residente1eje,
+                'folio_carril2_residente2eje': folio_carril2_residente2eje,
+                # CARRIL 3
+                'folio_carril3_motocicleta': folio_carril3_motocicleta,
+                'folio_carril3_auto': folio_carril3_auto,
+                'folio_carril3_auto1eje': folio_carril3_auto1eje,
+                'folio_carril3_auto2eje': folio_carril3_auto2eje,
+                'folio_carril3_autobus': folio_carril3_autobus,
+                'folio_carril3_camion2eje': folio_carril3_camion2eje,
+                'folio_carril3_camion3eje': folio_carril3_camion3eje,
+                'folio_carril3_camion4eje': folio_carril3_camion4eje,
+                'folio_carril3_camion5eje': folio_carril3_camion5eje,
+                'folio_carril3_camion6eje': folio_carril3_camion6eje,
+                'folio_carril3_camion7eje': folio_carril3_camion7eje,
+                'folio_carril3_residente': folio_carril3_residente,
+                'folio_carril3_residente1eje': folio_carril3_residente1eje,
+                'folio_carril3_residente2eje': folio_carril3_residente2eje,
+                # CARRIL 4
+                'folio_carril4_motocicleta': folio_carril4_motocicleta,
+                'folio_carril4_auto': folio_carril4_auto,
+                'folio_carril4_auto1eje': folio_carril4_auto1eje,
+                'folio_carril4_auto2eje': folio_carril4_auto2eje,
+                'folio_carril4_autobus': folio_carril4_autobus,
+                'folio_carril4_camion2eje': folio_carril4_camion2eje,
+                'folio_carril4_camion3eje': folio_carril4_camion3eje,
+                'folio_carril4_camion4eje': folio_carril4_camion4eje,
+                'folio_carril4_camion5eje': folio_carril4_camion5eje,
+                'folio_carril4_camion6eje': folio_carril4_camion6eje,
+                'folio_carril4_camion7eje': folio_carril4_camion7eje,
+                'folio_carril4_residente': folio_carril4_residente,
+                'folio_carril4_residente1eje': folio_carril4_residente1eje,
+                'folio_carril4_residente2eje': folio_carril4_residente2eje,
+                # CARRIL 5
+                'folio_carril5_motocicleta': folio_carril5_motocicleta,
+                'folio_carril5_auto': folio_carril5_auto,
+                'folio_carril5_auto1eje': folio_carril5_auto1eje,
+                'folio_carril5_auto2eje': folio_carril5_auto2eje,
+                'folio_carril5_autobus': folio_carril5_autobus,
+                'folio_carril5_camion2eje': folio_carril5_camion2eje,
+                'folio_carril5_camion3eje': folio_carril5_camion3eje,
+                'folio_carril5_camion4eje': folio_carril5_camion4eje,
+                'folio_carril5_camion5eje': folio_carril5_camion5eje,
+                'folio_carril5_camion6eje': folio_carril5_camion6eje,
+                'folio_carril5_camion7eje': folio_carril5_camion7eje,
+                'folio_carril5_residente': folio_carril5_residente,
+                'folio_carril5_residente1eje': folio_carril5_residente1eje,
+                'folio_carril5_residente2eje': folio_carril5_residente2eje,
+                # CARRIL 6
+                'folio_carril6_motocicleta': folio_carril6_motocicleta,
+                'folio_carril6_auto': folio_carril6_auto,
+                'folio_carril6_auto1eje': folio_carril6_auto1eje,
+                'folio_carril6_auto2eje': folio_carril6_auto2eje,
+                'folio_carril6_autobus': folio_carril6_autobus,
+                'folio_carril6_camion2eje': folio_carril6_camion2eje,
+                'folio_carril6_camion3eje': folio_carril6_camion3eje,
+                'folio_carril6_camion4eje': folio_carril6_camion4eje,
+                'folio_carril6_camion5eje': folio_carril6_camion5eje,
+                'folio_carril6_camion6eje': folio_carril6_camion6eje,
+                'folio_carril6_camion7eje': folio_carril6_camion7eje,
+                'folio_carril6_residente': folio_carril6_residente,
+                'folio_carril6_residente1eje': folio_carril6_residente1eje,
+                'folio_carril6_residente2eje': folio_carril6_residente2eje,
+
+                # TARIFAS
+                # TARIFAS SIN IVA
+                'motocicleta_tarifa_siva': motocicleta_tarifa_siva,
+                'auto_tarifa_siva': auto_tarifa_siva,
+                'auto_1eje_tarifa_siva': auto_1eje_tarifa_siva,
+                'auto_2eje_tarifa_siva': auto_2eje_tarifa_siva,
+                'autobus_tarifa_siva': autobus_tarifa_siva,
+                'camion2eje_tarifa_siva': camion2eje_tarifa_siva,
+                'camion3eje_tarifa_siva': camion3eje_tarifa_siva,
+                'camion4eje_tarifa_siva': camion4eje_tarifa_siva,
+                'camion5eje_tarifa_siva': camion5eje_tarifa_siva,
+                'camion6eje_tarifa_siva': camion6eje_tarifa_siva,
+                'camion7eje_tarifa_siva': camion7eje_tarifa_siva,
+                'residente_tarifa_siva': camion7eje_tarifa_siva,
+                'residente1eje_tarifa_siva': camion7eje_tarifa_siva,
+                'residente2eje_tarifa_siva': camion7eje_tarifa_siva,
+
+                # TARIFAS IVA
+                'motocicleta_tarifa_iva': motocicleta_tarifa_iva,
+                'auto_tarifa_iva': auto_tarifa_iva,
+                'auto_1eje_tarifa_iva': auto_1eje_tarifa_iva,
+                'auto_2eje_tarifa_iva': auto_2eje_tarifa_iva,
+                'autobus_tarifa_iva': autobus_tarifa_iva,
+                'camion2eje_tarifa_iva': camion2eje_tarifa_iva,
+                'camion3eje_tarifa_iva': camion3eje_tarifa_iva,
+                'camion4eje_tarifa_iva': camion4eje_tarifa_iva,
+                'camion5eje_tarifa_iva': camion5eje_tarifa_iva,
+                'camion6eje_tarifa_iva': camion6eje_tarifa_iva,
+                'camion7eje_tarifa_iva': camion7eje_tarifa_iva,
+                'residente_tarifa_iva': camion7eje_tarifa_iva,
+                'residente1eje_tarifa_iva': camion7eje_tarifa_iva,
+                'residente2eje_tarifa_iva': camion7eje_tarifa_iva,
+
+                }
+        return self.env.ref('slrc.vespertino_report_button').report_action([], data=data)
+    
+    
+    
+    def generate_report_turnonoc(self):
+        print(' GENERAR REPORTE DEL TURNO MAT')
+
+        fecha_hoy = fields.Datetime.now()
+        hora = fecha_hoy.strftime("%H:%M:%S")
+
+        '''dt = datetime.strptime(str(fecha_dma2), '%d-%m-%Y %H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_dma2 = old_tz.localize(dt).astimezone(new_tz)
+        fecha_dma2 = datetime.strftime(fecha_dma2, '%d/%m/%Y')'''
+
+        # FECHA UTC
+        fecha_dma2 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        print(fecha_dma2, ' fecha local UTC')
+        fecha_dma2 = datetime.strftime(fecha_hoy, '%Y-%m-%d')
+
+        # FECHA MST HERMOSILLO
+        fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        dt = datetime.strptime(str(fecha_dma3), '%d-%m-%Y %H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+        fecha_dma3 = datetime.strftime(fecha_dma3, '%d/%m/%Y')
+        print(fecha_dma3, ' fecha local MST ')
+
+        fecha_hora = time.strftime(hora, time.localtime())
+        dt = datetime.strptime(str(fecha_hora), '%H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_hora = old_tz.localize(dt).astimezone(new_tz)
+        hora = datetime.strftime(fecha_hora, '%H:%M:%S')
+
+        buscar_ordenes = []
+        turno = ""
+        # if hora >= '00:00:00' and hora <= '07:59:59':
+        turno = 'Matutino'
+
+        buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma2) + ' 07:00:00'),
+                                                       ('date_order', '<=', str(fecha_dma2) + ' 13:59:59')])
+
+        # BUSCAR LAS SESIONES QUE CORRESPONDAN A ESTE TURNO!
+
+        '''buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
+                                                              ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')])'''
+
+        buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
+                                                              ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')], order='config_id asc')
+
+        '''buscar_sesiones_matx = self.env["pos.session"].search([])
+        for ici in buscar_sesiones_matx:
+            print(ici.start_at, ' fecha ', fecha_dma2 + ' 07:00:00')'''
+
+        acum_pago_mat = 0
+        cum_pagoiva_matutino = 0
+
+        folio_carril1_motocicleta = 0
+        folio_carril2_motocicleta = 0
+        folio_carril3_motocicleta = 0
+        folio_carril4_motocicleta = 0
+        folio_carril5_motocicleta = 0
+        folio_carril6_motocicleta = 0
+        # AUTO
+        folio_carril1_auto = 0
+        folio_carril2_auto = 0
+        folio_carril3_auto = 0
+        folio_carril4_auto = 0
+        folio_carril5_auto = 0
+        folio_carril6_auto = 0
+        # AUTO 1 EJE
+        folio_carril1_auto1eje = 0
+        folio_carril2_auto1eje = 0
+        folio_carril3_auto1eje = 0
+        folio_carril4_auto1eje = 0
+        folio_carril5_auto1eje = 0
+        folio_carril6_auto1eje = 0
+        # AUTO 2 EJE
+        folio_carril1_auto2eje = 0
+        folio_carril2_auto2eje = 0
+        folio_carril3_auto2eje = 0
+        folio_carril4_auto2eje = 0
+        folio_carril5_auto2eje = 0
+        folio_carril6_auto2eje = 0
+        # AUTOBUS
+        folio_carril1_autobus = 0
+        folio_carril2_autobus = 0
+        folio_carril3_autobus = 0
+        folio_carril4_autobus = 0
+        folio_carril5_autobus = 0
+        folio_carril6_autobus = 0
+        # CAMION 2 ejes
+        folio_carril1_camion2eje = 0
+        folio_carril2_camion2eje = 0
+        folio_carril3_camion2eje = 0
+        folio_carril4_camion2eje = 0
+        folio_carril5_camion2eje = 0
+        folio_carril6_camion2eje = 0
+        # CAMION 3 EJES
+        folio_carril1_camion3eje = 0
+        folio_carril2_camion3eje = 0
+        folio_carril3_camion3eje = 0
+        folio_carril4_camion3eje = 0
+        folio_carril5_camion3eje = 0
+        folio_carril6_camion3eje = 0
+        # CAMION 4 EJES
+        folio_carril1_camion4eje = 0
+        folio_carril2_camion4eje = 0
+        folio_carril3_camion4eje = 0
+        folio_carril4_camion4eje = 0
+        folio_carril5_camion4eje = 0
+        folio_carril6_camion4eje = 0
+        # CAMION 5 EJES
+        folio_carril1_camion5eje = 0
+        folio_carril2_camion5eje = 0
+        folio_carril3_camion5eje = 0
+        folio_carril4_camion5eje = 0
+        folio_carril5_camion5eje = 0
+        folio_carril6_camion5eje = 0
+        # CAMION 6 EJES
+        folio_carril1_camion6eje = 0
+        folio_carril2_camion6eje = 0
+        folio_carril3_camion6eje = 0
+        folio_carril4_camion6eje = 0
+        folio_carril5_camion6eje = 0
+        folio_carril6_camion6eje = 0
+        # CAMION 7 EJES
+        folio_carril1_camion7eje = 0
+        folio_carril2_camion7eje = 0
+        folio_carril3_camion7eje = 0
+        folio_carril4_camion7eje = 0
+        folio_carril5_camion7eje = 0
+        folio_carril6_camion7eje = 0
+        # RESIDENTE
+        folio_carril1_residente = 0
+        folio_carril2_residente = 0
+        folio_carril3_residente = 0
+        folio_carril4_residente = 0
+        folio_carril5_residente = 0
+        folio_carril6_residente = 0
+        # RESIDENTE 1 EJE
+        folio_carril1_residente1eje = 0
+        folio_carril2_residente1eje = 0
+        folio_carril3_residente1eje = 0
+        folio_carril4_residente1eje = 0
+        folio_carril5_residente1eje = 0
+        folio_carril6_residente1eje = 0
+        # RESIDENTE 2 EJES
+        folio_carril1_residente2eje = 0
+        folio_carril2_residente2eje = 0
+        folio_carril3_residente2eje = 0
+        folio_carril4_residente2eje = 0
+        folio_carril5_residente2eje = 0
+        folio_carril6_residente2eje = 0
+
+        # TARIFAS
+        motocicleta_cuota = 0
+        auto_cuota = 0
+        auto_1eje_cuota = 0
+        auto_2eje_cuota = 0
+        autobus_cuota = 0
+        camion2eje_cuota = 0
+        camion3eje_cuota = 0
+        camion4eje_cuota = 0
+        camion5eje_cuota = 0
+        camion6eje_cuota = 0
+        camion7eje_cuota = 0
+        residente_cuota = 0
+        residente1eje_cuota = 0
+        residente2eje_cuota = 0
+        motocicleta_tarifa_siva = 0
+        motocicleta_tarifa_iva = 0
+        auto_tarifa_siva = 0
+        auto_tarifa_iva = 0
+        auto_1eje_tarifa_siva = 0
+        auto_1eje_tarifa_iva = 0
+        auto_2eje_tarifa_siva = 0
+        auto_2eje_tarifa_iva = 0
+        autobus_tarifa_siva = 0
+        autobus_tarifa_iva = 0
+        camion2eje_tarifa_siva = 0
+        camion2eje_tarifa_iva = 0
+        camion3eje_tarifa_siva = 0
+        camion3eje_tarifa_iva = 0
+        camion4eje_tarifa_siva = 0
+        camion4eje_tarifa_iva = 0
+        camion5eje_tarifa_siva = 0
+        camion5eje_tarifa_iva = 0
+        camion6eje_tarifa_siva = 0
+        camion6eje_tarifa_iva = 0
+        camion7eje_tarifa_siva = 0
+        camion7eje_tarifa_iva = 0
+        residente_tarifa_iva = 0
+        residente_tarifa_siva = 0
+        residente1eje_tarifa_iva = 0
+        residente1eje_tarifa_siva = 0
+        residente2eje_tarifa_iva = 0
+        residente2eje_tarifa_siva = 0
+
+
+        for mat in buscar_sesiones_mat:
+            # buscar_pagos = self.env["pos.payment"].search([('session_id', '=', mat.id)])
+            # print(mat.name, mat.config_id.name)
+
+            buscar_peajes_motocicleta = self.env["product.template"].search([('name', '=', "MOTOCICLETA")])
+            buscar_peajes_auto = self.env["product.template"].search([('name', '=', "AUTO")])
+            buscar_peajes_auto1eje = self.env["product.template"].search([('name', '=', "AUTO 1 EJE")])
+            buscar_peajes_auto2eje = self.env["product.template"].search([('name', '=', "AUTO 2 EJE")])
+            buscar_peajes_autobus = self.env["product.template"].search([('name', '=', "AUTOBUS")])
+            buscar_peajes_camion2eje = self.env["product.template"].search([('name', '=', "CAMION 2 EJES")])
+            buscar_peajes_camion3eje = self.env["product.template"].search([('name', '=', "CAMION 3 EJES")])
+            buscar_peajes_camion4eje = self.env["product.template"].search([('name', '=', "CAMION 4 EJES")])
+            buscar_peajes_camion5eje = self.env["product.template"].search([('name', '=', "CAMION 5 EJES")])
+            buscar_peajes_camion6eje = self.env["product.template"].search([('name', '=', "CAMION 6 EJES")])
+            buscar_peajes_camion7eje = self.env["product.template"].search([('name', '=', "CAMION + 7 EJES")])
+            buscar_peajes_residente = self.env["product.template"].search([('name', '=', "RESIDENTE")])
+            buscar_peajes_residente1eje = self.env["product.template"].search([('name', '=', "RESIDENTE + 1 EJE")])
+            buscar_peajes_residente2eje = self.env["product.template"].search([('name', '=', "RESIDENTE + 2 EJES")])
+
+
+            buscar_ordenes_folios = self.env["pos.order"].search([('session_id', '=', mat.id)])
+            for bof in buscar_ordenes_folios:
+                # print(bof.name, ' bof ')
+                for bp in buscar_peajes_motocicleta:                                                   # MOTOCICLETA
+
+                    motocicleta_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    # TARIFA SIN IVA
+                    motocicleta_tarifa_siva = bp.list_price
+                    # TARIFA IVA
+                    motocicleta_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_motocicleta = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_auto:                                                   # AUTO
+                    auto_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_tarifa_siva = float(bp.list_price)
+                    auto_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_auto = self.env["pos.order.line"].search_count([('order_id.id', '=', bof.id),('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_auto1eje:                                                   # AUTO 1 EJE
+                    auto_1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_1eje_tarifa_siva = float(bp.list_price)
+                    auto_1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_auto1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_auto2eje:                                                   # AUTO 2 EJES
+                    auto_2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    auto_2eje_tarifa_siva = float(bp.list_price)
+                    auto_2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_auto2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_autobus:                                                   # AUTOBBUS
+                    autobus_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    autobus_tarifa_siva = float(bp.list_price)
+                    autobus_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_autobus = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion2eje:                                                   # CAMION 2 EJE
+                    camion2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion2eje_tarifa_siva = float(bp.list_price)
+                    camion2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion3eje:                                                   # CAMION 3 EJES
+                    camion3eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion3eje_tarifa_siva = float(bp.list_price)
+                    camion3eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion3eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion4eje:                                                   # CAMION 4 EJES
+                    camion4eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion4eje_tarifa_siva = float(bp.list_price)
+                    camion4eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion4eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion5eje:                                                   # CAMION 5 EJES
+                    camion5eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion5eje_tarifa_siva = float(bp.list_price)
+                    camion5eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion5eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion6eje:                                                   # CAMION 6 EJES
+                    camion6eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion6eje_tarifa_siva = float(bp.list_price)
+                    camion6eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion6eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_camion7eje:                                                   # CAMION 7 EJES
+                    camion7eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    camion7eje_tarifa_siva = float(bp.list_price)
+                    camion7eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_camion7eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_residente:                                                   # RESIDENTE
+                    residente_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(bp.list_price)
+                    residente_tarifa_siva = float(bp.list_price)
+                    residente_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_residente = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_residente1eje:                                                   # RESIDENTE 1 EJE
+                    residente1eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    residente1eje_tarifa_siva = float(bp.list_price)
+                    residente1eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_residente1eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+                for bp in buscar_peajes_residente2eje:                                                   # RESIDENTE 2 EJE
+                    residente2eje_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
+                        bp.list_price)
+                    residente2eje_tarifa_siva = float(bp.list_price)
+                    residente2eje_tarifa_iva = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100)
+                    # BUSCAR CANTIDAD DE FOLIOS VENDIDOS POR PRODUCTO Y CARRIL
+                    if mat.config_id.name == 1:
+                        folio_carril1_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 2:
+                        folio_carril2_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 3:
+                        folio_carril3_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 4:
+                        folio_carril4_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 5:
+                        folio_carril5_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+                    if mat.config_id.name == 6:
+                        folio_carril6_residente2eje = self.env["pos.order.line"].search_count(
+                            [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
+
+
+            '''for pagos in buscar_pagos:
+                cum_pagoiva_matutino += pagos.pos_order_id.amount_tax
+                acum_pago_mat += pagos.amount - pagos.pos_order_id.amount_tax'''
+
+        print(buscar_sesiones_mat, ' si entro matutino ')
+
+
+        data = {'date_start': self.start_date,
+                'date_stop': self.end_date,
+                'config_ids': self.pos_config_srlc_ids.ids,
+
+                # PEAJES
+                'motocicleta_cuota': motocicleta_cuota,
+                'auto_cuota': auto_cuota,
+                'auto_1eje_cuota': float(auto_1eje_cuota),
+                'auto_2eje_cuota': auto_2eje_cuota,
+                'autobus_cuota': autobus_cuota,
+                'camion2eje_cuota': camion2eje_cuota,
+                'camion3eje_cuota': camion3eje_cuota,
+                'camion4eje_cuota': camion4eje_cuota,
+                'camion5eje_cuota': camion5eje_cuota,
+                'camion6eje_cuota': camion6eje_cuota,
+                'camion7eje_cuota': camion7eje_cuota,
+                'residente_cuota': residente_cuota,
+                'residente1eje_cuota': residente1eje_cuota,
+                'residente2eje_cuota': residente2eje_cuota,
+
+                # FOLIOS POR CARRIL
+                # CARRIL 1
+                'folio_carril1_motocicleta': folio_carril1_motocicleta,
+                'folio_carril1_auto': folio_carril1_auto,
+                'folio_carril1_auto1eje': folio_carril1_auto1eje,
+                'folio_carril1_auto2eje': folio_carril1_auto2eje,
+                'folio_carril1_autobus': folio_carril1_autobus,
+                'folio_carril1_camion2eje': folio_carril1_camion2eje,
+                'folio_carril1_camion3eje': folio_carril1_camion3eje,
+                'folio_carril1_camion4eje': folio_carril1_camion4eje,
+                'folio_carril1_camion5eje': folio_carril1_camion5eje,
+                'folio_carril1_camion6eje': folio_carril1_camion6eje,
+                'folio_carril1_camion7eje': folio_carril1_camion7eje,
+                'folio_carril1_residente': folio_carril1_residente,
+                'folio_carril1_residente1eje': folio_carril1_residente1eje,
+                'folio_carril1_residente2eje': folio_carril1_residente2eje,
+                # CARRIL 2
+                'folio_carril2_motocicleta': folio_carril2_motocicleta,
+                'folio_carril2_auto': folio_carril2_auto,
+                'folio_carril2_auto1eje': folio_carril2_auto1eje,
+                'folio_carril2_auto2eje': folio_carril2_auto2eje,
+                'folio_carril2_autobus': folio_carril2_autobus,
+                'folio_carril2_camion2eje': folio_carril2_camion2eje,
+                'folio_carril2_camion3eje': folio_carril2_camion3eje,
+                'folio_carril2_camion4eje': folio_carril2_camion4eje,
+                'folio_carril2_camion5eje': folio_carril2_camion5eje,
+                'folio_carril2_camion6eje': folio_carril2_camion6eje,
+                'folio_carril2_camion7eje': folio_carril2_camion7eje,
+                'folio_carril2_residente': folio_carril2_residente,
+                'folio_carril2_residente1eje': folio_carril2_residente1eje,
+                'folio_carril2_residente2eje': folio_carril2_residente2eje,
+                # CARRIL 3
+                'folio_carril3_motocicleta': folio_carril3_motocicleta,
+                'folio_carril3_auto': folio_carril3_auto,
+                'folio_carril3_auto1eje': folio_carril3_auto1eje,
+                'folio_carril3_auto2eje': folio_carril3_auto2eje,
+                'folio_carril3_autobus': folio_carril3_autobus,
+                'folio_carril3_camion2eje': folio_carril3_camion2eje,
+                'folio_carril3_camion3eje': folio_carril3_camion3eje,
+                'folio_carril3_camion4eje': folio_carril3_camion4eje,
+                'folio_carril3_camion5eje': folio_carril3_camion5eje,
+                'folio_carril3_camion6eje': folio_carril3_camion6eje,
+                'folio_carril3_camion7eje': folio_carril3_camion7eje,
+                'folio_carril3_residente': folio_carril3_residente,
+                'folio_carril3_residente1eje': folio_carril3_residente1eje,
+                'folio_carril3_residente2eje': folio_carril3_residente2eje,
+                # CARRIL 4
+                'folio_carril4_motocicleta': folio_carril4_motocicleta,
+                'folio_carril4_auto': folio_carril4_auto,
+                'folio_carril4_auto1eje': folio_carril4_auto1eje,
+                'folio_carril4_auto2eje': folio_carril4_auto2eje,
+                'folio_carril4_autobus': folio_carril4_autobus,
+                'folio_carril4_camion2eje': folio_carril4_camion2eje,
+                'folio_carril4_camion3eje': folio_carril4_camion3eje,
+                'folio_carril4_camion4eje': folio_carril4_camion4eje,
+                'folio_carril4_camion5eje': folio_carril4_camion5eje,
+                'folio_carril4_camion6eje': folio_carril4_camion6eje,
+                'folio_carril4_camion7eje': folio_carril4_camion7eje,
+                'folio_carril4_residente': folio_carril4_residente,
+                'folio_carril4_residente1eje': folio_carril4_residente1eje,
+                'folio_carril4_residente2eje': folio_carril4_residente2eje,
+                # CARRIL 5
+                'folio_carril5_motocicleta': folio_carril5_motocicleta,
+                'folio_carril5_auto': folio_carril5_auto,
+                'folio_carril5_auto1eje': folio_carril5_auto1eje,
+                'folio_carril5_auto2eje': folio_carril5_auto2eje,
+                'folio_carril5_autobus': folio_carril5_autobus,
+                'folio_carril5_camion2eje': folio_carril5_camion2eje,
+                'folio_carril5_camion3eje': folio_carril5_camion3eje,
+                'folio_carril5_camion4eje': folio_carril5_camion4eje,
+                'folio_carril5_camion5eje': folio_carril5_camion5eje,
+                'folio_carril5_camion6eje': folio_carril5_camion6eje,
+                'folio_carril5_camion7eje': folio_carril5_camion7eje,
+                'folio_carril5_residente': folio_carril5_residente,
+                'folio_carril5_residente1eje': folio_carril5_residente1eje,
+                'folio_carril5_residente2eje': folio_carril5_residente2eje,
+                # CARRIL 6
+                'folio_carril6_motocicleta': folio_carril6_motocicleta,
+                'folio_carril6_auto': folio_carril6_auto,
+                'folio_carril6_auto1eje': folio_carril6_auto1eje,
+                'folio_carril6_auto2eje': folio_carril6_auto2eje,
+                'folio_carril6_autobus': folio_carril6_autobus,
+                'folio_carril6_camion2eje': folio_carril6_camion2eje,
+                'folio_carril6_camion3eje': folio_carril6_camion3eje,
+                'folio_carril6_camion4eje': folio_carril6_camion4eje,
+                'folio_carril6_camion5eje': folio_carril6_camion5eje,
+                'folio_carril6_camion6eje': folio_carril6_camion6eje,
+                'folio_carril6_camion7eje': folio_carril6_camion7eje,
+                'folio_carril6_residente': folio_carril6_residente,
+                'folio_carril6_residente1eje': folio_carril6_residente1eje,
+                'folio_carril6_residente2eje': folio_carril6_residente2eje,
+
+                # TARIFAS
+                # TARIFAS SIN IVA
+                'motocicleta_tarifa_siva': motocicleta_tarifa_siva,
+                'auto_tarifa_siva': auto_tarifa_siva,
+                'auto_1eje_tarifa_siva': auto_1eje_tarifa_siva,
+                'auto_2eje_tarifa_siva': auto_2eje_tarifa_siva,
+                'autobus_tarifa_siva': autobus_tarifa_siva,
+                'camion2eje_tarifa_siva': camion2eje_tarifa_siva,
+                'camion3eje_tarifa_siva': camion3eje_tarifa_siva,
+                'camion4eje_tarifa_siva': camion4eje_tarifa_siva,
+                'camion5eje_tarifa_siva': camion5eje_tarifa_siva,
+                'camion6eje_tarifa_siva': camion6eje_tarifa_siva,
+                'camion7eje_tarifa_siva': camion7eje_tarifa_siva,
+                'residente_tarifa_siva': camion7eje_tarifa_siva,
+                'residente1eje_tarifa_siva': camion7eje_tarifa_siva,
+                'residente2eje_tarifa_siva': camion7eje_tarifa_siva,
+
+                # TARIFAS IVA
+                'motocicleta_tarifa_iva': motocicleta_tarifa_iva,
+                'auto_tarifa_iva': auto_tarifa_iva,
+                'auto_1eje_tarifa_iva': auto_1eje_tarifa_iva,
+                'auto_2eje_tarifa_iva': auto_2eje_tarifa_iva,
+                'autobus_tarifa_iva': autobus_tarifa_iva,
+                'camion2eje_tarifa_iva': camion2eje_tarifa_iva,
+                'camion3eje_tarifa_iva': camion3eje_tarifa_iva,
+                'camion4eje_tarifa_iva': camion4eje_tarifa_iva,
+                'camion5eje_tarifa_iva': camion5eje_tarifa_iva,
+                'camion6eje_tarifa_iva': camion6eje_tarifa_iva,
+                'camion7eje_tarifa_iva': camion7eje_tarifa_iva,
+                'residente_tarifa_iva': camion7eje_tarifa_iva,
+                'residente1eje_tarifa_iva': camion7eje_tarifa_iva,
+                'residente2eje_tarifa_iva': camion7eje_tarifa_iva,
+
+                }
+        return self.env.ref('slrc.nocturno_report_button').report_action([], data=data)
+
+
     def generate_report(self):
 
         '''sesion = self.env["pos.config"].search([])
@@ -840,6 +2267,11 @@ class PosReportesTurnoSrlc(models.TransientModel):
         print(fecha_dma2, hora, ' hora  ---------- ')
         buscar_ordenes = []
         turno = ""
+        cum_pagoiva_matutino = 0
+        cum_pagoiva_vespertino = 0
+        acum_pagoiva_nocturno = 0
+        acum_pago_nocturno = 0
+        acum_pago_mat = 0
         if hora >= '00:00:00' and hora <= '07:59:59':
             turno = 'Matutino'
 
@@ -861,6 +2293,7 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
                 for pagos in buscar_pagos:
                     cum_pagoiva_matutino += pagos.pos_order_id.amount_tax
+                    print(cum_pagoiva_matutino, pagos.pos_order_id.amount_tax, ' revisar aqui ')
                     acum_pago_mat += pagos.amount - pagos.pos_order_id.amount_tax
 
             print(buscar_sesiones_mat, ' si entro matutino ')
@@ -1275,6 +2708,7 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
         data = {'date_start': self.start_date,
                 'date_stop': self.end_date,
+                'fecha_hoy_letra': datetime.now().strftime('%d %B %Y'),
                 'config_ids': self.pos_config_srlc_ids.ids,
                 'jefe_operaciones': jefe_operaciones,
                 'administrador': administrador,

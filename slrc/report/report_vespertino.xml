@@ -3,16 +3,16 @@
     <data>
 
         <report
-                id="matutino_report_button"
+                id="vespertino_report_button"
                 model="pos.reportes_turno.wizard"
-                string="Reporte Matutino"
+                string="Reporte Vespertino"
                 report_type="qweb-pdf"
                 paperformat="slrc.paperformat"
-                name="slrc.report_matutino"
+                name="slrc.report_vespertino"
                 menu="False"
         />
 
-        <template id="report_matutino">
+        <template id="report_vespertino">
             <t t-call="web.html_container">
                 <t t-call="web.internal_layout">
                     <div class="page">
