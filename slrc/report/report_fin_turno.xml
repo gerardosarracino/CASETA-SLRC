@@ -108,56 +108,103 @@
                                     </tr>
                                     <tr style="border: 2px solid">
                                         <td> <strong>00:00 A 08:00 HRS.</strong>  </td>
-                                        <td style="border: 2px solid" align="right">$ 0 </td>
-                                        <td style="border: 2px solid" align="right">0</td>
-                                        <td style="border: 2px solid" align="right">$ 0</td>
-                                        <td style="border: 2px solid" align="right">$ 0</td>
+                                        <td style="border: 2px solid" align="right">$ <span t-esc="dolares_matutino" t-options='{"widget": "float", "precision": 2}'/>  </td>
+                                        <td style="border: 2px solid" align="right"><span t-esc="tipo_cambio" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid" align="right">$
+                                            <t t-set="iva_dlls_matutino" t-value="0"/>
+                                            <t t-set="iva_dlls_matutino" t-value="iva_dlls_matutino + iva * ( dolares_matutino * tipo_cambio)" t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="iva_dlls_matutino" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td style="border: 2px solid" align="right">$
+                                            <t t-set="dolar_cambio_matutino" t-value="0"/>
+                                            <t t-set="dolar_cambio_matutino" t-value="dolar_cambio_matutino + ( dolares_matutino * tipo_cambio)"
+                                               t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="dolar_cambio_matutino" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                         <td style="border: 2px solid" align="right">$ <span t-esc="cuotaiva_mn_matutino" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td style="border: 2px solid" align="right">$ <span t-esc="cuota_mn_mat" t-options='{"widget": "float", "precision": 2}'/> </td>
                                         <td style="border: 2px solid" align="right">$
                                             <t t-set="subtotal_rec_mat" t-value="0"/>
                                             <t t-set="subtotal_rec_mat" t-value="subtotal_rec_mat + cuotaiva_mn_matutino +
-                                             cuota_mn_mat" t-field-options='{"widget": "monetary"}'/>
+                                             cuota_mn_mat + iva_dlls_matutino + dolar_cambio_matutino" t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_rec_mat" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
                                     </tr>
                                     <tr align="right">
                                         <td style="border: 2px solid" align="left"> <strong>08:00 A 16:00 HRS.</strong> </td>
-                                        <td style="border: 2px solid">0</td>
-                                        <td style="border: 2px solid">0</td>
-                                        <td style="border: 2px solid">0</td>
-                                        <td style="border: 2px solid">$ 0</td>
+                                        <td style="border: 2px solid"><span t-esc="dolares_vespertino" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid"><span t-esc="tipo_cambio" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid">
+                                            <t t-set="iva_dlls_vesp" t-value="0"/>
+                                            <t t-set="iva_dlls_vesp" t-value="iva_dlls_vesp + iva * ( dolares_vespertino * tipo_cambio)" t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="iva_dlls_vesp" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td style="border: 2px solid">$
+                                            <t t-set="dolar_cambio_vesp" t-value="0"/>
+                                            <t t-set="dolar_cambio_vesp" t-value="dolar_cambio_vesp + ( dolares_vespertino * tipo_cambio)"
+                                               t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="dolar_cambio_vesp" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                         <td style="border: 2px solid"><span t-esc="cuotaiva_mn_vespertino" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td style="border: 2px solid">$ <span t-esc="cuota_mn_vesp" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td style="border: 2px solid">
                                             <t t-set="subtotal_rec_vesp" t-value="0"/>
                                             <t t-set="subtotal_rec_vesp" t-value="subtotal_rec_vesp + cuota_mn_vesp +
-                                             cuotaiva_mn_vespertino" t-field-options='{"widget": "monetary"}'/>
+                                             cuotaiva_mn_vespertino + iva_dlls_vesp + dolar_cambio_vesp" t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_rec_vesp" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
                                     </tr>
                                     <tr align="right">
                                         <td style="border: 2px solid" align="left"> <strong>16:00 A 24:00 HRS.</strong> </td>
-                                        <td style="border: 2px solid">0</td>
-                                        <td style="border: 2px solid">0</td>
-                                        <td style="border: 2px solid">0</td>
-                                        <td style="border: 2px solid">$ 0</td>
+                                        <td style="border: 2px solid"><span t-esc="dolares_nocturno" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid"><span t-esc="tipo_cambio" t-options='{"widget": "float", "precision": 2}'/></td>
+                                        <td style="border: 2px solid">
+                                            <t t-set="iva_dlls_nocturno" t-value="0"/>
+                                            <t t-set="iva_dlls_nocturno" t-value="iva_dlls_nocturno + iva * ( dolares_nocturno * tipo_cambio)" t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="iva_dlls_nocturno" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
+                                        <td style="border: 2px solid">$
+                                            <t t-set="dolar_cambio_noc" t-value="0"/>
+                                            <t t-set="dolar_cambio_noc" t-value="dolar_cambio_noc + ( dolares_nocturno * tipo_cambio)"
+                                               t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="dolar_cambio_noc" t-options='{"widget": "float", "precision": 2}' />
+                                        </td>
                                         <td style="border: 2px solid"> <span t-esc="cuotaiva_mn_nocturno" t-options='{"widget": "float", "precision": 2}'/> </td>
                                         <td style="border: 2px solid">$ <span t-esc="cuota_mn_nocturno" t-options='{"widget": "float", "precision": 2}'/></td>
                                         <td style="border: 2px solid">
                                             <t t-set="subtotal_rec_noc" t-value="0"/>
                                             <t t-set="subtotal_rec_noc" t-value="subtotal_rec_noc + cuotaiva_mn_nocturno +
-                                             cuota_mn_nocturno" t-field-options='{"widget": "monetary"}'/>
+                                             cuota_mn_nocturno + iva_dlls_nocturno + dolar_cambio_noc" t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_rec_noc" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
                                     </tr>
                                     <tr align="right">
                                         <th style="border: 2px solid" align="left">  <strong> T O T A L E S: </strong> </th>
-                                        <th style="border: 2px solid" >$ 0</th>
+                                        <th style="border: 2px solid" >$
+                                            <t t-set="totales_dolares_turno" t-value="0"/>
+                                            <t t-set="totales_dolares_turno" t-value="totales_dolares_turno + dolares_matutino +
+                                             dolares_vespertino + dolares_nocturno" t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="totales_dolares_turno" t-options='{"widget": "float", "precision": 2}' />
+                                        </th>
                                         <th style="border: 2px solid"></th>
-                                        <th style="border: 2px solid">$ 0</th>
-                                        <th style="border: 2px solid">$ 0</th>
-                                        <th style="border: 2px solid">$ 0</th>
+                                        <th style="border: 2px solid">$
+                                            <t t-set="totales_dolares_iva" t-value="0"/>
+                                            <t t-set="totales_dolares_iva" t-value="totales_dolares_iva + iva_dlls_matutino +
+                                             iva_dlls_vesp + iva_dlls_nocturno" t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="totales_dolares_iva" t-options='{"widget": "float", "precision": 2}' />
+                                        </th>
+                                        <th style="border: 2px solid">$
+                                            <t t-set="totales_dolares_cambio" t-value="0"/>
+                                            <t t-set="totales_dolares_cambio" t-value="totales_dolares_cambio + dolar_cambio_matutino +
+                                             dolar_cambio_vesp + dolar_cambio_noc" t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="totales_dolares_cambio" t-options='{"widget": "float", "precision": 2}' />
+                                        </th>
+                                        <th style="border: 2px solid">$
+                                            <t t-set="totales_mn_iva" t-value="0"/>
+                                            <t t-set="totales_mn_iva" t-value="totales_mn_iva + cuotaiva_mn_nocturno +
+                                             cuotaiva_mn_vespertino + cuotaiva_mn_nocturno" t-field-options='{"widget": "monetary"}'/>
+                                            <t t-esc="totales_mn_iva" t-options='{"widget": "float", "precision": 2}' />
+                                        </th>
                                         <th style="border: 2px solid">
                                             <t t-set="totales_mn" t-value="0"/>
                                             <t t-set="totales_mn" t-value="totales_mn + cuota_mn_mat + cuota_mn_vesp
@@ -522,7 +569,7 @@
                                     <tr>
                                         <td>TOTAL</td>
                                         <td>--------------------------</td>
-                                        <td>$ PENDIENTE </td>
+                                        <td>$ <t t-esc="totales_recaudado" t-options='{"widget": "float", "precision": 2}' /> </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -535,7 +582,7 @@
                                     <tr>
                                         <td>RECAUDACION DEL DIA</td>
                                         <td>..............................</td>
-                                        <td>$ PENDIENTE </td>
+                                        <td>$ <t t-esc="totales_recaudado" t-options='{"widget": "float", "precision": 2}' /> </td>
                                     </tr>
                                     <tr>
                                         <td><strong>RECAUDACION ACUMULADA DEL

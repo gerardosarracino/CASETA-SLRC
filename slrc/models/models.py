@@ -23,6 +23,12 @@ class MyPosConfig(models.Model):
     carril = fields.Integer()
 
 
+class PosSessionDolares(models.Model):
+    _inherit = ['pos.session']
+
+    
+
+
 class InformeExel(models.TransientModel):
     _name = 'informe.excel.wizard'
     _description = 'Reporte Personalizado de Excel'

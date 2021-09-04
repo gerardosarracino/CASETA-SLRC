@@ -21,19 +21,7 @@ _logger = logging.getLogger(__name__)
 class PosReportesTurnoSrlc(models.TransientModel):
     _name = 'pos.reportes_turno.wizard'
 
-    def _default_sesiones(self):
-        sesion = self.env["pos.config"].search([])
-        print(sesion, ' SESION ')
-        x = ''
-        if not sesion:
-            pass
-        else:
-            for ss in sesion:
-                datos = {
-                    'pos_config_srlc_ids': [
-                        [4, ss.id, {}]]}  # 'id': sesion.config_id.id, 'name': sesion.config_id.name
-                x = self.update(datos)
-            return x
+
 
     def _default_start_date(self):
         """ Find the earliest start_date of the latests sessions """
@@ -56,17 +44,79 @@ class PosReportesTurnoSrlc(models.TransientModel):
     start_date = fields.Datetime(required=True, default=_default_start_date)
     end_date = fields.Datetime(required=True, default=fields.Datetime.now)
 
+    @api.onchange('start_date')
+    def _default_sesiones(self):
+        fecha_hoy = fields.Datetime.now()
+        hora = fecha_hoy.strftime("%H:%M:%S")
+        # FECHA UTC
+        fecha_dma2 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        print(fecha_dma2, ' fecha local UTC')
+        fecha_dma2 = datetime.strftime(fecha_hoy, '%Y-%m-%d')
+
+        # FECHA MST HERMOSILLO
+        '''fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        dt = datetime.strptime(str(fecha_dma3), '%d-%m-%Y %H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+        fecha_dma3 = datetime.strftime(fecha_dma3, '%d/%m/%Y')
+        print(fecha_dma3, ' fecha local MST ')'''
+
+        fecha_hora = time.strftime(hora, time.localtime())
+        dt = datetime.strptime(str(fecha_hora), '%H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_hora = old_tz.localize(dt).astimezone(new_tz)
+        hora = datetime.strftime(fecha_hora, '%H:%M:%S')
+
+        sesion = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00')])
+        print(sesion, ' SESION ')
+        x = []
+        if not sesion:
+            pass
+        else:
+            datos = {}
+            for ss in sesion:
+                datos = {
+                    'pos_config_srlc_ids': [
+                        [4, ss.id, {}]]}  # 'id': sesion.config_id.id, 'name': sesion.config_id.name
+                x = self.update(datos)
+
+                fecha_dma3 = ss.start_at # time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+                dt = datetime.strptime(str(fecha_dma3), '%Y-%m-%d %H:%M:%S')
+                old_tz = pytz.timezone('UTC')
+                new_tz = pytz.timezone('MST')
+                fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+                # fecha_dma3 = datetime.strftime(fecha_dma3, '%d/%m/%Y')
+                print(fecha_dma3, ' fecha local MST ')
+
+                hora = datetime.strftime(fecha_dma3, '%H:%M:%S')
+                print(hora)
+                turno = ''
+                if hora >= '00:00:00' and hora <= '07:59:59':
+                    turno = 'Matutino'
+                    self.total_dolares_matutino += ss.dolares
+                if hora >= '08:00:00' and hora <= '16:59:59':
+                    turno = 'Vespertino'
+                    self.total_dolares_vespertino += ss.dolares
+                if hora >= '16:00:00' and hora <= '23:59:59':
+                    turno = 'Nocturno'
+                    self.total_dolares_nocturno += ss.dolares
+                print(turno, ' TURNO ')
+
     cajero = fields.Many2one('res.users',string="Cajero",) # default=_default_cajero
     jefe_operaciones = fields.Many2one('res.users',string="Jefe de Operaciones", required=False, )
     administrador = fields.Many2one('res.users',string="Administrador", required=False, )
 
-    pos_config_srlc_ids = fields.Many2many('pos.config', compute="_default_sesiones") # default=lambda s: s.env['pos.config'].search([])
+    pos_config_srlc_ids = fields.Many2many('pos.session', store=True) # default=lambda s: s.env['pos.config'].search([])
 
     tabla_cuotas = fields.Many2many('pos.tabla_emergentes')
 
     boleto_emergente = fields.Boolean(string="Activar Boletos Emergentes",  )
 
-    total_dolares_matutino = fields.Float() # compute='_datos_reporte'
+    total_dolares_matutino = fields.Float(store=True) # compute='_datos_reporte'
+    total_dolares_vespertino = fields.Float(store=True) # compute='_datos_reporte'
+    total_dolares_nocturno = fields.Float(store=True) # compute='_datos_reporte'
 
     def _datos_reporte(self, date_start=False, date_stop=False, config_ids=False, session_ids=False):
         print('datos reporte')
@@ -2706,6 +2756,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
         for i in b_administrador:
             administrador = i.name
 
+        dolar_tipo_cambio = self.env['ir.config_parameter'].sudo().get_param('pos_parametro.dolar')
+        iva = self.env['ir.config_parameter'].sudo().get_param('pos_parametro.iva')
+
         data = {'date_start': self.start_date,
                 'date_stop': self.end_date,
                 'fecha_hoy_letra': datetime.now().strftime('%d %B %Y'),
@@ -2793,7 +2846,17 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 'fecha_inicioyear_convert': fecha_inicioyear_convert,
                 # RECAUDACION DE TODOS LOS TIEMPOS
                 'recaudado_todos_tiempos': recaudado_todos_tiempos,
+
+                # DOLARES Y TIPO DE CAMBIO
+                'tipo_cambio': float(dolar_tipo_cambio),
+                'dolares_matutino': float(self.total_dolares_matutino),
+                'dolares_vespertino': float(self.total_dolares_vespertino),
+                'dolares_nocturno': float(self.total_dolares_nocturno),
+
+                # IVA
+                'iva': float(iva) ,
                 }
+
         return self.env.ref('slrc.fin_turno_report_buttonx').report_action([], data=data)
 
 

@@ -21,13 +21,16 @@ class PosParametros(models.Model):
     _name = 'pos_parametro.parametros'
 
     dolar = fields.Float(string="Dolar", )
+    iva = fields.Float(string="Iva", )
 
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     default_dolar = fields.Char(string="Dolar", default_model='pos_parametro.parametros')
+    default_iva = fields.Char(string="Iva", default_model='pos_parametro.parametros')
 
-    def set_values_pos(self):
-        super(ResConfigSettings, self).set_values_pos()
-        self.env['ir.config_parameter'].sudo().set_param('pos_parametro.parametros.cajero', self.default_dolar)
+    def set_values(self):
+        super(ResConfigSettings, self).set_values()
+        self.env['ir.config_parameter'].sudo().set_param('pos_parametro.dolar', self.default_dolar)
+        self.env['ir.config_parameter'].sudo().set_param('pos_parametro.iva', self.default_iva)

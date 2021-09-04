@@ -23,10 +23,21 @@
                     <field name="start_date"/>
                     <field name="end_date"/>
                     <field name="total_dolares_matutino"/>
+                    <field name="total_dolares_vespertino"/>
+                    <field name="total_dolares_nocturno"/>
                 </group>
 
                 <group>
-                    <field name="pos_config_srlc_ids"/>
+                    <field name="pos_config_srlc_ids" string="Sesiones">
+                        <tree>
+                            <field name="config_id"/>
+                            <field name="name"/>
+                            <field name="start_at"/>
+                            <field name="stop_at"/>
+                            <field name="state"/>
+                            <field name="dolares"/>
+                        </tree>
+                    </field>
                 </group>
 
                 <group>

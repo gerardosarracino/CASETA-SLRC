@@ -19,6 +19,15 @@
                                         <field name="default_dolar" colspan="4" nolabel="1" force_save="1"/>
                                     </div>
                                 </div>
+                                <div>
+                                    <label string="Iva" for="iva"/>
+                                    <div class="text-muted">
+                                        Iva
+                                    </div>
+                                    <div class="content-group mt16">
+                                        <field name="default_iva" colspan="4" nolabel="1" force_save="1"/>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
