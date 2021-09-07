@@ -45,7 +45,7 @@
                     <thead>
                         <tr>
                             <th>
-                                <img t-att-src="'http://fideicomiso.galartec.com/slrc/static/src/img/logo_fideicomiso_png.png'" title="logoEnte" alt="logo" width="215" height="100" />
+                                <img t-att-src="'http://147.182.249.221:8069/slrc/static/src/img/logo_fideicomiso_png.png'" title="logoEnte" alt="logo" width="215" height="100" />
                             </th>
                             <th>
                                 <h3 style="background-color: #000000;color: white; right:220;" >FIDEICOMISO PUENTE COLORADO</h3> <!-- class="text-center" right:300;-->
@@ -138,7 +138,7 @@
                 <body>
                 <div class="page">
                     <div>
-                            <img t-att-src="'http://fideicomiso.galartec.com/slrc/static/src/img/puente_colorado.png'"
+                            <img t-att-src="'http://147.182.249.221:8069/slrc/static/src/img/puente_colorado.png'"
                                  title="logoEnte" alt="logo" width="130" height="60" style="position:absolute; right:20px; top:-20px;"/>
                         <table width="100%" border="0" cellpadding="3" cellspacing="0" > <!-- class="table table-sm" -->
                             <thead>

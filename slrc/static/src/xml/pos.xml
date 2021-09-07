@@ -25,9 +25,9 @@
 
     <t t-extend="OrderReceipt">
         <t t-jquery=".pos-receipt" t-operation="replace">
-            <div style="font-size: 12px;">
-               <div>
-                    <div >
+            <div style="font-size: 10px;">
+               <div class="pos-receipt">
+                    <!--div >
                         <div> FIDEICOMISO PUENTE COLORADO BANAMEX 116548-6</div>
                         <t t-if='receipt.company.vat'>
                             <div> R. F. C. <t t-esc='receipt.company.vat' /></div>
@@ -43,28 +43,34 @@
                             <div><t t-esc='receipt.header' /></div>
                         </t>
 
-                    </div>
+                    </div -->
                    <br />
 
-                   <div>
-                        <div><t t-esc='receipt.date.localestring' /> &#160; &#160; &#160; Folio: <t t-esc='receipt.name' /></div>
-                   </div>
                    <br />
                    <div>
                         <t t-if='receipt.cashier'>
                             <div class='cashier'>
+                                <div>
+                                    <t t-esc='receipt.date.localestring' />
+                                </div>
+                                <div>Folio: <t t-esc='receipt.name' />
+
+                                </div>
                                 <div>Carril: <t t-esc='receipt.carril'/>
 
                                 </div>
                                 <div>
-                                    Cajero: <t t-esc='widget.pos.config.carril' class="pos-receipt-right-align"/>
+                                    Cajero: <t t-esc='receipt.cashier' class="pos-receipt-right-align"/>
+                                </div>
+                                <div>
+                                    Turno: Vespertino
                                 </div>
                             </div>
                         </t>
                    </div>
 
                     <!-- Orderlines -->
-                    <div>Tipo de Auto:
+                    <div class="pos-receipt-container">Tipo de Auto:
                         <t t-foreach='receipt.orderlines' t-as='line'>
                         <t t-esc='line.product_name_wrapped[0]' /></t></div>
 
@@ -75,28 +81,46 @@
 
 
                     <!-- Total -->
-                    <div>
-                        Importe:
-                        <span t-esc='widget.format_currency(receipt.subtotal)' class="pos-receipt-right-align"/>
-                    </div>
 
-                   <t t-foreach='receipt.tax_details' t-as='tax'>
-                        <div>
-                            <t t-esc='tax.name' />:
-                            <span t-esc='widget.format_currency_no_symbol(tax.amount)' class="pos-receipt-right-align"/>
-                        </div>
-                    </t>
+                   <table>
+                        <tbody>
+                            <tr>
+                                <td width="60%">
+                                    &#160;
+                                </td>
+                                <td width="40%">
+                                    Importe:
+                                    <span t-esc='widget.format_currency(receipt.subtotal)' />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    <t t-foreach='receipt.tax_details' t-as='tax'>
+                                    <t t-esc='tax.name' />:
+                                    <span t-esc='widget.format_currency_no_symbol(tax.amount)' class="pos-receipt-right-align"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    Total:
+                                    <span t-esc='widget.format_currency(receipt.total_with_tax)' class="pos-receipt-right-align"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                   <div>
-                        Total:
-                        <span t-esc='widget.format_currency(receipt.total_with_tax)' class="pos-receipt-right-align"/>
-                    </div>
 
-                    <br/><br/>
 
-                   <div>
+                   <!--div>
                        SI USTED DESEA CFDI FAVOR DE ACUDIR A LA OFICINA DE LA CASETA DE COBRO LAS 24 HRS. DEL DIA.
-                   </div>
+                   </div-->
                     <br/>
                    <div class="pos-receipt-contact">
                         <div> Domicilio de Facturacion: </div>

@@ -850,7 +850,7 @@ class PosReportesTurnoSrlc(models.TransientModel):
         return self.env.ref('slrc.matutino_report_button').report_action([], data=data)
 
     def generate_report_turnovesp(self):
-        print(' GENERAR REPORTE DEL TURNO MAT')
+        print(' GENERAR REPORTE DEL TURNO VESPERTINO')
 
         fecha_hoy = fields.Datetime.now()
         hora = fecha_hoy.strftime("%H:%M:%S")
@@ -863,7 +863,6 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
         # FECHA UTC
         fecha_dma2 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
-        print(fecha_dma2, ' fecha local UTC')
         fecha_dma2 = datetime.strftime(fecha_hoy, '%Y-%m-%d')
 
         # FECHA MST HERMOSILLO
@@ -873,7 +872,6 @@ class PosReportesTurnoSrlc(models.TransientModel):
         new_tz = pytz.timezone('MST')
         fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
         fecha_dma3 = datetime.strftime(fecha_dma3, '%d/%m/%Y')
-        print(fecha_dma3, ' fecha local MST ')
 
         fecha_hora = time.strftime(hora, time.localtime())
         dt = datetime.strptime(str(fecha_hora), '%H:%M:%S')
@@ -885,18 +883,20 @@ class PosReportesTurnoSrlc(models.TransientModel):
         buscar_ordenes = []
         turno = ""
         # if hora >= '00:00:00' and hora <= '07:59:59':
-        turno = 'Matutino'
+        turno = 'Vespertino'
 
-        buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma2) + ' 07:00:00'),
-                                                       ('date_order', '<=', str(fecha_dma2) + ' 13:59:59')])
+        buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma2) + ' 14:00:00'),
+                                                       ('date_order', '<=', str(fecha_dma2) + ' 22:59:59')])
 
         # BUSCAR LAS SESIONES QUE CORRESPONDAN A ESTE TURNO!
 
         '''buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
                                                               ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')])'''
 
-        buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
-                                                              ('stop_at', '<=', str(fecha_dma2) + ' 07:59:59')], order='config_id asc')
+        print(fecha_dma3, ' ---- ', fecha_dma2)
+
+        buscar_sesiones_vesp = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 14:00:00'),
+                                                              ('stop_at', '<=', str(fecha_dma2) + ' 22:59:59')], order='config_id asc')
 
         '''buscar_sesiones_matx = self.env["pos.session"].search([])
         for ici in buscar_sesiones_matx:
@@ -1047,10 +1047,9 @@ class PosReportesTurnoSrlc(models.TransientModel):
         residente2eje_tarifa_iva = 0
         residente2eje_tarifa_siva = 0
 
-
-        for mat in buscar_sesiones_mat:
+        for mat in buscar_sesiones_vesp:
             # buscar_pagos = self.env["pos.payment"].search([('session_id', '=', mat.id)])
-            # print(mat.name, mat.config_id.name)
+            print(mat.name, mat.config_id.name)
 
             buscar_peajes_motocicleta = self.env["product.template"].search([('name', '=', "MOTOCICLETA")])
             buscar_peajes_auto = self.env["product.template"].search([('name', '=', "AUTO")])
@@ -1070,7 +1069,7 @@ class PosReportesTurnoSrlc(models.TransientModel):
 
             buscar_ordenes_folios = self.env["pos.order"].search([('session_id', '=', mat.id)])
             for bof in buscar_ordenes_folios:
-                # print(bof.name, ' bof ')
+                print(bof.name, ' bof ')
                 for bp in buscar_peajes_motocicleta:                                                   # MOTOCICLETA
 
                     motocicleta_cuota = (float(bp.list_price) * (float(bp.taxes_id.amount)) / 100) + float(
@@ -1405,13 +1404,11 @@ class PosReportesTurnoSrlc(models.TransientModel):
                         folio_carril6_residente2eje = self.env["pos.order.line"].search_count(
                             [('order_id.id', '=', bof.id), ('product_id.id', '=', bp.id)])
 
-
             '''for pagos in buscar_pagos:
                 cum_pagoiva_matutino += pagos.pos_order_id.amount_tax
                 acum_pago_mat += pagos.amount - pagos.pos_order_id.amount_tax'''
 
-        print(buscar_sesiones_mat, ' si entro matutino ')
-
+        print(buscar_sesiones_vesp, ' Sesiones Vespertino ', folio_carril1_auto)
 
         data = {'date_start': self.start_date,
                 'date_stop': self.end_date,

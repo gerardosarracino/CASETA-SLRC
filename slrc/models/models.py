@@ -26,8 +26,6 @@ class MyPosConfig(models.Model):
 class PosSessionDolares(models.Model):
     _inherit = ['pos.session']
 
-    
-
 
 class InformeExel(models.TransientModel):
     _name = 'informe.excel.wizard'

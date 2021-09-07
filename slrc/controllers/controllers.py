@@ -24,8 +24,8 @@ import odoorpc
 
 
 class MandarVenta(http.Controller):
-    @http.route('/venta_controller/<id_usuario>', auth='public')
-    def index(self, id_usuario): # func_id
+    @http.route('/venta_controller/<id_usuario>/<func_id>', type='http', auth='public', methods=["GET","POST"], csrf=False, cors='*')
+    def index(self, id_usuario, func_id): # func_id
         try:
             search_usuario = http.request.env['res.users'].sudo().search([('id', '=', int(id_usuario))])  # ('id', '=', int(id_usuario))
 
@@ -44,7 +44,7 @@ class MandarVenta(http.Controller):
                     datos = {
                         # 'name': str(carril)+'/Residente',
                         'session_id': sesion_actual,
-                        # 'pos_reference': func_id, # ID DEL TICKET
+                        'pos_reference': func_id, # ID DEL TICKET
                         # 'cashier': usuario,
                         'user_id': user.id,
                         'amount_total': 0,

@@ -520,12 +520,13 @@
                             </table>
                         </div>
                         <div>
-                            <table class="table table-sm" cellpadding="3" cellspacing="0">
+                            <table class="table table-sm table-borderless" cellpadding="3" cellspacing="0">
                                 <tbody>
                                     <tr>
-                                        <td>CUOTA</td>
-                                        <td>--------------------------</td>
-                                        <td>$
+                                        <td width="25%" ></td>
+                                        <td width="16.66%">CUOTA</td>
+                                        <td width="16.66%">--------------------------</td>
+                                        <td width="16.66%">$
                                             <t t-set="subtotal_cuotas" t-value="0"/>
                                             <t t-set="subtotal_cuotas" t-value="subtotal_cuotas +
                                                 cuota_total_motocicleta_siva + cuota_total_auto_siva + cuota_total_auto1eje_siva +
@@ -535,8 +536,10 @@
                                             <t t-esc="subtotal_cuotas" t-options='{"widget": "float", "precision": 2}' />
 
                                         </td>
+                                        <td width="25%"></td>
                                     </tr>
                                     <tr>
+                                        <td></td>
                                         <td>IVA</td>
                                         <td>--------------------------</td>
                                         <td>
@@ -549,8 +552,10 @@
                                             <t t-esc="subtotal_cuotas_iva" t-options='{"widget": "float", "precision": 2}' />
 
                                         </td>
+                                        <td></td>
                                     </tr>
                                     <tr>
+                                        <td></td>
                                         <td>SUB TOTAL</td>
                                         <td>--------------------------</td>
                                         <td>
@@ -560,16 +565,21 @@
                                                t-field-options='{"widget": "monetary"}'/>
                                             <t t-esc="subtotal_cuotas_civa" t-options='{"widget": "float", "precision": 2}' />
                                         </td>
+                                        <td></td>
                                     </tr>
                                     <tr>
+                                        <td></td>
                                         <td>SOBRANTE</td>
                                         <td>--------------------------</td>
                                         <td> PENDIENTE </td>
+                                        <td></td>
                                     </tr>
                                     <tr>
-                                        <td>TOTAL</td>
+                                        <td></td>
+                                        <td> <strong>TOTAL</strong> </td>
                                         <td>--------------------------</td>
-                                        <td>$ <t t-esc="totales_recaudado" t-options='{"widget": "float", "precision": 2}' /> </td>
+                                        <td>$ <strong><t t-esc="totales_recaudado" t-options='{"widget": "float", "precision": 2}' /> </strong> </td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -577,7 +587,7 @@
 
 
                         <div>
-                            <table class="table table-sm" cellpadding="3" cellspacing="0">
+                            <table class="table table-sm table-borderless" style="font-weight: bold" cellpadding="3" cellspacing="0">
                                 <tbody>
                                     <tr>
                                         <td>RECAUDACION DEL DIA</td>
@@ -617,7 +627,7 @@
                         </div>
 
                         <div>
-                            <table class="table table-sm" cellpadding="3" cellspacing="0">
+                            <table class="table table-sm table-borderless" cellpadding="3" cellspacing="0">
                                 <tbody>
                                     <tr>
                                         <td>
