@@ -31,11 +31,11 @@
                         <group string="Boletos Emergentes">
                             <field name="tabla_cuotas" widget='one2many' context="{'default_id_boleto_emergente': active_id,}" nolabel="1">
                                 <tree editable="bottom" >
-                                    <field name="id_boleto_emergente" readonly="1" required="1"/>
-                                    <field name="cuota" required="1"/>
-                                    <field name="cantidad" required="1"/>
-                                    <field name="costo_cuota" readonly="1" required="1"/>
-                                    <field name="total" readonly="1" required="1"/>
+                                    <field name="id_boleto_emergente" force_save="1" readonly="1" required="1"/>
+                                    <field name="cuota" required="1" force_save="1"/>
+                                    <field name="cantidad" required="1" force_save="1"/>
+                                    <field name="costo_cuota" readonly="1" force_save="1" required="1"/>
+                                    <field name="total" readonly="1" required="1" force_save="1"/>
                                 </tree>
                             </field>
                         </group>

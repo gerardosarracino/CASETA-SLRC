@@ -14,6 +14,9 @@ from odoo.http import request
 from odoo.osv.expression import AND
 import base64
 
+import time
+from datetime import datetime
+
 _logger = logging.getLogger(__name__)
 
 
@@ -69,7 +72,30 @@ class InformeExel(models.TransientModel):
 
 class PosDetailsSrlc(models.TransientModel):
     _inherit = ['pos.details.wizard']
+    
+    '''def _default_start_date(self):
+        fecha_dma3 = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        dt = datetime.strptime(str(fecha_dma3), '%Y-%m-%d %H:%M:%S')
+        old_tz = pytz.timezone('UTC')
+        new_tz = pytz.timezone('MST')
+        fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+        fecha_dma3 = datetime.strftime(fecha_dma3, '%Y-%m-%d')
+        print(fecha_dma3, ' fecha local MST ')
 
+        hora = datetime.strftime(dt, '%H:%M:%S')
+        print(hora)
+        turno = ''
+        if hora >= '00:00:00' and hora <= '07:59:59':
+            fecha_dma3 = fecha_dma3 + ' 00:00:00'
+        if hora >= '08:00:00' and hora <= '16:59:59':
+            fecha_dma3 = fecha_dma3 + ' 08:00:00'
+        if hora >= '16:00:00' and hora <= '23:59:59':
+            fecha_dma3 = fecha_dma3 + ' 16:00:00'
+        return fecha_dma3
+
+    start_date = fields.Datetime(required=True, default=_default_start_date)
+    end_date = fields.Datetime(required=True, default=fields.Datetime.now)'''
+    
     def _default_administrador(self):
         user = self.env["res.users"].search([('partner_id.function', '=', 'ADMINISTRADOR')])
         for i in user:
@@ -97,26 +123,69 @@ class PosDetailsSrlc(models.TransientModel):
     @api.onchange('cajero')
     def onchange_informe(self):
         self.update({
-            'pos_config_srlc_ids': [[5]]
+            'pos_config_srlc_ids': [[5]],
+            'tabla_cuotas': [[5]]
         })
+        print(self.cajero)
         if not self.cajero:
             pass
         else:
-            try:
-                sesion = self.env["pos.session"].search([('user_id.id', '=', self.cajero.id)])[-1]
-                if not sesion:
-                    pass
-                else:
-                    self.start_date = sesion.start_at
-                    self.end_date = sesion.stop_at
+
+            fecha_hoy = fields.Datetime.now()
+
+            fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+            dt = datetime.strptime(str(fecha_dma3), '%d-%m-%Y %H:%M:%S')
+            old_tz = pytz.timezone('UTC')
+            new_tz = pytz.timezone('MST')
+            fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+            fecha_dma3 = datetime.strftime(fecha_dma3, '%Y-%m-%d')
+
+            fecha_dma2 = datetime.strftime(fecha_hoy, '%Y-%m-%d')
+            sesion = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma3) + ' 15:00:00'),
+                                                    ('stop_at', '<=', str(fecha_dma3) + ' 23:59:59')]) # ('user_id.id', '=', self.cajero.id)[-1]
+
+            print(fecha_dma3, 'hola', sesion)
+
+            '''sesion2 = self.env["pos.session"].search([])
+            for ss2 in sesion2:
+                # fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", ss2.start_at)
+                dt = datetime.strptime(str(ss2.start_at), '%Y-%m-%d %H:%M:%S')
+                old_tz = pytz.timezone('UTC')
+                new_tz = pytz.timezone('MST')
+                fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
+                fecha_dma3 = datetime.strftime(fecha_dma3, '%Y-%m-%d %H:%M:%S')
+                print(fecha_dma3, '---', ss2.start_at, ss2.name)'''
+
+            # UTC ('start_at', '>=', str(fecha_dma2) + ' 14:00:00'),
+            # ('stop_at', '<=', str(fecha_dma2) + ' 22:59:59')
+
+            if not sesion:
+                pass
+            else:
+                acum = 0
+                for ss in sesion:
+                    print(ss.start_at, ss.name)
+                    acum += 1
+                    # EMERGENTES
+                    boletos_search = self.env["pos.boletos_emergentes"].search([('sesion', '=', ss.id),
+                                                                                ('cajero', '=', self.cajero.id)])
+                    # boletos = self.env["pos.boletos_emergentes"].browse(res.id)
+                    for i in boletos_search:
+                        datos = {
+                            'tabla_cuotas': [[4, i.id, {}]]
+                        }
+                        tabla = self.update(datos)
+
+                    # SESIONES
+                    if acum == 1:
+                        self.start_date = ss.start_at
+                    self.end_date = fecha_dma2
                     # print(sesion.config_id.id)
                     # datos_participantes = {'pos_config_srlc_ids': [[0,0 sesion.config_id.id]]}
                     datos = {
-                        'pos_config_srlc_ids': [[4, sesion.config_id.id, {}]]} # 'id': sesion.config_id.id, 'name': sesion.config_id.name
+                        'pos_config_srlc_ids': [[4, ss.config_id.id, {}]]} # 'id': sesion.config_id.id, 'name': sesion.config_id.name
                     x = self.update(datos)
                     # self.update(datos_participantes)
-            except:
-                pass
 
     def generate_report(self):
         sesion = self.env["pos.session"].search([('user_id.id', '=', self.cajero.id)])[-1]
@@ -124,8 +193,7 @@ class PosDetailsSrlc(models.TransientModel):
             pass
         else:
             data = {'date_start': self.start_date, 'date_stop': self.end_date, 'config_ids': self.pos_config_srlc_ids.ids}
-
-            if self.boleto_emergente:
+            '''if self.boleto_emergente:
                 modelo_boletos = self.env["pos.boletos_emergentes"]
                 datos = {
                     'fecha_del': self.start_date,
@@ -156,7 +224,7 @@ class PosDetailsSrlc(models.TransientModel):
                             # 'name': str(sesion.name),
                             'session_id': sesion.id,
                             # 'pos_reference': func_id,
-                            'cashier': self.cajero.id,
+                            # 'cashier': self.cajero.id,
                             'jefe_operaciones': self.jefe_operaciones.id,
                             'user_id': self.cajero.id,
                             'amount_total': total_civa,
@@ -190,7 +258,7 @@ class PosDetailsSrlc(models.TransientModel):
                             'payment_method_id': 1,
                             'amount': total_civa,
                         }
-                        agregar_tablax2 = payment.create(tabla_pago)
+                        agregar_tablax2 = payment.create(tabla_pago)'''
 
             return self.env.ref('point_of_sale.sale_details_report').report_action([], data=data)
 

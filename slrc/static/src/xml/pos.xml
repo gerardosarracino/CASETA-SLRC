@@ -7,12 +7,12 @@
     <t t-extend="ActionpadWidget">
         <t t-jquery=".actionpad" t-operation="replace">
             <div class="actionpad">
-                <button t-attf-class='button controller_ventas'>
+                <!--button t-attf-class='button controller_ventas'>
                     <div>
                         <i class='fa fa-user' role="img" aria-label="Residente" title="Residente"/>
                     </div>
                     Residente
-                </button>
+                </button-->
                 <button class='button pay'>
                     <div class='pay-circle'>
                         <i class='fa fa-chevron-right' role="img" aria-label="Pay" title="Pay"/>

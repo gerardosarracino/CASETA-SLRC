@@ -24,10 +24,10 @@
                 </group>
 
                 <group string="Boletos Emergentes">
-                    <field name="boleto_emergente" widget="boolean"/>
+                    <!-- field name="boleto_emergente" widget="boolean"/ attrs="{'invisible':[('boleto_emergente','=',False)]}" -->
 
-                    <field name="tabla_cuotas" widget='one2many' mode="tree" nolabel="1" attrs="{'invisible':[('boleto_emergente','=',False)]}"> <!-- context="{'default_id_boleto_emergente': active_id,}" -->
-                        <tree editable="bottom" delete="1" >
+                    <field name="tabla_cuotas" widget='one2many' mode="tree" nolabel="1" > <!-- context="{'default_id_boleto_emergente': active_id,}" -->
+                        <tree delete="1" >
                             <field name="id_boleto_emergente" readonly="1" invisible="1"/>
                             <field name="cuota" required="1"/>
                             <field name="cantidad" required="1"/>
@@ -45,7 +45,9 @@
                     </field>
                 </group>
                 <footer>
-                    <button name="generate_report" string="Print" type="object" class="btn-primary"/>
+                    <button name="generate_report" string="Print" type="object" class="btn-primary"
+
+                    /> <!-- Detalle de ventas  confirm="AL GENERAR ESTE REPORTE CON BOLETOS EMERGENTES, SE" -->
                     <button string="Cancel" class="btn-secondary" special="cancel" />
                 </footer>
             </form>

@@ -19,6 +19,7 @@ _logger = logging.getLogger(__name__)
 
 class BoletosEmergentes(models.Model):
     _name = 'pos.boletos_emergentes'
+    _rec_name = 'sesion'
 
     sesion = fields.Many2one('pos.session', string="Sesion")
     cajero = fields.Many2one('res.users', string="Cajero")
@@ -34,10 +35,11 @@ class BoletosEmergentes(models.Model):
 
 class TablaEmergentes(models.Model):  # TABLA PARA ELEGIR PRODUCTOS EN EL APARTADO DE BOLETOS EMERGENTES
     _name = 'pos.tabla_emergentes'
+    _rec_name = 'id_boleto_emergente'
 
-    id_boleto_emergente = fields.Many2one('pos.boletos_emergentes', string="Id")
-    cuota = fields.Many2one('product.template', string="Cuota")
-    cantidad = fields.Integer('Cantidad')
+    id_boleto_emergente = fields.Many2one('pos.boletos_emergentes', string="Id", store=True)
+    cuota = fields.Many2one('product.template', string="Cuota", store=True)
+    cantidad = fields.Integer('Cantidad', store=True)
     costo_cuota = fields.Float('Costo', related="cuota.list_price")
     total = fields.Float('Total', store=True)
 
