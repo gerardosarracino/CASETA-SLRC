@@ -93,13 +93,23 @@ class PosReportesTurnoSrlc(models.TransientModel):
                 hora = datetime.strftime(fecha_dma3, '%H:%M:%S')
                 print(hora)
                 turno = ''
-                if hora >= '00:00:00' and hora <= '07:59:59':
+                '''if hora >= '00:00:00' and hora <= '07:59:59':
                     turno = 'Matutino'
                     self.total_dolares_matutino += ss.dolares
                 if hora >= '08:00:00' and hora <= '16:59:59':
                     turno = 'Vespertino'
                     self.total_dolares_vespertino += ss.dolares
                 if hora >= '16:00:00' and hora <= '23:59:59':
+                    turno = 'Nocturno'
+                    self.total_dolares_nocturno += ss.dolares'''
+
+                if hora >= '07:00:00' and hora <= '14:59:59':
+                    turno = 'Matutino'
+                    self.total_dolares_matutino += ss.dolares
+                if hora >= '15:00:00' and hora <= '22:59:59':
+                    turno = 'Vespertino'
+                    self.total_dolares_vespertino += ss.dolares
+                if hora >= '23:00:00' and hora <= '23:59:59' or hora >= '00:00:00' and hora <= '06:59:59':
                     turno = 'Nocturno'
                     self.total_dolares_nocturno += ss.dolares
                 print(turno, ' TURNO ')
@@ -122,11 +132,18 @@ class PosReportesTurnoSrlc(models.TransientModel):
         print('datos reporte')
         fecha_hoy = fields.Datetime.now()
         hora = fecha_hoy.strftime("%H:%M:%S")
-        if hora >= '00:00:00' and hora <= '07:59:59':
+        '''if hora >= '00:00:00' and hora <= '07:59:59':
             turno = 'Matutino'
         elif hora >= '08:00:00' and hora <= '16:59:59':
             turno = 'Vespertino'
         elif hora >= '16:00:00' and hora <= '23:59:59':
+            turno = 'Nocturno'''
+
+        if hora >= '07:00:00' and hora <= '14:59:59':
+            turno = 'Matutino'
+        if hora >= '15:00:00' and hora <= '22:59:59':
+            turno = 'Vespertino'
+        if hora >= '23:00:00' and hora <= '23:59:59' or hora >= '00:00:00' and hora <= '06:59:59':
             turno = 'Nocturno'
 
         report = self.env["pos.reportes_turno.wizard"].search([])[-1]
@@ -2362,10 +2379,10 @@ class PosReportesTurnoSrlc(models.TransientModel):
                                                                   ('stop_at', '<=', str(fecha_dma2) + ' 16:59:59')])'''
 
             buscar_sesiones_mat = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 07:00:00'),
-                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 13:59:59')])
+                                                                  ('stop_at', '<=', str(fecha_dma2) + ' 14:59:59')])
 
-            buscar_sesiones_vesp = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 14:00:00'),
-                                                                   ('stop_at', '<=', str(fecha_dma2) + ' 20:59:59')])
+            buscar_sesiones_vesp = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 15:00:00'),
+                                                                   ('stop_at', '<=', str(fecha_dma2) + ' 22:59:59')])
 
             print(buscar_sesiones_vesp, ' sesiones vesp ', fecha_dma2)
             '''buscar_sesiones_vespxx1 = self.env["pos.order"].search([])
@@ -2397,12 +2414,12 @@ class PosReportesTurnoSrlc(models.TransientModel):
             acum_pago_nocturno = 0
             acum_pagoiva_nocturno = 0
 
-        if hora >= '16:00:00' and hora <= '23:59:59':
+        if hora >= '23:00:00' and hora <= '23:59:59' or hora >= '00:00:00' and hora <= '06:59:59':
             turno = 'Nocturno'
 
+            
 
-
-            buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma3) + ' 00:00:00'),
+            buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma3) + ' 07:00:00'),
                                                            ('date_order', '<=', str(fecha_dma2) + ' 23:59:59')])
             print(buscar_ordenes)
 
@@ -2416,14 +2433,15 @@ class PosReportesTurnoSrlc(models.TransientModel):
                                                                    ('stop_at', '<=', str(fecha_dma2) + ' 16:59:59')])'''
 
             buscar_sesiones_vesp = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma3) + ' 15:00:00'),
-                                                                   ('stop_at', '<=', str(fecha_dma3) + ' 23:59:59')])
+                                                                   ('stop_at', '<=', str(fecha_dma3) + ' 22:59:59')])
 
 
 
             '''buscar_sesiones_noc = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 16:00:00'),
                                                                   ('stop_at', '<=', str(fecha_dma2) + ' 23:59:59')])'''
-            print(fecha_dma2, ' fffffffffffff ')
-            buscar_sesiones_noc = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 00:00:00'),
+
+            print(fecha_dma2, ' fffffffffffff NOCTURNO')
+            buscar_sesiones_noc = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma2) + ' 23:00:00'),
                                                                   ('stop_at', '<=', str(fecha_dma2) + ' 06:59:59')])
 
             '''buscar_sesiones_vespxx = self.env["pos.session"].search([])

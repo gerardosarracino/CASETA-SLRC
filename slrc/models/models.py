@@ -146,7 +146,7 @@ class PosDetailsSrlc(models.TransientModel):
 
             print(fecha_dma3, 'hola', sesion)
 
-            '''sesion2 = self.env["pos.session"].search([])
+            sesion2 = self.env["pos.session"].search([])
             for ss2 in sesion2:
                 # fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", ss2.start_at)
                 dt = datetime.strptime(str(ss2.start_at), '%Y-%m-%d %H:%M:%S')
@@ -154,7 +154,7 @@ class PosDetailsSrlc(models.TransientModel):
                 new_tz = pytz.timezone('MST')
                 fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
                 fecha_dma3 = datetime.strftime(fecha_dma3, '%Y-%m-%d %H:%M:%S')
-                print(fecha_dma3, '---', ss2.start_at, ss2.name)'''
+                print(fecha_dma3, '---', ss2.start_at, ss2.name)
 
             # UTC ('start_at', '>=', str(fecha_dma2) + ' 14:00:00'),
             # ('stop_at', '<=', str(fecha_dma2) + ' 22:59:59')
@@ -308,11 +308,11 @@ class ReporteQwebExtend(models.AbstractModel):
 
             if config_ids:
                 domain = AND([domain, [('config_id', 'in', config_ids)]])
-
+        print(domain, 'DOMAIN')
         orders = self.env['pos.order'].search(domain) # ,order='amount_total asc'
         orders_count = self.env['pos.order'].search_count(domain)
         user_currency = self.env.company.currency_id
-
+        print(orders)
         total = 0.0
         products_sold = {}
         taxes = {}

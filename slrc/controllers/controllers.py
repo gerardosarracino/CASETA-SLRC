@@ -91,6 +91,76 @@ class MandarVenta(http.Controller):
             return "Upss! algo salio mal en: " + str(e)
 
 
+class MandarVentaCompleta(http.Controller):
+    @http.route('/venta_pos_controller/<id_usuario>/<func_id>/<monto_siva>/<monto_iva>/<id_sesion>/<id_producto>', type='http', auth='public', methods=["GET","POST"], csrf=False, cors='*')
+    def index(self, id_usuario, func_id, monto_siva, monto_iva, id_sesion, id_producto): # func_id
+        try:
+            search_usuario = http.request.env['res.users'].sudo().search([('id', '=', int(id_usuario))])  # ('id', '=', int(id_usuario))
+            print('ENTRO CONTROLLER', id_sesion)
+            orden = http.request.env['pos.order']
+            # carril = ''
+            # sesion_actual = ''
+            # fecha_hoy = datetime.now()
+            for user in search_usuario:
+                browse_usuario = http.request.env['res.users'].browse(user)
+                usuario = browse_usuario.id
+                search_sesion = http.request.env['pos.session'].sudo().search([('state', '=', 'opened'),('id', '=', int(id_sesion))])  # ('id', '=', int(id_usuario))
+                for sesion in search_sesion:
+                    sesion_actual = sesion.id
+                    # carril = sesion.config_id
+
+                    datos = {
+                        # 'name': str(carril)+'/Residente',
+                        'session_id': sesion_actual,
+                        'pos_reference': func_id, # ID DEL TICKET
+                        # 'cashier': usuario,
+                        'user_id': user.id,
+                        'amount_total': float(monto_siva) + float(monto_iva), # MONTO S/IVA
+                        'state': 'paid',
+                        'amount_tax': float(monto_iva), # IVA
+                        'amount_paid': float(monto_siva) + float(monto_iva), # MONTO C/IVA
+                        'amount_return': 0,
+                        'company_id': 1,
+                        'payment_ids': [],
+                        'pricelist_id': 1,
+                    }
+                    print(datos)
+                    order = orden.create(datos)
+
+                    orden_creada = http.request.env['pos.order'].sudo().search([('id', '=', order.id)])
+                    search_producto = http.request.env['product.product'].sudo().search([('name', '=', str(id_producto))])
+                    producto = ''
+                    taxes = ''
+                    for pro in search_producto:
+                        producto = pro.id
+                        taxes = pro.taxes_id.id
+                    print(taxes)
+                    tabla_productos = {'lines': [[0, 0, {
+                        'product_id': producto,
+                        'order_id': order.id, # ID DE LA ORDEN
+                        'qty': 1,
+                        'discount': 0,
+                        'tax_ids_after_fiscal_position': taxes,
+                        'price_unit': float(monto_siva),
+                        'price_subtotal': float(monto_siva),
+                        'price_subtotal_incl': float(monto_siva) + float(monto_iva),
+                    }]]}
+                    print(tabla_productos)
+                    agregar_tabla = orden_creada.write(tabla_productos)
+
+                    payment = http.request.env['pos.payment']
+                    tabla_pago = {
+                        'pos_order_id': orden_creada.id,
+                        'session_id': sesion_actual, # id de la sesion
+                        'payment_method_id': 1,
+                        'amount': float(monto_siva) + float(monto_iva),
+                    }
+                    agregar_tablax2 = payment.create(tabla_pago)
+
+        except Exception as e:
+            return "Upss! algo salio mal en: " + str(e)
+
+
 class ReporteExcel(http.Controller):
     @http.route('/reporte_excel/reporte_excel/', auth='public')
     def index(self, id_informe):
