@@ -2417,8 +2417,6 @@ class PosReportesTurnoSrlc(models.TransientModel):
         if hora >= '23:00:00' and hora <= '23:59:59' or hora >= '00:00:00' and hora <= '06:59:59':
             turno = 'Nocturno'
 
-            
-
             buscar_ordenes = self.env["pos.order"].search([('date_order', '>=', str(fecha_dma3) + ' 07:00:00'),
                                                            ('date_order', '<=', str(fecha_dma2) + ' 23:59:59')])
             print(buscar_ordenes)

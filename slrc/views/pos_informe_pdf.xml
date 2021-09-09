@@ -23,11 +23,25 @@
                     <field name="end_date"/>
                 </group>
 
+                <group>
+                    <field name="tabla_tarifas" widget='one2many' mode="tree" nolabel="1" > <!-- context="{'default_id_boleto_emergente': active_id,}" -->
+                        <tree delete="1" editable="bottom">
+                            <field name="tarifa" />
+                            <field name="costo_cuota" string="Costo"/>
+                            <field name="efectivos" string="Efectivos" />
+                            <field name="cancelados" />
+                            <field name="evadidos" />
+                            <field name="errores" />
+                            <field name="recaudado" />
+                        </tree>
+                    </field>
+                </group>
+
                 <group string="Boletos Emergentes">
                     <!-- field name="boleto_emergente" widget="boolean"/ attrs="{'invisible':[('boleto_emergente','=',False)]}" -->
 
                     <field name="tabla_cuotas" widget='one2many' mode="tree" nolabel="1" > <!-- context="{'default_id_boleto_emergente': active_id,}" -->
-                        <tree delete="1" >
+                        <tree delete="1" editable="bottom">
                             <field name="id_boleto_emergente" readonly="1" invisible="1"/>
                             <field name="cuota" required="1"/>
                             <field name="cantidad" required="1"/>

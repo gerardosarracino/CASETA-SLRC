@@ -183,7 +183,45 @@
                     <br/>
                     <!-- Orderlines -->
                     <h5>Tarifas</h5>
+
                     <table class="table table-sm" cellpadding="3" cellspacing="0">
+                        <thead class="thead-dark"><tr>
+                            <th>Tarifa</th>
+                            <th>Costo</th>
+                            <th>Efectivos</th>
+                            <th>Cancelados</th>
+                            <th>Evadidos</th>
+                            <th>Errores</th>
+                            <th>Recaudado</th>
+                        </tr></thead>
+                        <tbody>
+                        <tr t-foreach='tabla_tarifas' t-as='line'>
+                            <td>
+                                <t t-esc="line['tarifa']" />
+                            </td>
+                            <td>
+                                <t t-esc="line['costo_cuota']" />
+                            </td>
+                            <td>
+                                <t t-esc="line['efectivos']" />
+                            </td>
+                            <td>
+                                <t t-esc="line['cancelados']" />
+                            </td>
+                            <td>
+                                <t t-esc="line['evadidos']" />
+                            </td>
+                            <td>
+                                <t t-esc="line['errores']" />
+                            </td>
+                            <td>
+                                <t t-esc="line['recaudado']" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!--table class="table table-sm" cellpadding="3" cellspacing="0">
                         <thead class="thead-dark"><tr>
                             <th>Tarifa</th>
                             <th>Efectivos</th>
@@ -212,7 +250,7 @@
                             </td>
                         </tr>
                         </tbody>
-                    </table>
+                    </table -->
 
                     <table  class="table table-sm">
                         <thead><tr>

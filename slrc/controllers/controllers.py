@@ -2,8 +2,8 @@
 import json
 import logging
 import werkzeug.utils
-
-from odoo import http
+from odoo.exceptions import UserError, ValidationError
+from odoo import http, _
 from odoo.http import request
 from odoo.api import call_kw, Environment
 from odoo.osv.expression import AND
@@ -17,6 +17,9 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import colors
 from openpyxl.styles import Font, Color, NamedStyle
 from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
+
+import time
+from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -95,7 +98,7 @@ class MandarVentaCompleta(http.Controller):
     @http.route('/venta_pos_controller/<id_usuario>/<func_id>/<monto_siva>/<monto_iva>/<id_sesion>/<id_producto>', type='http', auth='public', methods=["GET","POST"], csrf=False, cors='*')
     def index(self, id_usuario, func_id, monto_siva, monto_iva, id_sesion, id_producto): # func_id
         try:
-            search_usuario = http.request.env['res.users'].sudo().search([('id', '=', int(id_usuario))])  # ('id', '=', int(id_usuario))
+            search_usuario = http.request.env['res.users'].sudo().search([('name', '=', str(id_usuario))])  # ('id', '=', int(id_usuario))
             print('ENTRO CONTROLLER', id_sesion)
             orden = http.request.env['pos.order']
             # carril = ''
@@ -156,6 +159,65 @@ class MandarVentaCompleta(http.Controller):
                         'amount': float(monto_siva) + float(monto_iva),
                     }
                     agregar_tablax2 = payment.create(tabla_pago)
+
+        except Exception as e:
+            return "Upss! algo salio mal en: " + str(e)
+
+
+class CerrarSesionPos(http.Controller):
+    @http.route('/cerrar_sesion_pos/<pos_session>/<id_usuario>', type='http', auth='public', csrf=False, cors='*')
+    def index(self, pos_session, id_usuario):
+        try:
+            print(pos_session, id_usuario)
+            search_usuario = http.request.env['res.users'].sudo().search(
+                [('name', '=', str(id_usuario))])  # ('id', '=', int(id_usuario))
+            nombre_usuario = ''
+            cajero_id = ''
+            for user in search_usuario:
+                browse_usuario = http.request.env['res.users'].browse(user.id)
+                nombre_usuario = browse_usuario.name
+                cajero_id = browse_usuario.id
+            print(nombre_usuario, cajero_id)
+            if nombre_usuario == 'Administrator': # ES EL ADMINISTRADOR DEL CARRIL NO HACER CAMBIO
+                pass
+            else:
+                search_sesion = http.request.env['pos.session'].sudo().search([('id', '=', int(pos_session))])  # ('id', '=', int(id_usuario))
+                print('ENTRO CONTROLLER', search_sesion, search_usuario)
+                carril = ''
+                for ss in search_sesion:
+                    browse_sesion = http.request.env['pos.session'].browse(ss.id)
+                    print(int(cajero_id), int(browse_sesion.user_id.id), ' IF')
+                    print(browse_sesion.state, 'ESTADO X1')
+                    if int(cajero_id) == int(browse_sesion.user_id.id):
+                        pass
+                    else:
+                        carril = browse_sesion.config_id.id
+                        for session in browse_sesion:
+                            for statement in session.statement_ids:
+                                if (statement != session.cash_register_id) and (
+                                        statement.balance_end != statement.balance_end_real):
+                                    statement.write({'balance_end_real': statement.balance_end})
+                        for session in browse_sesion:
+                            if session.state == 'closed':
+                                raise UserError(_('This session is already closed.'))
+                            browse_sesion.write({'state': 'closing_control', 'stop_at': datetime.now()})
+                            if not session.config_id.cash_control:
+                                browse_sesion.action_pos_session_close()
+                        print(browse_sesion.state, 'ESTADO')
+
+                        print('Termino')
+                if carril:
+                    print(carril, 'cc', cajero_id)
+                    sesion = http.request.env['pos.session']
+
+                    datos = {
+                        'config_id': carril,
+                        'user_id': int(cajero_id),
+                        'start_at': datetime.now(),
+                        'state': 'opened',
+                    }
+                    r = sesion.create(datos)
+                    print(datos)
 
         except Exception as e:
             return "Upss! algo salio mal en: " + str(e)

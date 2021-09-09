@@ -46,3 +46,20 @@ class TablaEmergentes(models.Model):  # TABLA PARA ELEGIR PRODUCTOS EN EL APARTA
     @api.onchange('cantidad')
     def onchange_total(self):
         self.total = self.cantidad * (self.costo_cuota * (self.cuota.taxes_id.amount/100) + self.costo_cuota)
+
+
+class TablaFinTurno(models.TransientModel):  # TABLA PARA ELEGIR PRODUCTOS EN EL APARTADO DE BOLETOS EMERGENTES
+    _name = 'pos.tabla_fin_turno'
+    _rec_name = 'tarifa'
+
+    tarifa = fields.Many2one('product.template', string="Tarifa", store=True)
+    costo_cuota = fields.Float('Costo',)
+    efectivos = fields.Integer('Efectivos', store=True)
+    cancelados = fields.Integer('Cancelados', store=True)
+    evadidos = fields.Integer('Evadidos', store=True)
+    errores = fields.Integer('Errores', store=True)
+    recaudado = fields.Float('Recaudado', store=True)
+
+    '''@api.onchange('cantidad')
+    def onchange_total(self):
+        self.total = self.cantidad * (self.costo_cuota * (self.cuota.taxes_id.amount/100) + self.costo_cuota)'''
