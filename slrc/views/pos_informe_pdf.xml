@@ -11,6 +11,7 @@
           <xpath expr="//form" position="replace">
             <form string="Detalles de Cuotas">
                 <group string="Datos del Informe">
+                    <field name="carril_pos"/>
                     <field name="cajero"/>
                     <field name="jefe_operaciones"/>
                     <field name="administrador"/>
@@ -24,40 +25,51 @@
                 </group>
 
                 <group>
+                    <field name="dolares"/>
+                    <field name="dolar_tipo_cambio" force_save="1"/>
+                    <field name="dolares_pesos" force_save="1"/>
+                </group>
+
+                <group>
                     <field name="tabla_tarifas" widget='one2many' mode="tree" nolabel="1" > <!-- context="{'default_id_boleto_emergente': active_id,}" -->
                         <tree delete="1" editable="bottom">
                             <field name="tarifa" />
                             <field name="costo_cuota" string="Costo"/>
-                            <field name="efectivos" string="Efectivos" />
-                            <field name="cancelados" />
-                            <field name="evadidos" />
-                            <field name="errores" />
-                            <field name="recaudado" />
+                            <field name="efectivos" string="Efectivos" sum="Efectivos"/>
+                            <field name="cancelados" sum="Cancelados"/>
+                            <field name="evadidos" sum="Evadidos"/>
+                            <field name="errores" sum="Errores"/>
+                            <field name="recaudado" sum="Recaudado"/>
                         </tree>
                     </field>
                 </group>
 
                 <group string="Boletos Emergentes">
-                    <!-- field name="boleto_emergente" widget="boolean"/ attrs="{'invisible':[('boleto_emergente','=',False)]}" -->
+                    <field name="boleto_emergente" widget="boolean"  />
+                </group>
 
-                    <field name="tabla_cuotas" widget='one2many' mode="tree" nolabel="1" > <!-- context="{'default_id_boleto_emergente': active_id,}" -->
+                <group>
+                    <field name="tabla_cuotas" widget='one2many' mode="tree" nolabel="1" attrs="{'invisible':[('boleto_emergente','=',False)]}"> <!-- context="{'default_id_boleto_emergente': active_id,}" -->
                         <tree delete="1" editable="bottom">
-                            <field name="id_boleto_emergente" readonly="1" invisible="1"/>
-                            <field name="cuota" required="1"/>
-                            <field name="cantidad" required="1"/>
-                            <field name="costo_cuota" readonly="1" required="1"/>
-                            <field name="total" readonly="1" required="1" force_save="1"/>
+                            <field name="id_boleto_emergente" readonly="1" invisible="1" force_save="1" />
+                            <field name="cuota" required="1" force_save="1" />
+                            <field name="folio_del" required="1" force_save="1" />
+                            <field name="folio_al" required="1" force_save="1" />
+                            <field name="cantidad" required="1" sum="Efectivos" force_save="1" />
+                            <field name="costo_cuota" readonly="1" required="1" force_save="1" />
+                            <field name="total" readonly="1" required="1" force_save="1" sum="Total"/>
                         </tree>
                     </field>
                 </group>
 
-                <group string="Carril">
+                <!--group string="Carril">
                     <field name="pos_config_srlc_ids" mode="tree" colspan="4" nolabel="1" string="Cuotas">
                       <tree>
                         <field name="name" string="Carriles"/>
                       </tree>
                     </field>
-                </group>
+                </group-->
+
                 <footer>
                     <button name="generate_report" string="Print" type="object" class="btn-primary"
 

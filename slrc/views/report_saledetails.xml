@@ -177,8 +177,10 @@
                     <br/>
 
                     <div class="text-center">
-                        <h4>Reporte de Carriles y Concentrado</h4>
-                        <strong><t t-esc="date_start" t-options="{'widget': 'datetime'}"/> - <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong>
+                        <!--h4>Reporte de Carriles y Concentrado</h4-->
+                        <strong>
+                            <t t-esc="date_start" t-options="{'widget': 'datetime'}"/> -
+                            <t t-esc="date_stop" t-options="{'widget': 'datetime'}"/></strong>
                     </div>
                     <br/>
                     <!-- Orderlines -->
@@ -254,21 +256,21 @@
 
                     <table  class="table table-sm">
                         <thead><tr>
-                            <th>Pago</th>
-                            <th>Total</th>
+                            <th># Efectivos</th>
+                            <th>Subtotal Recaudado</th>
                         </tr></thead>
                         <tbody>
-                        <tr t-foreach='payments' t-as='payment'>
+                        <!--tr t-foreach='payments' t-as='payment'>
                             <td><t t-esc="payment['name']" /></td>
                             <td><t t-esc="payment['total']" t-options="{'widget': 'float', 'precision': currency_precision}"/></td>
-                        </tr>
+                        </tr-->
+
+                            <td><t t-esc="total_efectivos" /></td>
+                            <td>
+                                <t t-esc="acum_total_recaudado" />
+                            </td>
                         </tbody>
                     </table>
-
-                    <div class="text-right">
-                        Total: <strong><t t-esc='total_paid' t-options="{'widget': 'float', 'precision': currency_precision}"/></strong>
-                    </div>
-
 
                     <br/>
                     <div style="margin-top:15px;"> <!-- EMERGENTES -->
@@ -277,8 +279,8 @@
                         <table class="table table-sm">
                             <thead class="thead-dark"><tr>
                                 <th>Tarifa</th>
-                                <!--th>Del</th>
-                                <th>Al</th-->
+                                <th>Del</th>
+                                <th>Al</th>
                                 <th>Efectivos</th>
                                 <th>Costo</th>
                                 <th>Subtotal</th>
@@ -286,12 +288,12 @@
                             <tbody>
                             <tr t-foreach='boletos_emergentes' t-as='line'>
                                 <td><t t-esc="line['cuota']" /></td>
-                                <!--td>
-                                    <p>Fecha del</p>
+                                <td>
+                                    <p><t t-esc='line["folio_del"]' /></p>
                                 </td>
                                 <td>
-                                   <p>Fecha al</p>
-                                </td-->
+                                   <p><t t-esc='line["folio_al"]' /></p>
+                                </td>
                                 <td>
                                     <t t-esc='line["cantidad"]' />
                                 </td>
@@ -313,24 +315,62 @@
                     <br/>
 
 
+                    <!-- ACTIVAR ESTA PARTE CUANDO HAYA EMERGENTES -->
+                    <div class="text-right" style="font-size: 13px;" t-if='boleto_emergente_activador' >
 
-                    <div class="text-right" style="font-size: 13px;">
                         <p>Subtotal Emergentes: $ <strong> <t t-esc='total_boletos_emergentes'/> </strong> </p>
 
+                        <p>Total de Efectivo en reporte de Carril: $ <strong> <t t-esc='total_boletos_emergentes'/> </strong>
+
+                        </p>
+                        <p>Total de Efectivo Entregado por el Cajero(a): $ <strong> <t t-esc='total_efectivo'/> </strong> </p>
+                        <p>Diferencia con el Corte Final: $ <strong>
+                                <t t-set="resta" t-value="0"/>
+                                <t t-set="resta" t-value="resta + total_efectivo - total_boletos_emergentes" />
+                                <t t-esc="resta" t-options='{"widget": "float", "precision": 2}' /> </strong></p>
+                        <strong>TOTAL A DEPOSITAR: $
+                            <t t-set="total_efectivo_final" t-value="0"/>
+                            <t t-set="total_efectivo_final" t-value="total_efectivo_final + total_efectivo" />
+
+                            <t t-set="total_efectivo_final2" t-value="0"/>
+                            <t t-set="total_efectivo_final2" t-value="total_efectivo_final2 + total_boletos_emergentes" />
+
+                            <t t-esc="total_efectivo_final" t-if='resta &gt;= 0' t-options='{"widget": "float", "precision": 2}' />
+                            <t t-esc="total_efectivo_final2" t-if='resta &lt; 0' t-options='{"widget": "float", "precision": 2}' />
+                        </strong>
+                    </div>
+
+
+                    <!-- ACTIVAR ESTA PARTE CUANDO NO HAYA EMERGENTES -->
+                    <div class="text-right" style="font-size: 13px;" t-if='not boleto_emergente_activador' >
+
                         <p>Total de Efectivo en reporte de Carril: $ <strong> <t t-set="suma" t-value="0"/>
-                                <t t-set="suma" t-value="suma + total_paid + total_boletos_emergentes" />
+                                <t t-set="suma" t-value="suma + acum_total_recaudado" />
                                 <t t-esc="suma" t-options='{"widget": "float", "precision": 2}' /> </strong>
 
                         </p>
                         <p>Total de Efectivo Entregado por el Cajero(a): $ <strong> <t t-esc='total_efectivo'/> </strong> </p>
-                        <p>Diferencia con el Corte Final: $ <strong> <t t-set="resta" t-value="0"/>
-                                <t t-set="resta" t-value="resta + suma - total_efectivo" />
+                        <p>Diferencia con el Corte Final: $ <strong>
+                                <t t-set="resta" t-value="0"/>
+                                <t t-set="resta" t-value="resta + total_efectivo - suma" />
                                 <t t-esc="resta" t-options='{"widget": "float", "precision": 2}' /> </strong></p>
-                        <strong>TOTAL A DEPOSITAR: $ <strong>  <t t-esc='total_efectivo'/> </strong> </strong>
+                        <strong>TOTAL A DEPOSITAR: $
+                            <t t-set="total_efectivo_final" t-value="0"/>
+                            <t t-set="total_efectivo_final" t-value="total_efectivo_final + total_efectivo" />
+
+                            <t t-set="total_efectivo_final2" t-value="0"/>
+                            <t t-set="total_efectivo_final2" t-value="total_efectivo_final2 + suma" />
+
+                            <t t-esc="total_efectivo_final" t-if='resta &gt;= 0' t-options='{"widget": "float", "precision": 2}' />
+                            <t t-esc="total_efectivo_final2" t-if='resta &lt; 0' t-options='{"widget": "float", "precision": 2}' />
+                        </strong>
                     </div>
+
+
                     <br/>
                     <div style="font-size: 13px;">
-                        Dólares: _________________________ (x)_________________________ En pesos:_________________________
+                        Dólares: &#160; <strong><t t-esc='dolares'/></strong> &#160; (x)  &#160;
+                        <strong><t t-esc='dolar_tipo_cambio'/></strong> &#160; En pesos: <strong> &#160; <t t-esc='dolares_pesos'/> </strong>
                     </div>
                     <div style="font-size: 13px;">
                         Boletos dejados por usuario(s) y reportados(s) por cajero(a):_________________________

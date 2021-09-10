@@ -22,6 +22,7 @@ class BoletosEmergentes(models.Model):
     _rec_name = 'sesion'
 
     sesion = fields.Many2one('pos.session', string="Sesion")
+    carril = fields.Many2one('pos.config', string="Sesion")
     cajero = fields.Many2one('res.users', string="Cajero")
     jefe_operaciones = fields.Many2one('res.users', string="Encargado de subir estos boletos emergentes")
     fecha_del = fields.Datetime(string="", required=False, )
@@ -39,13 +40,34 @@ class TablaEmergentes(models.Model):  # TABLA PARA ELEGIR PRODUCTOS EN EL APARTA
 
     id_boleto_emergente = fields.Many2one('pos.boletos_emergentes', string="Id", store=True)
     cuota = fields.Many2one('product.template', string="Cuota", store=True)
+    folio_del = fields.Integer(string="Folio del", store=True)
+    folio_al = fields.Integer(string="Folio al", store=True)
     cantidad = fields.Integer('Cantidad', store=True)
-    costo_cuota = fields.Float('Costo', related="cuota.list_price")
+    costo_cuota = fields.Float('Costo', store=True)
     total = fields.Float('Total', store=True)
 
-    @api.onchange('cantidad')
+    @api.onchange('cuota')
+    def onchange_costo(self):
+        self.costo_cuota = (self.cuota.list_price * (self.cuota.taxes_id.amount / 100)) + self.cuota.list_price
+
+    '''@api.onchange('cuota', 'folio_del', 'folio_al')
+    def onchange_folios(self):
+        cantidad_folio = self.folio_al - self.folio_del
+        print('si entra tabla')
+        cc = self.env["pos.details.wizard"].search([])[-1]
+        print(cc, cantidad_folio)
+        for ccc in cc:
+            for tb in ccc.tabla_tarifas:
+                print(tb.tarifa.name, self.cuota.name )
+                if str(tb.tarifa.id) == str(self.cuota.id):
+                    print(cantidad_folio, '--')
+                    self.cantidad = tb.efectivos + cantidad_folio
+                    print(self.cantidad, ' cc')
+                    self.total = self.cantidad * self.costo_cuota'''
+
+    '''@api.onchange('cantidad')
     def onchange_total(self):
-        self.total = self.cantidad * (self.costo_cuota * (self.cuota.taxes_id.amount/100) + self.costo_cuota)
+        self.total = self.cantidad * (self.costo_cuota * (self.cuota.taxes_id.amount/100) + self.costo_cuota)'''
 
 
 class TablaFinTurno(models.TransientModel):  # TABLA PARA ELEGIR PRODUCTOS EN EL APARTADO DE BOLETOS EMERGENTES

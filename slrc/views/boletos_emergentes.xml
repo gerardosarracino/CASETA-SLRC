@@ -6,6 +6,7 @@
             <field name="model">pos.boletos_emergentes</field>
             <field name="arch" type="xml">
                 <tree string="">
+                    <field name="carril"/>
                     <field name="sesion"/>
                     <field name="cajero"/>
                     <field name="fecha_del"/>
@@ -22,6 +23,7 @@
                 <form string="">
                     <sheet>
                         <group string="Datos del Informe">
+                            <field name="carril"/>
                             <field name="sesion"/>
                             <field name="cajero"/>
                             <field name="fecha_del"/>
@@ -33,9 +35,9 @@
                                 <tree editable="bottom" >
                                     <field name="id_boleto_emergente" force_save="1" readonly="1" required="1"/>
                                     <field name="cuota" required="1" force_save="1"/>
-                                    <field name="cantidad" required="1" force_save="1"/>
+                                    <field name="cantidad" required="1" force_save="1" sum="cantidad"/>
                                     <field name="costo_cuota" readonly="1" force_save="1" required="1"/>
-                                    <field name="total" readonly="1" required="1" force_save="1"/>
+                                    <field name="total" readonly="1" required="1" force_save="1" sum="total"/>
                                 </tree>
                             </field>
                         </group>
