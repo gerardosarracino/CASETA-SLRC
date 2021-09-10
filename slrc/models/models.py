@@ -82,7 +82,7 @@ class PosDetailsSrlc(models.TransientModel):
     jefe_operaciones = fields.Many2one('res.users', string="Jefe de Operaciones", default=lambda self: self.env.user)
     administrador = fields.Many2one('res.users', string="Administrador", default=_default_administrador )
 
-    pos_config_srlc_ids = fields.Many2many('pos.config' ) # default=lambda s: s.env['pos.config'].search([])
+    pos_config_srlc_ids = fields.Many2many('pos.session' ) # default=lambda s: s.env['pos.config'].search([])
 
     carril_pos = fields.Many2one('pos.config', string="Seleccionar Carril" ) # default=lambda s: s.env['pos.config'].search([])
     total_efectivo = fields.Float(string="Total de Efectivo Entregado por el Cajero(a):",  required=False, )
@@ -120,45 +120,43 @@ class PosDetailsSrlc(models.TransientModel):
         self.dolar_tipo_cambio = self.env['ir.config_parameter'].sudo().get_param('pos_parametro.dolar')
         self.dolares_pesos = self.dolares * self.dolar_tipo_cambio
 
+    def _default_turno(self):
+        fecha_dma3 = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        dt = datetime.strptime(str(fecha_dma3), '%Y-%m-%d %H:%M:%S')
+        hora = datetime.strftime(dt, '%H:%M:%S')
+        turno = ''
+        if hora >= '07:00:00' and hora <= '14:59:59':
+            turno = 'Matutino'
+        if hora >= '15:00:00' and hora <= '22:59:59':
+            turno = 'Vespertino'
+        if hora >= '23:00:00' and hora <= '23:59:59' or hora >= '00:00:00' and hora <= '06:59:59':
+            turno = 'Nocturno'
+        return turno
+
+    turno = fields.Char('Turno', default=_default_turno )
+    select_inf = [('general', 'INFORME DE FIN DE TURNO GENERAL'), ('suplente', 'INFORME DE CAJERO SUPLENTE DURANTE TURNO')]
+    tipo_inf = fields.Selection(select_inf, string="SELECCIONAR INFORME", required=True, default='general')
+
+    @api.onchange('tipo_inf')
+    def onchange_tipo_informe(self):
+        self.update({
+            'pos_config_srlc_ids': [[5]],
+            'tabla_tarifas': [[5]],
+            'tabla_cuotas': [[5]]
+        })
+        self.carril_pos = ''
+        self.cajero = ''
+        self.carril_pos = ''
+
     @api.onchange('carril_pos', 'cajero', 'start_date', 'end_date', 'boleto_emergente')
     def onchange_informe(self):
         self.update({
             'pos_config_srlc_ids': [[5]],
             'tabla_tarifas': [[5]]
         })
-
-
-        '''fecha_inicio_turno = self.start_date  # time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
-        dt = datetime.strptime(str(fecha_inicio_turno), '%Y-%m-%d %H:%M:%S')
-        old_tz = pytz.timezone('UTC')
-        new_tz = pytz.timezone('MST')
-        fecha_inicio_turno = old_tz.localize(dt).astimezone(new_tz)
-        hora_inicio = datetime.strftime(fecha_inicio_turno, '%H:%M:%S')
-        fecha_inicio_turno = datetime.strftime(fecha_inicio_turno, '%Y/%m/%d')
-
-        fecha_termino_turno = self.end_date
-        dt = datetime.strptime(str(fecha_termino_turno), '%Y-%m-%d %H:%M:%S')
-        old_tz = pytz.timezone('UTC')
-        new_tz = pytz.timezone('MST')
-        fecha_termino_turno = old_tz.localize(dt).astimezone(new_tz)
-        hora_termino = datetime.strftime(fecha_termino_turno, '%H:%M:%S')
-        fecha_termino_turno = datetime.strftime(fecha_termino_turno, '%Y/%m/%d')'''
-
-        # print(self.start_date, ' fecha inicio', fecha_inicio_turno, hora_inicio)
-        # print(self.end_date, ' fecha termino', fecha_termino_turno, hora_termino)
         if not self.cajero:
             pass
         else:
-
-            '''xxxx = self.env["pos.order.line"].search([]) TEST
-            for i in xxxx:
-                fecha_dma3 = i.order_id.date_order  # time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
-                dt = datetime.strptime(str(fecha_dma3), '%Y-%m-%d %H:%M:%S')
-                old_tz = pytz.timezone('UTC')
-                new_tz = pytz.timezone('MST')
-                fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
-                print(i.order_id.date_order, ' fecha ', fecha_dma3)'''
-
             search_tarifas = self.env["product.template"].search([])
             for i in search_tarifas:
                 if self.boleto_emergente is False:
@@ -172,12 +170,13 @@ class PosDetailsSrlc(models.TransientModel):
                                                                                      ('order_id.session_id.config_id.carril',
                                                                                       '=',
                                                                                       self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
+                                                                                     ('order_id.session_id.turno',
+                                                                                      '=',
+                                                                                      self.turno ),
                                                                                      ('order_id.state', '!=',
-                                                                                      'emergente')
+                                                                                      'emergente'),
+                                                                                     ('order_id.state', '!=',
+                                                                                      'closed')
                                                                                      ])
                     if search_efectivos_auto == 0:
                         pass
@@ -694,64 +693,20 @@ class PosDetailsSrlc(models.TransientModel):
                                     }]]}
                             x = self.write(datos_tabla)
 
-            fecha_hoy = fields.Datetime.now()
-
-            fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
-            dt = datetime.strptime(str(fecha_dma3), '%d-%m-%Y %H:%M:%S')
-            old_tz = pytz.timezone('UTC')
-            new_tz = pytz.timezone('MST')
-            fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
-            fecha_dma3 = datetime.strftime(fecha_dma3, '%Y-%m-%d')
-
-            fecha_dma2 = datetime.strftime(fecha_hoy, '%Y-%m-%d')
-            sesion = self.env["pos.session"].search([('start_at', '>=', str(fecha_dma3) + ' 15:00:00'),
-                                                    ('stop_at', '<=', str(fecha_dma3) + ' 23:59:59')]) # ('user_id.id', '=', self.cajero.id)[-1]
-
-            print(fecha_dma3, 'hola', sesion)
-
-            '''sesion2 = self.env["pos.session"].search([])
-            for ss2 in sesion2:
-                # fecha_dma3 = time.strftime("%d-%m-%Y %H:%M:%S", ss2.start_at)
-                dt = datetime.strptime(str(ss2.start_at), '%Y-%m-%d %H:%M:%S')
-                old_tz = pytz.timezone('UTC')
-                new_tz = pytz.timezone('MST')
-                fecha_dma3 = old_tz.localize(dt).astimezone(new_tz)
-                fecha_dma3 = datetime.strftime(fecha_dma3, '%Y-%m-%d %H:%M:%S')
-                print(fecha_dma3, '---', ss2.start_at, ss2.name)'''
-
-            # UTC ('start_at', '>=', str(fecha_dma2) + ' 14:00:00'),
-            # ('stop_at', '<=', str(fecha_dma2) + ' 22:59:59')
-
+            sesion = self.env["pos.session"].search([('turno', '=', self.turno),
+                                                     ('config_id', '=', self.carril_pos.id)])
+            print(sesion, 'SESION')
             if not sesion:
                 pass
             else:
-                acum = 0
                 for ss in sesion:
-                    print(ss.start_at, ss.name)
-                    acum += 1
-                    # EMERGENTES
-                    '''boletos_search = self.env["pos.boletos_emergentes"].search([('sesion', '=', ss.id),
-                                                                                ('cajero', '=', self.cajero.id)])
-                    # boletos = self.env["pos.boletos_emergentes"].browse(res.id)
-                    for i in boletos_search:
-                        datos = {
-                            'tabla_cuotas': [[4, i.id, {}]]
-                        }
-                        tabla = self.update(datos)'''
-
-                    # SESIONES
-                    '''if acum == 1:
-                        self.start_date = ss.start_at
-                    self.end_date = fecha_dma2'''
-                    # print(sesion.config_id.id)
-                    # datos_participantes = {'pos_config_srlc_ids': [[0,0 sesion.config_id.id]]}
                     datos = {
-                        'pos_config_srlc_ids': [[4, ss.config_id.id, {}]]} # 'id': sesion.config_id.id, 'name': sesion.config_id.name
+                        'pos_config_srlc_ids': [[4, ss.id, {}]]} # 'id': sesion.config_id.id, 'name': sesion.config_id.name
                     x = self.update(datos)
-                    # self.update(datos_participantes)
 
     def generate_report(self):
-        sesion = self.env["pos.session"].search([('user_id.id', '=', self.cajero.id)])[0]
+        sesion = self.env["pos.session"].search([('turno', '=', self.turno),
+                                                 ('config_id', '=', self.carril_pos.id)])[0]
         if not sesion:
             pass
         else:
