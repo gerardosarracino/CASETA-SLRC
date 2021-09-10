@@ -154,555 +154,990 @@ class PosDetailsSrlc(models.TransientModel):
             'pos_config_srlc_ids': [[5]],
             'tabla_tarifas': [[5]]
         })
-        if not self.cajero:
+
+        fecha_hoy = datetime.strftime(self.start_date, '%Y-%m-%d')
+
+        sesion = self.env["pos.session"].search([('turno', '=', self.turno),
+                                                 ('config_id', '=', self.carril_pos.id),
+                                                 ('start_at', '>=',
+                                                  fecha_hoy + ' 00:00:00'),
+                                                 ('stop_at', '<=',
+                                                  fecha_hoy + ' 23:59:59')
+                                                 ])
+        if not sesion:
             pass
         else:
-            search_tarifas = self.env["product.template"].search([])
-            for i in search_tarifas:
-                if self.boleto_emergente is False:
-                    self.update({
-                        'tabla_cuotas': [[5]]
-                    })
+            for ss in sesion:
+                datos = {
+                    'pos_config_srlc_ids': [[4, ss.id, {}]]}  # 'id': sesion.config_id.id, 'name': sesion.config_id.name
+                x = self.update(datos)
 
-                efectivos_auto = 0
-                if i.name == 'AUTO':
-                    search_efectivos_auto = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.session_id.turno',
-                                                                                      '=',
-                                                                                      self.turno ),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente'),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'closed')
-                                                                                     ])
-                    if search_efectivos_auto == 0:
-                        pass
-                    else:
-                        efectivos_auto = search_efectivos_auto
+        if not self.carril_pos:
+            pass
+        else:
+            if self.tipo_inf == 'general':
+                search_tarifas = self.env["product.template"].search([])
+                for i in search_tarifas:
+                    if self.boleto_emergente is False:
+                        self.update({
+                            'tabla_cuotas': [[5]]
+                        })
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos_auto,
-                            'recaudado': efectivos_auto * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price) ,
-                        }]]}
-                        r = self.write(tabla_tarifas)
+                    efectivos_auto = 0
+                    if i.name == 'AUTO':
+                        search_efectivos_auto = 0
+                        for sesiones in sesion:
+                            search_efectivos_auto += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id),('order_id.session_id','=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno ), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
 
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos_auto,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                        if search_efectivos_auto == 0:
+                            pass
+                        else:
+                            efectivos_auto = search_efectivos_auto
 
-                if i.name == 'AUTO + 1 EJE':
-                    
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos_auto,
+                                'recaudado': efectivos_auto * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price) ,
+                            }]]}
+                            r = self.write(tabla_tarifas)
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos_auto,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
+                    if i.name == 'AUTO + 1 EJE':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
 
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                if i.name == 'AUTO + 2 EJE':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            }]]}
+                            r = self.write(tabla_tarifas)
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
-                if i.name == 'AUTOBUS':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                    if i.name == 'AUTO + 2 EJE':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
-                if i.name == 'CAMION 2 EJES':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                            }]]}
+                            r = self.write(tabla_tarifas)
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
+                    if i.name == 'AUTOBUS':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
-                if i.name == 'CAMION 3 EJES':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                 ('order_id.session_id.config_id.carril',
-                                                                                  '=',
-                                                                                  self.carril_pos.carril),
-                                                                                 ('order_id.date_order', '>=',
-                                                                                  self.start_date),
-                                                                                 ('order_id.date_order', '<=',
-                                                                                  self.end_date),
-                                                                                 ('order_id.state', '!=',
-                                                                                  'emergente')
-                                                                                 ])
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
+                    if i.name == 'CAMION 2 EJES':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                if i.name == 'CAMION 4 EJES':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
+                    if i.name == 'CAMION 3 EJES':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
-                if i.name == 'CAMION 5 EJES':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                    if i.name == 'CAMION 4 EJES':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                if i.name == 'CAMION 6 EJES':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
+                    if i.name == 'CAMION 5 EJES':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-                if i.name == 'CAMION + 7 EJES':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                    if i.name == 'CAMION 6 EJES':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-                if i.name == 'MOTOCICLETA':
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                    if i.name == 'CAMION + 7 EJES':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
-                if i.name == 'EMERGENCIAS':
-                    
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                    if i.name == 'MOTOCICLETA':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                if i.name == 'RESIDENTE':
-                    
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
+                    if i.name == 'EMERGENCIAS':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-                if i.name == 'RESIDENTE + 1 EJE':
-                    
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                    if i.name == 'RESIDENTE':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-                if i.name == 'RESIDENTE + 2 EJES':
-                    
-                    search_efectivos = self.env["pos.order.line"].search_count([('product_id', '=', i.id),
-                                                                                     ('order_id.session_id.config_id.carril',
-                                                                                      '=',
-                                                                                      self.carril_pos.carril),
-                                                                                     ('order_id.date_order', '>=',
-                                                                                      self.start_date),
-                                                                                     ('order_id.date_order', '<=',
-                                                                                      self.end_date),
-                                                                                     ('order_id.state', '!=',
-                                                                                      'emergente')
-                                                                                     ])
-                    if search_efectivos == 0:
-                        pass
-                    else:
-                        efectivos = search_efectivos
+                    if i.name == 'RESIDENTE + 1 EJE':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
 
-                        tabla_tarifas = {'tabla_tarifas': [[0, 0, {
-                            'tarifa': i.id,
-                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                            'efectivos': efectivos,
-                            'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
 
-                        }]]}
-                        r = self.write(tabla_tarifas)
-                        if self.boleto_emergente:
-                            datos_tabla = {
-                                'tabla_cuotas': [
-                                    [0, 0, {
-                                        'cuota': i.id,
-                                        'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
-                                        'cantidad': efectivos,
-                                    }]]}
-                            x = self.write(datos_tabla)
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
 
-            sesion = self.env["pos.session"].search([('turno', '=', self.turno),
-                                                     ('config_id', '=', self.carril_pos.id)])
-            print(sesion, 'SESION')
-            if not sesion:
-                pass
+                    if i.name == 'RESIDENTE + 2 EJES':
+                        search_efectivos = 0
+                        for sesiones in sesion:
+                            search_efectivos += self.env["pos.order.line"].search_count([
+                                ('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                ('order_id.session_id.turno', '=', self.turno), ('order_id.state', '!=', 'emergente'),
+                                ('order_id.state', '!=', 'closed')])
+                        if search_efectivos == 0:
+                            pass
+                        else:
+                            efectivos = search_efectivos
+
+                            tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                'tarifa': i.id,
+                                'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                'efectivos': efectivos,
+                                'recaudado': efectivos * ((i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                            }]]}
+                            r = self.write(tabla_tarifas)
+                            if self.boleto_emergente:
+                                datos_tabla = {
+                                    'tabla_cuotas': [
+                                        [0, 0, {
+                                            'cuota': i.id,
+                                            'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                            'cantidad': efectivos,
+                                        }]]}
+                                x = self.write(datos_tabla)
             else:
-                for ss in sesion:
-                    datos = {
-                        'pos_config_srlc_ids': [[4, ss.id, {}]]} # 'id': sesion.config_id.id, 'name': sesion.config_id.name
-                    x = self.update(datos)
+                print('SUPLENTE')
+                if not self.cajero:
+                    pass
+                else:
+                    search_tarifas = self.env["product.template"].search([])
+                    for i in search_tarifas:
+                        if self.boleto_emergente is False:
+                            self.update({
+                                'tabla_cuotas': [[5]]
+                            })
+
+                        efectivos_auto = 0
+                        if i.name == 'AUTO':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos_auto = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos_auto,
+                                    'recaudado': efectivos_auto * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+                                }]]}
+                                r = self.write(tabla_tarifas)
+
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos_auto,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'AUTO + 1 EJE':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'AUTO + 2 EJE':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+                        if i.name == 'AUTOBUS':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+                        if i.name == 'CAMION 2 EJES':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+                        if i.name == 'CAMION 3 EJES':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'CAMION 4 EJES':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+                        if i.name == 'CAMION 5 EJES':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'CAMION 6 EJES':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'CAMION + 7 EJES':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'MOTOCICLETA':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+                        if i.name == 'EMERGENCIAS':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'RESIDENTE':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'RESIDENTE + 1 EJE':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
+
+                        if i.name == 'RESIDENTE + 2 EJES':
+                            search_efectivos = 0
+                            for sesiones in sesion:
+                                search_efectivos += self.env["pos.order.line"].search_count(
+                                    [('product_id', '=', i.id), ('order_id.session_id', '=', sesiones.id),
+                                     ('order_id.session_id.turno', '=', self.turno),
+                                     ('order_id.state', '!=', 'emergente'), ('order_id.state', '!=', 'closed'),
+                                     ('order_id.user_id', '=', self.cajero.id)])
+                            if search_efectivos == 0:
+                                pass
+                            else:
+                                efectivos = search_efectivos
+
+                                tabla_tarifas = {'tabla_tarifas': [[0, 0, {
+                                    'tarifa': i.id,
+                                    'costo_cuota': (i.list_price * (i.taxes_id.amount / 100)) + i.list_price,
+                                    'efectivos': efectivos,
+                                    'recaudado': efectivos * (
+                                                (i.list_price * (i.taxes_id.amount / 100)) + i.list_price),
+
+                                }]]}
+                                r = self.write(tabla_tarifas)
+                                if self.boleto_emergente:
+                                    datos_tabla = {
+                                        'tabla_cuotas': [
+                                            [0, 0, {
+                                                'cuota': i.id,
+                                                'costo_cuota': (i.list_price * (
+                                                            i.taxes_id.amount / 100)) + i.list_price,
+                                                'cantidad': efectivos,
+                                            }]]}
+                                    x = self.write(datos_tabla)
 
     def generate_report(self):
         sesion = self.env["pos.session"].search([('turno', '=', self.turno),

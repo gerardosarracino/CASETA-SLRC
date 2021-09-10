@@ -25,7 +25,7 @@
                 </group>
 
 
-                <div attrs="{'invisible': [('tipo_inf','=', 'general')]}">
+                <div attrs="{'invisible': [('tipo_inf','!=', 'general')]}">
                     <group string="Datos del Informe general">
                         <field name="carril_pos"/>
                         <field name="cajero"/>
@@ -85,13 +85,15 @@
                                 <field name="config_id" string="Carril"/>
                                 <field name="name" string="Nombre"/>
                                 <field name="turno" string="Turno"/>
+                                <field name="start_at"/>
+                                <field name="stop_at" />
                             </tree>
                         </field>
                     </group>
 
                 </div>
 
-                <div attrs="{'invisible': [('tipo_inf','=', 'suplente')]}">
+                <div attrs="{'invisible': [('tipo_inf','!=', 'suplente')]}">
                     <group string="Datos del Informe suplente">
                         <field name="carril_pos"/>
                         <field name="cajero"/>
@@ -151,6 +153,8 @@
                                 <field name="config_id" string="Carril"/>
                                 <field name="name" string="Nombre"/>
                                 <field name="turno" string="Turno"/>
+                                <field name="start_at"/>
+                                <field name="stop_at" />
                             </tree>
                         </field>
                     </group>

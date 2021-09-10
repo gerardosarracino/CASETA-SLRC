@@ -27,8 +27,8 @@ import odoorpc
 
 
 class MandarVenta(http.Controller):
-    @http.route('/venta_controller/<id_usuario>/<func_id>', type='http', auth='public', methods=["GET","POST"], csrf=False, cors='*')
-    def index(self, id_usuario, func_id): # func_id
+    @http.route('/venta_controller/<id_usuario>/<func_id>/<vehiculo>', type='http', auth='public', methods=["GET","POST"], csrf=False, cors='*')
+    def index(self, id_usuario, func_id, vehiculo): # func_id
         try:
             search_usuario = http.request.env['res.users'].sudo().search([('id', '=', int(id_usuario))])  # ('id', '=', int(id_usuario))
 
@@ -62,7 +62,7 @@ class MandarVenta(http.Controller):
                     order = orden.create(datos)
 
                     orden_creada = http.request.env['pos.order'].sudo().search([('id', '=', order.id)])
-                    search_producto = http.request.env['product.product'].sudo().search([('name', '=', 'RESIDENTE')])
+                    search_producto = http.request.env['product.product'].sudo().search([('name', '=', str(vehiculo))])
                     producto = ''
                     taxes = ''
                     for pro in search_producto:
